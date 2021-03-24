@@ -1,15 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import requests
-# from ....te. import AsyncRequests
-# from CBS_Automation.UI.window import MainWindow
-# import tkinter as tk
-
-
-HOME_PAGE_URL = 'https://www.cbs.gov.il/he/Pages/default.aspx'
-MAP_SITE_URL = 'https://www.cbs.gov.il/he/pages/sitemap.aspx'
-ENGLISH_MAP_SITE_URL = 'https://www.cbs.gov.il/en/Pages/sitemap.aspx'
-DRIVER_PATH = 'C:\chromedriver.exe'
+from usefulLinks import Links
 
 
 def wrightToFile(links):
@@ -29,8 +21,8 @@ def getCurrentLinks(driver):
 
 def Main():
     # initial selenium driver
-    driver = webdriver.Chrome(DRIVER_PATH)
-    driver.get(MAP_SITE_URL)
+    driver = webdriver.Chrome(Links.CHROME_DRIVER)
+    driver.get(Links.CBS_MAP_SITE_HE)
     raw_list = getCurrentLinks(driver)
   
 
