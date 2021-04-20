@@ -28,18 +28,18 @@ def wrightToFile(links):
 
 def getCurrentLinks(driver):
     driver.get(MAP_SITE_URL)
-    # finding the links in the page
+    # finding the LinksUtility in the page
     print('finding all HREF objects...')
     try:
         uList = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a")))
+            EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='level1 sitemapmenu']//cbs_link[@class='ng-scope']//ul[@class='level2']//cbs_link[@class='ng-scope']//ul[@class='level3']//cbs_link//a")))
         print("mapsite is ready!")
     except TimeoutException:
         print("Loading mapsite took too much time!")
         return
     # uList = driver.find_elements_by_xpath(
-    #     "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a")
-    print('number of li objects found : ', len(uList))
+    #     "//ul[@class='level1 sitemapmenu']//cbs_link[@class='ng-scope']//ul[@class='level2']//cbs_link[@class='ng-scope']//ul[@class='level3']//cbs_link//a")
+    print('number of cbs_link objects found : ', len(uList))
     # for english site '[::-1]' need to be deleteted
     link_list = list(
         map(lambda x: (x.get_attribute('href'), x.text[::-1]), uList))
@@ -103,7 +103,7 @@ def Main():
     # for link in link_list:
     #     print(link[0])
 
-    # checking the links
+    # checking the LinksUtility
     # for link in link_list:
     #     try:
     #         r = requests.head(link[0])
@@ -115,8 +115,8 @@ def Main():
     #         broken_links.append((link, 'code :', r.status_code))
     #     print(link[1], r.status_code)
 
-    # number of broken links
-    # print('broken links: ', len(broken_links))
+    # number of broken LinksUtility
+    # print('broken LinksUtility: ', len(broken_links))
     # for link in broken_links:
     #     print(link)
     # wrightToFile()
