@@ -1,0 +1,3012 @@
+﻿/*0.4.8*/
+//this  should be on anon test
+//SP.SOD.set_prefetch(0);
+
+
+//i use this everywhere
+function toNormalItem(cells) {
+    var normalItem = {};
+    angular.forEach(cells, function (singleCell) {
+        this[singleCell.Key] = singleCell.Value;
+    }, normalItem);
+    return normalItem;
+};
+
+Cbs.getResource = function getResource(rKey) {
+    if (Cbs.Web.IsEdit === "True") {
+        return '';
+    }
+
+    if (UIResource[rKey] === undefined) {
+        console.error("UIResource." + rKey + " does not exists");
+        return '';
+    }
+    return UIResource[rKey];
+};
+Cbs.getResourceLink = function getResourceLink(rKey) {
+    if (Cbs.Web.IsEdit === "True") {
+        return '';
+    }
+
+    if (UIResourceLinks[rKey] === undefined) {
+        console.error("UIResourceLinks." + rKey + " does not exists");
+        return '';
+    }
+    return UIResourceLinks[rKey];
+};
+Cbs.getResourceHTML = function getResourceHTML(rKey) {
+    if (Cbs.Web.IsEdit === "True") {
+        return '';
+    }
+
+    if (UIResourceHTMLs[rKey] === undefined) {
+        console.error("UIResourceHTMLs." + rKey + " does not exists");
+        return '';
+    }
+    return UIResourceHTMLs[rKey];
+};
+
+function createDateTime(val) {
+    //debugger;
+    //return val; // fix for CbsArticleStatistical, was getting an error because of "match"
+    //return val; // fix for CbsArticleStatistical, was getting an error because of "match"
+    try {
+
+        var numbers = val.match(/\d+/g);
+        var n = new Date(numbers[2], numbers[1] - 1, numbers[0]);
+        if (ALA.LCID == 1033) {
+            n = new Date(numbers[2], numbers[0] - 1, numbers[1])
+        }
+        return n;
+    }
+    catch (err) {
+        return val;
+    }
+
+}
+
+
+//for the bi, aslo globaly good
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function ShowResultsItemDiv(idx) {
+    //console.log(idx);
+
+    $("." + idx + "").toggleClass("truncate ");
+}
+
+/*
+usage:
+"{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET")
+result:
+ASP is dead, but ASP.NET is alive! ASP {2}
+*/
+if (!String.prototype.format) {
+    String.prototype.format = function () {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] != 'undefined'
+              ? args[number]
+              : match
+            ;
+        });
+    };
+};
+
+//jquery "plugin" for visibility use instead of show/hide
+jQuery.fn.visible = function () {
+    return this.css('visibility', 'visible');
+};
+jQuery.fn.invisible = function () {
+    return this.css('visibility', 'hidden');
+};
+jQuery.fn.visibilityToggle = function () {
+    return this.css('visibility', function (i, visibility) {
+        return (visibility == 'visible') ? 'hidden' : 'visible';
+    });
+};
+
+//belongs to BI
+var tmpFontFamily, tmpFontSize;
+tmpFontFamily = "arial";
+tmpFontSize = "12";
+
+// IE9 fix
+if (!window.console) {
+    var console = {
+        log: function () { },
+        warn: function () { },
+        error: function () { },
+        time: function () { },
+        timeEnd: function () { }
+    };
+}
+
+//do not remove, is in used
+Cbs.BI = {};
+
+Cbs.logThis = function (startDate, message) {
+    var d2 = new Date();
+    var ms = d2.getMilliseconds() - startDate.getMilliseconds();
+    var s = d2.getSeconds() - startDate.getSeconds();
+    console.log(message + " -> (s:ms) " + s.toString() + ":" + ms.toString());
+};
+
+Cbs.DoSearchQuery = function (query, selectProps, isAnon, successCallback, errorCallback, rowLimit) {
+    /// <summary>Function to take parameters like the "query tools" program fields</summary>
+    /// <param name='query' type='String'>pure text of query</param>
+    /// <param name='selectProps' type='String'>comma seperated string of the properties to select</param>
+    /// <param name='isAnon' type='Boolean'>boolean if to add QueryTemplatePropertiesUrl...</param>
+    /// <param name='callback' type='Function'>callback func to do wih the results, is actucally the JQAjax success func</param>
+
+    //url: BuildSearchQuery("ContentType=RmiCommonServicesListCT", null, true),
+
+    if (rowLimit > 500) rowLimit = 500;
+
+    if (!query) {
+        throw "no query";
+    }
+    var url = "/_api/search/query?querytext='" + encodeURIComponent(query) + "'";
+    if (selectProps) {
+        url += "&selectproperties=" + selectProps;
+    }
+    if (rowLimit) {
+        url += "&rowlimit=" + rowLimit;
+    }
+    if (isAnon) {
+        url += "&QueryTemplatePropertiesUrl='spfile://webroot/QueryParameterTemplate.xml'";
+    }
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        headers: { "Accept": "application/json;odata=verbose" },
+        success: successCallback,
+        error: errorCallback
+    });
+};
+
+Cbs.IsIE = function () {
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf('MSIE ');
+    var trident = ua.indexOf('Trident/');
+
+    if (msie > 0 || trident > 0) {
+        return true;
+    }
+    return false;
+};
+
+Cbs.Highlightener = {};
+//Cbs.Highlightener.NoHighlightener = Cbs.PageProperties.ContentType !== "דף מאמר למס" || Cbs.PageProperties.ContentType !== "דף נושא למס";
+Cbs.Highlightener.NoHighlightener = false;
+Cbs.Highlightener.InitHighlightener = function () {
+    if (Cbs.Highlightener.NoHighlightener === false) {
+        var titleFieldName = Cbs.Web.ISO3 === "eng" ? 'CbsEnglishTitle' : 'Title';
+
+        /*
+         *  זה היה עם חיפוש אבל ALA גם ככה מביא את המונחים אז יאללה
+         *
+        //$("#DeltaPlaceHolderMain").highlightner(
+        //$(".article-content, .textBox.borderTop").highlightner(
+        $(".article-content, .textBox").highlightner(
+            //titlesRestUrl, itemRestSearchUrlFunc, titleFieldName, shortDescFieldName, longDescFieldName, pageLinkFieldName, boolFieldName
+            function () {
+                //path:"http://cbsadmin/he"  ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC805* => CbsTermItem 
+                var query = 'path:"' + window.location.origin + Cbs.Web.VariationRoot + '"  ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC805*';
+                return "/_api/search/query?querytext='" + query + "'&rowlimit=500&selectproperties='Title'&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'&$top=500";
+            }(),
+            function (title) {
+                return "/_api/search/query?querytext='ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC805*'&selectproperties='" + titleFieldName + ",CbsTermDefinitionOWSMTXT,CbsHTMLFieldOWSHTML'" +
+                    "&refinementfilters='Title:equals(\"" + encodeURI(title) + "\")'&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+            },
+            titleFieldName, "CbsTermDefinitionOWSMTXT", "CbsHTMLFieldOWSHTML", UIResourceLinks.AllTerms, "");
+
+        */
+
+        /* 
+         *  test with options
+         *
+        $(".article-content, .textBox").highlightner({
+            //titlesRestUrl, itemRestSearchUrlFunc, titleFieldName, shortDescFieldName, longDescFieldName, pageLinkFieldName, boolFieldName
+            titlesRestUrl : function () {
+                //path:"http://cbsadmin/he"  ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC805* => CbsTermItem 
+                var query = 'path:"' + window.location.origin + Cbs.Web.VariationRoot + '"  ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC805*';
+                return "/_api/search/query?querytext='" + query + "'&rowlimit=500&selectproperties='Title'&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'&$top=500";
+            }(),
+            itemRestSearchUrlFunc : function (title) {
+                return "/_api/search/query?querytext='ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC805*'&selectproperties='" + titleFieldName + ",CbsTermDefinitionOWSMTXT,CbsHTMLFieldOWSHTML'" +
+                    "&refinementfilters='Title:equals(\"" + encodeURI(title) + "\")'&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+            },
+            titleFieldName : titleFieldName, 
+            shortDescFieldName : "CbsTermDefinitionOWSMTXT", 
+            longDescFieldName : "CbsHTMLFieldOWSHTML", 
+            pageLinkFieldName : UIResourceLinks.AllTerms, 
+            boolFieldName : ""
+        });
+        */
+
+
+        //test with ALA
+        $(".article-content, .textBox").highlightner({
+            isStaticData: true,
+            staticData: ALA ? ALA.terms : [],
+            // titleFieldName, shortDescFieldName, longDescFieldName, pageLinkFieldName, boolFieldName
+
+            titleFieldName: "LinkTitle",
+            shortDescFieldName: "CbsTermDefinition",
+            longDescFieldName: "CbsHTMLField",
+            pageLinkFieldName: UIResourceLinks.AllTerms,
+            boolFieldName: ""
+        });
+    }
+};
+
+Cbs.Header = {};
+Cbs.Header.navSlide = 300;
+
+Cbs.Header.sharethis = {};
+Cbs.Header.sharethis.Init = function () {
+    $(document).ready(function () {
+
+        $(".shareThisWrapper").hover(
+        function () {
+            $(".addthis_sharing_toolbox").stop(true, true).delay(150).show(400);
+        }, function () {
+            $(".addthis_sharing_toolbox").stop(true, true).delay(150).hide(400);
+        });
+    });
+};
+
+Cbs.Header.CbsSearchTitle = {};
+Cbs.Header.CbsSearchTitle.SearchFunction = function () {
+    if (!UIResource.SearchUrl_SearchResultsMain) {
+        console.error('no UIResource.SearchUrl_SearchResultsMain');
+    }
+    window.location = UIResource.SearchUrl_SearchResultsMain + "?k=" + encodeURIComponent($("#search").val());
+    return false;
+};
+
+Cbs.Header.CbsSearchTitle.SearchGoogleFunction = function () {
+	var url="/he/Pages/search/SearchResultsGoogle.aspx";
+		if(Cbs.Web.ISO3 == "eng")
+		{
+		url="/en/Pages/search/Google-Search.aspx"
+		}
+    window.location = url + "?q=" + encodeURIComponent($("#searchGoogle").val());
+    return false;
+};
+Cbs.Header.CbsSearchTitle.SearchSdarutFunction = function () {
+	var url= "/he/Pages/search/SearchInSeries.aspx";
+		if(Cbs.Web.ISO3 == "eng")
+		{
+		url="/EN/Pages/search/SearchInSeries.aspx"
+		}
+
+    window.location = url  + "?txt=" + encodeURIComponent($("#searchSdarut").val());
+
+    return false;
+};
+
+Cbs.BaseData = {
+    getDay: function (dayNumber) {
+        switch (Cbs.Web.ISO3.toUpperCase()) {
+            case "ENG":
+                return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayNumber];
+            case "HEB":
+                return ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'][dayNumber];
+            case "ARA":
+                return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][dayNumber];
+            default:
+                console.warn("Cbs.BaseData.getDay - unknown ISO3");
+                return "";
+        }
+    },
+    getMonth: function (monthNumber) {
+        var months = Cbs.BaseData.getMonthes();
+        if (months.length && months.length > 0) {
+            return months[monthNumber];
+        }
+        else {
+            console.warn("Cbs.BaseData.getMonth - no months array ");
+            return '';
+        }
+    },
+    getMonthes: function () {
+        switch (Cbs.Web.ISO3.toUpperCase()) {
+            case "ENG":
+                return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            case "HEB":
+                return ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"];
+            case "ARA":
+                return ["كانون الثاني", "شباط", "آذار", "نيسان", "أيار", "حزيران", "تموز", "آب", "أيلول", "تشرين الأول", "تشرين الثاني", "كانون الأول"];
+            default:
+                console.warn("Cbs.BaseData.getMonthes - unknown ISO3");
+                return [];
+                // case "ENG":
+                //     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        }
+    },
+    getDayOfWeekString: function (date) {
+        if (date != null && date !== '') {
+            var daysOfWeekStrings = [
+                 UIResource.General_TxtSunday,
+                 UIResource.General_TxtMonday,
+                 UIResource.General_TxtTuesday,
+                 UIResource.General_TxtWednesday,
+                 UIResource.General_TxtThursday,
+                 UIResource.General_TxtFriday,
+                 UIResource.General_TxtSaturday
+            ];
+            var tempDate = date.split("/");
+            tempDate = tempDate[1] + "/" + tempDate[0] + "/" + tempDate[2];
+            newDate = new Date(tempDate);
+            return daysOfWeekStrings[newDate.getDay()];
+        }
+        else {
+            return "";
+        }
+
+    },
+    getDateObject: function (date) {
+        if (date != null && date !== '') {
+
+            var tempDate = date.split("/");
+            tempDate = tempDate[1] + " " + tempDate[0] + " " + tempDate[2];
+            newDate = new Date(tempDate);
+            return newDate;
+        }
+    },
+    getMonthYearString: function (date) {
+        if (!date) {
+            console.warn("Cbs.BaseData.getMonthYearString - date is undefined or null");
+            return '';
+        }
+
+        var monthNames = Cbs.BaseData.getMonthes();
+
+        var newDate = date;
+        if (date.lastIndexOf) {
+            //its a string
+            var noShitAttInt = date.lastIndexOf(' ');
+            date = date.substring(0, noShitAttInt);
+
+            var tempDate = date.split("/");
+            if (Cbs.Web.ISO3.toUpperCase() == "ENG") { tempDate = tempDate[0] + "/" + tempDate[1] + "/" + tempDate[2]; }
+            else { tempDate = tempDate[1] + "/" + tempDate[0] + "/" + tempDate[2]; }
+            newDate = new Date(tempDate);
+        }
+
+        monthName = monthNames[newDate.getMonth()];
+        fullYear = newDate.getFullYear();
+        return monthName + " " + fullYear;
+    },
+    getMonthYearStringByISO3: function (date, ISO3) {
+        if (!date) {
+            console.warn("Cbs.BaseData.getMonthYearString - date is undefined or null");
+            return '';
+        }
+
+        var oldISO3 = Cbs.Web.ISO3;
+        Cbs.Web.ISO3 = ISO3;
+
+        var monthNames = Cbs.BaseData.getMonthes();
+
+        var noShitAttInt = date.lastIndexOf(' ');
+        date = date.substring(0, noShitAttInt);
+
+        var tempDate = date.split("/");
+        //if (Cbs.Web.ISO3.toUpperCase() == "ENG") { tempDate = tempDate[0] + "/" + tempDate[1] + "/" + tempDate[2]; }
+        //else { tempDate = tempDate[1] + "/" + tempDate[0] + "/" + tempDate[2]; }
+        tempDate = tempDate[1] + "/" + tempDate[0] + "/" + tempDate[2];
+
+        Cbs.Web.ISO3 = oldISO3;
+
+        newDate = new Date(tempDate);
+        monthName = monthNames[newDate.getMonth()];
+        fullYear = newDate.getFullYear();
+        return monthName + " " + fullYear;
+    },
+
+    getLetters: function () {
+        switch (Cbs.Web.ISO3.toUpperCase()) {
+            case "ENG":
+                letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+                break;
+            case "HEB":
+                letters = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ', 'ק', 'ר', 'ש', 'ת'];
+                break;
+            case "ARA":
+                letters = ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', ' ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'لا', 'ي'];
+                break;
+            default:
+                letters = [];
+                break;
+        }
+        return letters;
+    },
+    getFrequencyInEnglish: function (frequency) {
+        var englishFrequency = "";
+        switch (frequency) {
+            case "חודשי":
+                englishFrequency = "Monthly";
+                break;
+            case "שנתי":
+                englishFrequency = "Annual";
+                break;
+            case "דו שנתי":
+                englishFrequency = "Two Year";
+                break;
+            case "רב שנתי":
+                englishFrequency = "Multi Year";
+                break;
+            case "חד פעמי":
+                englishFrequency = "One time";
+                break;
+            case "הודעות מיוחדות":
+                englishFrequency = "Special Announcements";
+                break;
+            case "חצי שנתי":
+                englishFrequency = "Semiannual";
+                break;
+            case "רבעוני":
+                englishFrequency = "Quarterly";
+                break;
+            case "לא קבוע":
+                englishFrequency = "Not Constant";
+                break;
+            case "דו שבועי":
+                englishFrequency = "Bi Weekly";
+                break;
+        }
+
+        return englishFrequency;
+
+    }
+
+
+};
+
+Cbs.SetPrefixes = function Cbs_SetPrefixes(data, status, form) {
+    var prefixes = data.Bindings["prefix"].split(',');
+    var optionsHtml = '';
+    for (var i = 0; i < prefixes.length; i++) {
+        optionsHtml += '<option value="' + prefixes[i] + '">' + prefixes[i] + '</option>';
+    }
+
+    //form.find(".phone-prefixer select").each(function () {
+    form.find("select").each(function () {
+        $(this).html(optionsHtml);
+    });
+}
+
+Cbs.EventPage = {
+    Init: function () {
+        $("#dialog-form-eventReg").dialog({
+            autoOpen: false,
+            modal: true,
+            width: 500,
+            open: function (event, ui) {
+                $("#dialog-form-eventReg .eventSubscriptionResultArea").hide();
+                $("#dialog-form-eventReg #serverMessage").hide();
+
+                if (typeof eWaveClientForm !== "undefined") {
+                    eWaveClientForm.UseSkyForms = false;
+                    eWaveClientForm.AlertServerErrors = false;
+                    eWaveClientForm.PostPattern = "FormBody";
+                    eWaveClientForm.addREQUESTDIGEST = true;
+
+                    eWaveClientForm.Init();
+                }
+            },
+            appendTo: "#s4-bodyContainer"
+        });
+
+
+        $("#btnOpenSubscribeForm").click(function () {
+            $("#dialog-form-eventReg").dialog("open");
+            if ($("#dialog-form-eventReg .generalList").is(":hidden")) {
+                $("#dialog-form-eventReg .generalList").show();
+            }
+        });
+
+        // add id number validation
+        jQuery.validator.addMethod("c_id", function (value, element, params) {
+            return Cbs.EventPage.validateId(value);
+        }, function (value, element) { return eWaveClientForm.GetMessage("FederalID", element) });
+        jQuery.validator.addClassRules("ID", { c_id: true });
+        Cbs.EventPage.CaptchaInit();
+
+        $("span.ui-dialog-title").text(UIResource.EventPage_SubscribeFormTitle);
+    },
+    BeforeSubmit: function (form, poco) {
+        poco.pageItemId = _spPageContextInfo.pageItemId;
+        poco.Title = Cbs.PageProperties.Title;
+        $("#btnInvokeSubscribe").attr('disabled', true);
+        var isCaptchaValid = jQuery("input[id$='Captcha']")[0].Captcha.Validate()
+        if (isCaptchaValid == false) {
+            return false;
+        }
+    },
+    AfterSubmit: function (form, data) {
+        $("#dialog-form-eventReg .generalList").hide();
+        $("#dialog-form-eventReg #afterSubmitMessageArea").html(data.Bindings.Event_SubsciptionSuccess);
+        $("#dialog-form-eventReg #clickHereMsg").html(data.Bindings.Event_ClickHere);
+        $("#dialog-form-eventReg .eventSubscriptionResultArea").show();
+    },
+    SubmitError: function (msg, xhr) {
+        console.error('Cbs.EventPage.SubmitError : ' + msg);
+        $("#dialog-form-eventReg .generalList").hide();
+        $("#dialog-form-eventReg .serverMessage").html(msg);
+        $("#dialog-form-eventReg #serverMessage").show();
+    },
+    CloseDialog: function () {
+        $("#dialog-form-eventReg").dialog("destroy");
+        $("#btnOpenSubscribeForm").hide();
+    },
+    FillAgain: function () {
+        $("#dialog-form-eventReg #serverMessage").hide();
+        $("#dialog-form-eventReg .generalList").show();
+    },
+    ShowExceptionMsg: function (form, data) {
+        $("#leftsideTitle .generalList").hide();
+        $("#leftsideTitle #registrationExceptionError").html(data.Bindings.Event_SubsciptionException);
+        $("#leftsideTitle #registrationExceptionError").show();
+    },
+    CaptchaInit: function () {
+        jQuery(".captcha.invalid").hide();
+        BotDetect.RegisterCustomHandler('AjaxValidationFailed', Cbs.EventPage.OnCaptchaIncorrect);
+        BotDetect.RegisterCustomHandler('AjaxValidationPassed', Cbs.EventPage.OnCaptchaCorrect);
+        BotDetect.RegisterCustomHandler('AjaxValidationError', Cbs.EventPage.OnCaptchaAjaxError);
+        jQuery("input[id$='Captcha']").blur(function () {
+            var $input = jQuery("input[id$='Captcha']");
+
+            if ($input.val().trim() == '')
+                return true;
+
+            $input[0].Captcha.Validate();
+        });
+    },
+    CaptchaReload: function () {
+        jQuery("input[id$='Captcha']").attr("disabled", false).val("");
+        jQuery(".captcha.invalid").hide();
+        $(".LBD_ReloadLink").attr('style', 'display:inline-block !important');
+        jQuery("input[id$='Captcha']").get(0).Captcha.ReloadImage();
+        jQuery("input[id$='Captcha']").get(0).Captcha.ValidationResult = false
+    },
+    OnCaptchaIncorrect: function () {
+        jQuery(".captcha.invalid").show();
+    },
+    OnCaptchaCorrect: function () {
+        jQuery("input[id$='Captcha']").attr("disabled", true);
+        jQuery(".captcha.invalid").hide();
+        $(".LBD_ReloadLink").attr('style', 'display:none !important');
+    },
+    OnCaptchaAjaxError: function () {
+
+    },
+    validateId: function (id) {
+        try {
+            var identityCard = id;
+            if (identityCard == '' || identityCard == '000000000' || identityCard.length < 9) {
+                return false;
+            }
+
+            var startIndex = 9 - identityCard.length;
+            var test = 0;
+
+            for (var index = startIndex; index < 9; index++) {
+                var charIndex = index + identityCard.length - 9;
+                var dig = parseInt(identityCard.charAt(charIndex), 10);
+                var mul = parseInt(((index % 2) + 1) * dig, 10) + '';
+
+                for (var i = 0; i < mul.length; i++) {
+                    test += parseInt(mul.charAt(i), 10);
+                }
+            }
+
+            return ((test % 10) == 0);
+        }
+        catch (err) { }
+        return false;
+    }
+};
+
+Cbs.ContactUs = {
+    Init: function () {
+        if (typeof eWaveClientForm !== "undefined") {
+            eWaveClientForm.UseSkyForms = false;
+            eWaveClientForm.AlertServerErrors = false;
+            eWaveClientForm.PostPattern = "FormBody";
+            eWaveClientForm.addREQUESTDIGEST = true;
+
+            eWaveClientForm.Init();
+        }
+
+        jQuery("#btnSubmitContactUs").text(UIResource.EventPage_Send);
+        jQuery(".greenBigBtnSubmitContactUs").text(UIResource.EventPage_Send);
+
+        var element = $('.contactUsMainForm select[id*="ddlChoices"]');
+        if (element.length > 0) {
+            // Set appearance of the select object to 'select2'
+            element.select2();
+        }
+    },
+    BeforeSubmit: function (form, poco) {
+
+        var input = $(jQuery("input[id$='Captcha']")[0]);
+        var isCaptchaValid = input[0].Captcha.Validate()
+        $(".em-captcha", form).removeClass('invalid');
+
+        if (isCaptchaValid == false) {
+            if (input.val().length > 0) {
+                $(".captcha-error-invalid").addClass('invalid');
+                input.val('');
+            }
+            else {
+                $(".captcha-error-required").addClass('invalid');
+            }
+            return false;
+        }
+        $('button[id*="btnSubmitContactUs"]').attr('disabled', true);
+        $('.greenBigBtnSubmitContactUs').attr('disabled', true);
+    },
+    AfterSubmit: function (form, data) {
+        $(".generalForm .contactUsMainForm").hide();
+        $(".generalForm .contactUsSubmitResult").html(data.Bindings.SuccessMsg);
+        $(".generalForm .contactUsSubmitResult").css('color', 'Green');
+    },
+    SubmitError: function (msg, xhr) {
+        $(".generalForm .contactUsMainForm").hide();
+        $(".generalForm .contactUsSubmitResult").html(msg);
+        $(".generalForm .contactUsSubmitResult").css('color', 'Red');
+        $('button[id*="btnSubmitContactUs"]').removeAttr('disabled');
+        $('.greenBigBtnSubmitContactUs').removeAttr('disabled');
+    },
+};
+
+Cbs.Keywords = {
+    Init: function () {
+        // Handle columns if needed...
+        // maybe this? http://stackoverflow.com/questions/25655207/angularjs-how-to-dynamically-split-list-in-multiple-columns
+        // or maybe just count how many li's are in each ul and add to the ul's style: columns: x?
+
+        /*var col_max_height = 3; //Max Items per column
+		var col_width = 50; //Pixels
+		var col_height = 30; //Pixels
+
+    	$('.generalList').each(function() {
+    				//debugger;
+    		$(this).find('li').each(function(index){
+				column = parseInt(index/col_max_height);
+			    $(this).css('margin-right', column * col_width + 'px')
+			    if(column > 0) {
+			    	$(this).css('margin-top', (index - (col_max_height * column)  + 1) * -col_height + 'px').addClass('col_'+column);
+			    }
+			});
+		});*/
+    },
+};
+
+Cbs.general = {
+    htmlDecode: function (value) {
+        if (value) {
+            return $("<div />").html(value).text();
+        } else {
+            return "";
+        }
+    },
+    toggleLinkMenu: function (control) {
+        var txt = $(control).find('span').text();
+        if (txt == '+') {
+            $(control).find('span').text('-');
+        }
+        else {
+            $(control).find('span').text('+');
+        }
+        $(control).closest("li").find(".accordionInner").slideToggle();
+
+    },
+    fixBCinSubjectPages: function fixBCinSubjectPages() {
+        var currentSub = Cbs.PageProperties.CbsMMDSubjects[0].TermID;
+        var tree = ALA.SubjectsTaxoWithPagesUrls[0].Children;
+        var minLevelTree = [];
+
+        for (var i = 0; i < tree.length; i++) {
+            //in the BC the earliest term should be the children for this
+            var tataLeaf = tree[i].Children;
+            for (var j = 0; j < tataLeaf.length; j++) {
+                minLevelTree.push(tataLeaf[j]);
+            }
+        }
+
+        //1. accept a leaf
+        //2. if match return the leaf
+        //2.1 recursion on parent, while have parent take parent, if not set it to whats in the scope
+        //3. else recursion
+        //4. build BC with all the parents
+
+        //1.
+        function findMyLeaf(leaf) {
+            //2.  
+            if (currentSub === leaf.Id) {
+                //console.log('return leaf');
+                // console.log(leaf);
+                return leaf;
+            }
+
+            if (leaf.Children) {
+                //console.log('if children');
+                for (var i = 0; i < leaf.Children.length; i++) {
+                    // console.log('findMyLeaf');
+                    var match = findMyLeaf(leaf.Children[i]);
+                    if (match) {
+                        //3.
+                        var temp = match;
+                        //console.log('temp = match');
+                        //console.log(temp);
+                        if (leaf.Id) {
+                            while (temp.parent) {
+                                // console.log('while (temp.parent){');
+                                // console.log(temp.parent);
+                                temp = temp.parent;
+                            }
+                            temp.parent = leaf;
+                        }
+                        // console.log('return match');
+                        return match;
+                    }
+                    // console.log('after for children');
+                }
+            }
+
+            console.log('return null');
+            return null;
+        };
+
+        var myLeaf = findMyLeaf({ Children: minLevelTree });
+
+        //now for the replacement
+        if (myLeaf != null) {
+            var bc = $(".breadcrumb");
+            bc.find("span").last().remove();
+            bc.find("span").last().remove();
+
+            var newHtml = '';
+            var leaf = myLeaf;
+            while (leaf.parent) {
+                console.log('while (leaf.parent){');
+                console.log(leaf.parent);
+                newHtml = '<span class="breadcrumbPathSeparator"> &gt; </span><span class="ms-sitemapdirectional"><a href="' + leaf.parent.ListItemUrl + '">' + leaf.parent.Label + '</a></span>' + newHtml;
+                leaf = leaf.parent;
+            }
+            newHtml += '<span class="breadcrumbPathSeparator"> &gt; </span><span class="ms-sitemapdirectional">' + myLeaf.Label + '</span>';
+
+            console.log('newHtml');
+            console.log(newHtml);
+
+            bc.append(newHtml);
+            //fix glossary link
+            if (bc.children()[3] != undefined)
+                $('#AllTerms').attr('href', $('#AllTerms').attr('href') + '?TID=' + Cbs.PageProperties.CbsMMDSubjects[0].Label + "&TID1=" + bc.children()[2].textContent + "&TID2=" + bc.children()[4].textContent);
+            else
+                $('#AllTerms').attr('href', $('#AllTerms').attr('href') + '?TID=' + Cbs.PageProperties.CbsMMDSubjects[0].Label);
+        }
+
+    },
+    activateCollapse: function activateCollapse() {
+        //$(".openAccordionInner").click(function () {
+        $(".openAccordionInner").on("click", function () {
+            $(this).find(".openCloseSign").text($(this).find(".openCloseSign").text() == '+' ? '-' : '+');
+            $(this).toggleClass('CbsGreen_BG');
+            $(this).find(".accordionInner").toggle();
+        });
+        //$(".openAll").click(function () {
+        $(".openAll").on("click", function () {
+            $(this).parents(".accordion").find(".accordionInner").show();
+            $(this).parents(".all").next().find(".openAccordionInner").toggleClass('CbsGreen_BG', true);
+            $(this).parents(".accordion").find(".openCloseSign").text('-');
+        });
+        //$(".closeAll").click(function () {
+        $(".closeAll").on("click", function () {
+            $(this).parents(".accordion").find(".accordionInner").hide();
+            $(this).parents(".all").next().find(".openAccordionInner").toggleClass('CbsGreen_BG', false);
+            $(this).parents(".accordion").find(".openCloseSign").text('+');
+        });
+    },
+
+    HolidaysDates: {},
+    HolidaysDatesExternal: {},
+
+    initCalendar: function initCalendar(DataSource) {
+        $('#datepicker').qtip("destroy");
+        var relativeUrl = Cbs.Web.ServerRelativeUrl.split("/");
+        var WebLanguage = relativeUrl[1].toLowerCase();
+        //add afterShow event to datepicker
+        $.datepicker._updateDatepicker_original = $.datepicker._updateDatepicker;
+        $.datepicker._updateDatepicker = function (inst) {
+            $.datepicker._updateDatepicker_original(inst);
+            var afterShow = this._get(inst, 'afterShow');
+            if (afterShow)
+                afterShow.apply((inst.input ? inst.input[0] : null));  // trigger custom callback
+        };
+
+        if (ALA.CbsHolidaysList != null) {
+            buildHolidaysDates(ALA.CbsHolidaysList);
+        }
+
+        var eventsPages = "";
+        var RelevantsDates = {};
+        var pagesSearchRestUrl = "/_api/search/query?querytext='ContentType:\"%D7%93%D7%A3%20%D7%90%D7%99%D7%A8%D7%95%D7%A2%20%D7%9C%D7%9E%D7%A1\"'&selectproperties='ArticleStartDateDateTime,StartDate,Path,Url,Title,Author,StartDateAndTime,CbsEventTypeOWSCHCS'&rowlimit=500&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+
+        function buildHolidaysDates(holidaysDatesArray) {
+            console.log("start to build holidays array");
+            $.each(holidaysDatesArray, function (index, holiday) {
+                Cbs.general.HolidaysDates[holiday.CbsDateField] = [];
+                Cbs.general.HolidaysDates[holiday.CbsDateField].push({ title: holiday.LinkTitle });
+            });
+            console.log("end to build holidays array");
+        }
+
+        function buildRelevantsDates(eventsPages, end) {
+            console.log("start to build events array");
+            $.each(eventsPages, function buildRelevantsDates_Each(index, page) {
+                var attrArray = {};
+
+                if (!DataSource) {
+                    var shortArray = page.Cells.results;
+                    var attrArray = {};
+                    $.each(shortArray, function (index, attr) {
+                        if (attr.Key == "StartDateAndTime") {
+                            var date = new Date(attr.Value);
+                            if (!isNaN(date.getTime()) && window.location.href.contains("www.cbs.gov.il"))
+                                attrArray[attr.Key] = moment(date).format('DD/MM/YYYY');
+                            else
+                                attrArray[attr.Key] = attr.Value;
+
+                        }
+                        else {
+                            attrArray[attr.Key] = attr.Value;
+                        }
+
+                    });
+                } else {
+                    attrArray = page;
+                }
+
+                var keyDate = attrArray["StartDateAndTime"].split(" ")[0];
+
+                if (!RelevantsDates[keyDate]) {
+                    RelevantsDates[keyDate] = [];
+                }
+                eventType = "";
+                if (attrArray["CbsEventTypeOWSCHCS"] != null) {
+                    eventType = attrArray["CbsEventTypeOWSCHCS"] + ":";
+                }
+
+                var relUrl = attrArray["Url"];
+                if (relUrl) {
+                    var _3rdSlash = relUrl.indexOf("/");
+                    _3rdSlash = relUrl.indexOf("/", ++_3rdSlash);
+                    _3rdSlash = relUrl.indexOf("/", ++_3rdSlash);
+                    relUrl = relUrl.substring(_3rdSlash);
+                    attrArray["Url"] = relUrl;
+                }
+
+                RelevantsDates[keyDate].push({ title: attrArray["Title"], url: attrArray["Url"], eventType: eventType });
+            });
+            console.log("end to build events array");
+            if (end) { buildDatePicker(); }
+        }
+
+        $.datepicker.regional['he'] = {
+            closeText: 'סגור',
+            prevText: '&#x3C;הקודם',
+            nextText: 'הבא&#x3E;',
+            currentText: 'היום',
+            monthNames: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
+            'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],
+            monthNamesShort: ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני',
+            'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'],
+            dayNames: ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'],
+            dayNamesShort: ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\'', 'שבת'],
+            dayNamesMin: ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\'', 'שבת'],
+            weekHeader: 'Wk',
+            dateFormat: 'dd/mm/yy',
+            firstDay: 0,
+            isRTL: true,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.regional['ar'] = {
+            closeText: 'إغلاق',
+            prevText: '&#x3C;السابق',
+            nextText: 'التالي&#x3E;',
+            currentText: 'اليوم',
+            monthNames: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+            'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+            monthNamesShort: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+            dayNames: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+            dayNamesShort: ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'],
+            dayNamesMin: ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'],
+            weekHeader: 'أسبوع',
+            dateFormat: 'dd/mm/yy',
+            firstDay: 0,
+            isRTL: true,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.regional['en'] = {
+            closeText: 'Done',
+            prevText: 'Prev',
+            nextText: 'Next',
+            currentText: 'Today',
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'],
+            monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            weekHeader: 'Wk',
+            dateFormat: 'dd/mm/yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+
+        function setQTIPfotDP() {
+            console.log('setQTIPfotDP');
+
+            $('#datepicker').find("td[data-handler='selectDay']").click(function (e) {
+                console.log('on mouseover td');
+
+                var self = $(this);
+
+                var day = $("a", self).text();
+                if (day.toString().length === 1 && Cbs.Web.ISO3 != "eng") {
+                    day = '0' + day;
+                }
+                var month = parseInt(self.attr('data-month'), 10) + 1;
+                if (month.toString().length === 1 && Cbs.Web.ISO3 != "eng") {
+                    month = '0' + month;
+                }
+                var year = self.attr('data-year');
+
+                var key = day + '/' + month + '/' + year;
+                if (Cbs.Web.ISO3 === "eng") {
+                    key = month + '/' + day + '/' + year;
+                }
+                console.log(key);
+
+                var events = RelevantsDates[key];
+                if (!events) {
+                    console.error("setQTIPfotDP got null or undefined events, key: " + key);
+                    return;
+                }
+                var dateInDifferentFormat = month + '/' + day + '/' + year;
+                dateInDifferentFormat = new Date(dateInDifferentFormat);
+
+                var titleDate = Cbs.Web.ISO3 == "heb" ? UIResource.Cbs_Events_Day + $.datepicker.regional[WebLanguage].dayNames[dateInDifferentFormat.getDay()] : $.datepicker.regional[WebLanguage].dayNames[dateInDifferentFormat.getDay()];
+                titleDate += " " + key;
+                var qtipTooltipContent = "";
+                $.each(events, function (index, event) {
+                    if (Cbs.Web.ISO3 === "eng" && event.eventType == "הודעה לתקשורת:")
+                        event.eventType = "Media Release: "
+                    if (event.url) {
+                        qtipTooltipContent += "<div class='tooltipEvent'><span class='qtipTooltipContent'>" + event.eventType + "</span><a href='" + event.url + "'>" + event.title + "</a></div>";
+                    } else {
+                        qtipTooltipContent += "<div class='tooltipEvent'><span class='qtipTooltipContent'>" + event.eventType + "</span><span>" + event.title + "</span></div>";
+                    }
+                })
+
+                $('.ui-datepicker-current-day', '#datepicker').qtip({
+                    content: {
+                        title: titleDate,
+                        text: qtipTooltipContent
+                    },
+                    position: {
+                        my: 'top center',
+                        at: 'bottom center',
+                        target: $('.ui-datepicker-current-day', '#datepicker')
+                    },
+                    hide: {
+                        //target: $('body'),
+                        target: $('body, #datepicker .ui-state-default'),
+                        event: 'click',
+                        fixed: true,
+                        delay: 300
+                    },
+                    show: {
+                        target: $('.ui-datepicker-current-day', '#datepicker')
+                    }
+                });
+
+            });
+        };
+
+        function buildDatePicker() {
+            $("#datepicker").datepicker($.extend({
+                beforeShowDay: function (date) {
+                    //console.log('beforeShowDay');
+                    //TC
+                    try {
+                        var dd = date.getDate();
+                        if (dd.toString().length == 1 && Cbs.Web.ISO3 != "eng") {
+                            var dd = "0" + dd;
+                        }
+                        var mm = date.getMonth() + 1;
+                        if (mm.toString().length == 1 && Cbs.Web.ISO3 != "eng") {
+                            var mm = "0" + mm;
+                        }
+                        dmy = dd + "/" + (mm) + "/" + date.getFullYear();
+                        if (Cbs.Web.ISO3 === "eng") {
+                            dmy = (mm) + "/" + (dd) + "/" + date.getFullYear()
+                        }
+
+                        //return array is ["selected?", "css class", "title attr"]
+                        var clss = "";
+                        var title = "";
+                        if (date.getDay() == 5) {
+                            title = UIResource.Cbs_Events_Friday;  //"יום שישי";
+                            clss = "eventHasHoliday";
+                        }
+                        if (date.getDay() == 6) {
+                            title = UIResource.Cbs_Events_Suterday   //"שבת";
+                            clss = "eventHasHoliday";
+                        }
+                        if (Cbs.general.HolidaysDates[dmy] != undefined) {
+                            clss = "eventHasHoliday";
+                            $.each(Cbs.general.HolidaysDates[dmy], function (index, holiday) {
+                                title += (title.length > 0 ? ", " : "") + holiday.title;
+                            });
+                        }
+                        if (Cbs.general.HolidaysDatesExternal[dmy] != undefined) {
+                            clss = "eventHasHoliday";
+                            $.each(Cbs.general.HolidaysDatesExternal[dmy], function (index, holiday) {
+                                title += (title.length > 0 ? ", " : "") + holiday.title;
+                            });
+                        }
+                        if (RelevantsDates[dmy] != undefined) {
+                            return [true, clss, title];      // make the day selected
+                        } else {
+                            return [false, clss, title];     // make the day un-selected
+                        }
+                    }
+                    catch (e) {
+                        console.error('remarking events dates failed. error: ' + e);
+                    }
+                },
+                afterShow: function (dateTxt, obj) {
+                    console.log('afterShow');
+                    setQTIPfotDP();
+                }
+            },
+                $.datepicker.regional[WebLanguage]   // set datepicker laguage
+            ));
+        };
+
+        if (DataSource) {
+            buildRelevantsDates(DataSource, true);
+        } else {
+            $.ajax({
+                headers: { "accept": "application/json; odata=verbose" },
+                url: pagesSearchRestUrl,
+                success: function (data) {
+                    eventsPages = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results;
+                    buildRelevantsDates(eventsPages, true);
+                }
+            });
+        }
+    }
+};
+
+Cbs.MadadEditSetFields = function MadadEditSetFields() {
+    var l = console.log.bind(console);
+    l('MadadEditSetFields start');
+
+    var decTitle = $(".cbs-decrypted-Title").html();
+    var decByline = $(".cbs-decrypted-Byline").html();
+    var decSummary = $(".cbs-decrypted-CbsPageSummary").html();
+    var decContent = $(".cbs-decrypted-PublishingPageContent").html();
+
+    $("#ctl00_ContentPlaceHolderMainBanner_EditModePanel2_TextField1_ctl00_TextField").val(decTitle);
+    $("#ctl00_PlaceHolderMain_ctl00_ArticleByLine_ctl00_TextField").val(decByline);
+
+    setTimeout(function MadadEditSetFields_Timeout() {
+        l('MadadEditSetFields_Timeout start');
+        $("#ctl00_PlaceHolderMain_ctl01_summary_ctl00_RichHtmlField_displayContent").html(decSummary);
+        $("#ctl00_PlaceHolderMain_RichHtmlField2_RichHtmlField_displayContent").html(decContent);
+    }, 1500);
+};
+
+/*******************************************
+********************************************/
+
+$(function () {
+    // logo eng/hr/ar
+    jQuery(".search a img").attr('src', Cbs.getResource('Cbs_Logo_Url'));
+
+
+    //UI RESOUCES STUFF BEFORE
+    var gotoContent = Cbs.getResource('Cbs_Master_gotoContent');
+    if (gotoContent !== '') {
+        $("#gotoContent").find("a").html(gotoContent).attr("title", gotoContent);
+    }
+
+    //THE REST AFTER
+    if (!Cbs) {
+        throw 'no Cbs';
+    }
+
+    $('.wrapperSP').parents('.ms-webpart-chrome').css('padding', '0px');
+
+    if (Cbs.Web.IsAnon === 'True') {
+        console.log('InitScrollAnon - $("body").css("overflow", "auto");');
+        $("body").css("overflow", "auto");
+    }
+
+	if(Cbs.Web.ISO3 == "eng")
+	{
+    $("#search").attr("placeholder", 'Search');
+    $("#search").attr("aria-labelledby", 'Search');
+    
+        $("#searchGoogle").attr("placeholder",'Google results' );
+    $("#searchGoogle").attr("aria-labelledby",'Google results' );
+
+    $("#searchSdarut").attr("placeholder",'Time Series');
+    $("#searchSdarut").attr("aria-labelledby", 'Time Series');
+}
+
+    $("#search").bind('keypress', function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            Cbs.Header.CbsSearchTitle.SearchFunction();
+        }
+    });
+    
+        $("#searchGoogle").bind('keypress', function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            Cbs.Header.CbsSearchTitle.SearchGoogleFunction();
+        }
+    });
+    $("#searchSdarut").bind('keypress', function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            Cbs.Header.CbsSearchTitle.SearchSdarutFunction();
+        }
+    });
+
+
+    $.each($(".ms-webpart-chrome"), function (index, value) {
+        key = $(value).find("h2 span").first();
+        if ($(key).text().startsWith("UIResource")) {
+            $(key).text(eval($(key).text()));
+        }
+    });
+
+    if (Cbs.Web.ISO3 === "heb" && Cbs.CbsPublishingPage) {
+        var a = $(".articleDetails").text().split(',')[0].split(' ');
+        var b = a[a.length - 1].indexOf("חשון") != -1 ? "חשוון" : a[a.length - 1];  
+        var c = "ב" + b;
+        $(".articleDetails").html($(".articleDetails").html().replace(a[a.length - 1], c));
+    }
+
+    Cbs.Highlightener.InitHighlightener();
+    Cbs.general.activateCollapse();
+
+    //fix summary links eng in he subsite
+    if (Cbs.Web.ISO3 === 'heb') {
+        var links = $(".leftColumn .dfwp-list li .link-item");
+        var hebLettersRgx = /[א-ת]/;
+        links.each(function reverseLinks(i, e) {
+            var txt = $(e).text();
+            //i prefer to test no heb cuz in heb might be eng things
+            if (hebLettersRgx.test(txt) === false) {
+                $(e).addClass('reverse-link-item');
+            }
+        })
+    }
+});
+
+
+Cbs.Settelments = {};
+Cbs.Settelments.GetSettelmentUrl = function (geoSign, mode) {
+    if (geoSign === "") { return ""; }
+    var url = "/_api/search/query?querytext='ContentType:דף+ישוב+CbsIntegerFieldOWSINTG:" + geoSign + "'" + "&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+    $.ajax({
+        url: url,
+        type: "GET",
+        headers: { "Accept": "application/json;odata=verbose" },
+        success: function (data) {
+            if (data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results[0] === undefined) { return ""; }
+            var settelmentsPage = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results[0].Cells.results;
+            $.each(settelmentsPage, function (index, property) {
+                if (property.Key == "Path") {
+                    return property.Value;
+                }
+            });
+        }
+    });
+};
+
+Cbs.MoreFunctions = {};
+
+
+
+
+/******************************************************
+******  angular  ****** angular  *****  angular  ******
+******  angular  ****** angular  *****  angular  ******
+******  angular  ****** angular  *****  angular  ******
+******************************************************/
+
+
+
+
+
+
+/************************
+******* configProvider  *******
+************************/
+
+cbsApp.config(function ($sceDelegateProvider, $sceProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist([
+      // Allow same origin resource loads.
+      'self',
+      // Allow loading from our assets domain.  Notice the difference between * and **.
+      //'http://srv*.assets.example.com/**',
+      //'http://www.boardsgenerator.net/**'
+      Cbs.Web.BoardsGeneratorDomain + "/**"
+    ]);
+
+    // The blacklist overrides the whitelist so the open redirect here is blocked.
+    //$sceDelegateProvider.resourceUrlBlacklist([
+    //  'http://myapp.example.com/clickThru**'
+    //]);
+
+
+    //$sceProvider.enabled(false);
+});
+
+/************************
+******* services  *******
+************************/
+cbsApp.service('AjaxListsAggregatorService', function AjaxListsAggregatorService($log) {
+    $log.log("AjaxListsAggregatorService start");
+
+    var me = this;
+    var i; //defined for all for's
+
+    me.message = "I'm data from AjaxListsAggregatorService";
+    me.ALA = ALA;
+    me.PublicationsForecasts = {};
+    /*** weblinks ***/
+    me.WebLinksOrdered = {};
+    //me.FooterWebLinksOrdered = {};
+    me.FooterWebLinksOrdered = [];
+    if (ALA.weblinks) {
+        var footerKeys = ["WebLinksCategory_PublicService", "WebLinksCategory_Definitions", "WebLinksCategory_Publishing", "WebLinksCategory_About"];
+
+        for (i = 0; i < ALA.weblinks.length; i++) {
+            var wl = ALA.weblinks[i];
+            //wl props : LinkTitle, CbsLinkField, CbsChoiseLinksCategory, ID, fr example
+            //[{"LinkTitle":"עליון 1","CbsLinkField":"<a href=\"/ש\" target=\"_blank\">עליון1</a>","CbsChoiseLinksCategory":"WebLinksCategory_Upper","ID":"1"}]
+            //CbsChoiseLinksCategory options: WebLinksCategory_Upper, WebLinksCategory_PublicService, WebLinksCategory_Definitions, WebLinksCategory_Publishing, WebLinksCategory_About
+
+            if (!me.WebLinksOrdered[wl.CbsChoiseLinksCategory]) {
+                me.WebLinksOrdered[wl.CbsChoiseLinksCategory] = [];
+            }
+            me.WebLinksOrdered[wl.CbsChoiseLinksCategory].push(wl);
+        }
+
+        for (i = 0; i < footerKeys.length; i++) {
+            var key = footerKeys[i];
+            if (me.WebLinksOrdered[key]) {
+                me.FooterWebLinksOrdered.push({ key: key, links: me.WebLinksOrdered[key] });
+            }
+        }
+    }//end if (ALA.weblinks)
+    /*** end weblinks ***/
+    /*** PublicationForeCasts ***/
+
+    /*** end PublicationForeCasts ***/
+    if (ALA.CbsPublicationForcastList) {
+        me.PublicationsForecasts = ALA.CbsPublicationForcastList;
+    }
+    /*** navigation ***/
+    if (ALA.NavigationTaxo && ALA.SubjectsTaxoWithPagesUrls) {
+        $log.log("preparing CompleteNavigation");
+        me.CompleteNavigation = [];
+        if (ALA.NavigationTaxo) {
+            me.CompleteNavigation = ALA.NavigationTaxo[0].Children;
+        }
+
+        if (ALA.SubjectsTaxoWithPagesUrls) {
+            me.CompleteNavigation.splice(0, 0, ALA.SubjectsTaxoWithPagesUrls[0]);
+        }
+
+        //console.log(me.CompleteNavigation);
+        /*** end navigation ***/
+
+        /*** flat  SubjectsTaxoWithPagesUrls ***/
+        me.FlatSubjectsTaxoArray = [];
+        var pushLabels = function (subjectTaxoObject, skipLabel) {
+            //create recursion
+            if (subjectTaxoObject.Children) {
+                for (var i = 0; i < subjectTaxoObject.Children.length; i++) {
+                    var child = subjectTaxoObject.Children[i];
+                    pushLabels(child);
+                }
+            }
+
+            //do work
+            if (skipLabel) {
+                return;
+            }
+
+            if (!subjectTaxoObject.Label) {
+                //$log.error('pushuing labels to FlatSubjectsTaxoArray, found tree item with no label');
+                return;
+            }
+            me.FlatSubjectsTaxoArray.push(subjectTaxoObject.Label);
+        };
+        //pushLabels(ALA.SubjectsTaxoWithPagesUrls[0], true);
+        //the only place we currently use this is in the allTerms.html, and there we dont want l1 terms so
+        for (var i = 0; i < ALA.SubjectsTaxoWithPagesUrls[0].Children.length; i++) {
+            pushLabels(ALA.SubjectsTaxoWithPagesUrls[0].Children[i], true);
+        }
+    }
+    /*** flat  SubjectsTaxoWithPagesUrls ***/
+
+    /*** terms ***/
+    me.terms = {};
+    if (ALA.terms) {
+        me.terms = ALA.terms;
+        if (ALA.SubjectsTermsDictionary) {
+            me.SubjectsTermsDictionary = ALA.SubjectsTermsDictionary;
+            allTerms = {};
+            var sub, subjectsTerms, term;
+            for (i = 0; i < me.SubjectsTermsDictionary.length; i++) {
+                sub = me.SubjectsTermsDictionary[i];
+                subjectsTerms = sub.CbsTermsLookup.split('</a>;');
+
+                if (!sub.CbsMMDSubjects || sub.CbsMMDSubjects === "") {
+                    continue;
+                }
+
+                for (var j = 0; j < subjectsTerms.length; j++) {
+                    term = subjectsTerms[j] + "</a>";
+                    elem = term;
+                    term = $(elem).text();
+                    if (term !== "") {
+                        for (var k = 0; k < me.terms.length; k++) {
+                            if (me.terms[k].LinkTitle == term) {
+                                //if (!allTerms[term]) {
+                                //    allTerms[term] = {};
+                                // }
+                                if (!me.terms[k].subjects) {
+                                    me.terms[k].subjects = [];
+                                }
+                                if (!me.terms[k].subjects[sub.CbsMMDSubjects]) {
+                                    me.terms[k].subjects.push(sub.CbsMMDSubjects);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ALA.terms = me.terms;
+    }
+    /*** terms ***/
+
+});
+
+cbsApp.service('CalculatorService', function ($http, $q, $log) {
+    var me = this;
+    var deferred = $q.defer();
+    me.dataPromise = deferred.promise;
+    me.Data = [];
+    me.getData = function () {
+
+        var finalUrl = 'https://api.cbs.gov.il/index/catalog/TreeCalc';
+        if (location.hostname.toLowerCase().indexOf('internal') != -1) {
+            finalUrl = 'https://conapi.cbs.gov.il/index/catalog/TreeCalc';
+        }
+
+
+        $http.get(finalUrl, { headers: { "Accept": "application/json; odata=verbose" } })
+            .success(function (data, status, headers, config) {
+
+
+                me.Data = data;
+
+                deferred.resolve();
+            });
+    };
+
+    me.getData();
+
+
+});
+
+cbsApp.service('CbsPublishingFilesService', function ($http, $q, $log) {
+    $log.log('CbsPublishingFilesService start');
+
+    var me = this;
+    me.HeaderFiles = [];
+    me.DisplayData = [];
+    me.data = [];
+    var deferred = $q.defer();
+    me.dataPromise = deferred.promise;
+
+    if (!Cbs.CbsPublishingPage) {
+        me.getData = function () {
+            deferred.resolve();
+        };
+        return;
+    }
+
+    me.Consts = {
+        noSub: 'פריטים ללא נושא',
+        noChap: 'ללא פרק',
+        noSubChap: 'פריטים ללא נושא או פרק'
+    };
+
+    me.buildDisplayUrl = function (libraryTitle, subFolderUrl) {
+        /// <summary>build full url for SP Rest ajax call</summary>
+        /// <param name="libraryTitle" type="string">name of the list to be used with _api/lists/getbytitle</param>
+        /// <param name="subFolderUrl" type="string">path of subfolders to be filter on</param>
+        /// <returns type="url">url for SP Rest ajax call</returns>
+        var select = "Title,CbsEnglishTitle,CbsPublishingDocSubject,CbsPublishingDocChapter,CbsOrderField,CbsPublishingDocSubjectEng,CbsPublishingDocChapterEng," +
+            "FileLeafRef,CbsMMDItemType,CbsMMDLanguages,CbsHide,EncodedAbsUrl,CbsDataSource";
+        var filter = "$filter=substringof('.',FileLeafRef)";
+        filter += " and substringof('/" + subFolderUrl + "/',FileRef)";
+        var url = Cbs.Web.VariationRootServerRelativeUrl + "/_api/lists/getbytitle('" + encodeURIComponent(libraryTitle) + "')/items?$select=" + select + '&$top=3000&$orderby=CbsOrderField&' + filter;
+        return url;
+    };
+    //we should test all that vs search api, it can defenetly be faster...
+
+    me.getUrl = function () {
+        if (Cbs.CbsPublishingPage) {
+            return me.buildDisplayUrl(Cbs.CbsPublishingPage.libraryTitle, Cbs.CbsPublishingPage.subFolderUrl);
+        }
+        return null;
+    };
+
+    me.fileHeaderTypeKeyArr = Cbs.CbsPublishingPage.FileHeaderTypeKeyArr.split(',');
+    for (var i = 0; i < me.fileHeaderTypeKeyArr.length; i++) {
+        me.fileHeaderTypeKeyArr[i] = me.fileHeaderTypeKeyArr[i].trim();
+    }
+
+    me.getData = function () {
+        var finalUrl = me.getUrl();
+        if (!finalUrl) {
+            deferred.resolve();
+            return;
+        }
+        $http.get(finalUrl, { headers: { "Accept": "application/json; odata=verbose" } })
+            .success(function (data, status, headers, config) {
+                var currentLangMMDValue = '';
+
+                switch (Cbs.Web.ISO3) {
+                    case 'heb':
+                        currentLangMMDValue = 'עברית';
+                        break;
+                    case 'eng':
+                        currentLangMMDValue = 'אנגלית';
+                        break;
+                    case 'ara':
+                        currentLangMMDValue = 'ערבית';
+                        break;
+                    default:
+                        $log.error('CbsPublishingFilesService - key not found in switch Cbs.Web.ISO3:' + Cbs.Web.ISO3);
+                        return;
+                }
+
+                angular.forEach(data.d.results, function (item) {
+                    var clonedItem = jQuery.extend(true, {}, item);
+                    if (!clonedItem.CbsPublishingDocSubject)
+                        clonedItem.CbsPublishingDocSubject = me.Consts.noSub;
+                    if (!clonedItem.CbsPublishingDocChapter) {
+                        clonedItem.CbsPublishingDocSubject = me.Consts.noSubChap;
+                        clonedItem.CbsPublishingDocChapter = me.Consts.noChap;
+                    }
+
+                    me.data.push(clonedItem);
+
+                    if (item.CbsHide === true || !item.CbsMMDLanguages.results || item.CbsMMDLanguages.results.length === 0) {
+                        return;
+                    }
+
+                    var index = item.FileLeafRef.lastIndexOf('.');
+                    var ext = item.FileLeafRef.substring(++index).toLowerCase();
+                    item.ext = ext;
+                    item.hasDDL = item.CbsDataSource ? true : false
+
+                    for (var i = 0; i < item.CbsMMDItemType.results.length; i++) {
+                        if (me.fileHeaderTypeKeyArr.indexOf(item.CbsMMDItemType.results[i].Label) > -1) {
+                            for (var k = 0; k < item.CbsMMDLanguages.results.length; k++) {
+                                if (item.CbsMMDLanguages.results[k].Label === currentLangMMDValue) {
+                                    me.HeaderFiles.push(item);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    for (i = 0; i < item.CbsMMDLanguages.results.length; i++) {
+                        if (item.CbsMMDLanguages.results[i].Label === currentLangMMDValue) {
+                            me.DisplayData.push(item);
+                            return;
+                        }
+                    }
+
+                });
+
+                deferred.resolve();
+            });//end $http
+    };//end getData
+
+    //me.getData();
+});
+
+cbsApp.service('CbsPublishingFilesServiceSearch', function ($http, $q, $log) {
+    $log.log('CbsPublishingFilesServiceSearch start');
+    var me = this;
+
+    var deferred = $q.defer();
+    me.dataPromise = deferred.promise;
+    if (!Cbs.CbsPublishingPage) {
+        me.getData = function () {
+            deferred.resolve();
+        };
+        return;
+    }
+
+    me.HeaderFiles = [];
+    me.DisplayData = [];
+    me.fileHeaderTypeKeyArr = Cbs.CbsPublishingPage.FileHeaderTypeKeyArr.split(',');
+    for (var i = 0; i < me.fileHeaderTypeKeyArr.length; i++) {
+        me.fileHeaderTypeKeyArr[i] = me.fileHeaderTypeKeyArr[i].trim();
+    }
+
+    me.toNormalItem = function toNormalItem(cells) {
+        var normalItem = {};
+        angular.forEach(cells, function (singleCell) {
+            this[singleCell.Key] = singleCell.Value;
+        }, normalItem);
+        return normalItem;
+    };
+
+    me.isHeb = Cbs.Web.ISO3 === 'heb';
+    me.searchReqDataTools = {
+        selectMP: function create_selectMP_Fn() {
+            var selectMP = "cbsSort,Path,CbsDataSourceOWSTEXT,owstaxIdCbsMMDItemType,OfficeTitle2,OOTBTitle,";
+            selectMP += (me.isHeb ? 'Title' : 'CbsEnglishTitleOWSTEXT') + ',';
+            selectMP += (me.isHeb ? 'CbsPublishingDocSubjectOWSTEXT' : 'CbsPublishingDocSubjectEngOWSTEXT') + ',';
+            selectMP += (me.isHeb ? 'CbsPublishingDocChapterOWSTEXT' : 'CbsPublishingDocChapterEngOWSTEXT');// + ',';
+            return selectMP;
+        }(),
+        langMMDValue: encodeURIComponent(me.isHeb ? 'עברית' : 'אנגלית'),
+        createSearchQuery: function createSearchQuery(queryPart, addLang) {
+            return "ContentTypeId:0x01010018C65C5FFA1A411CB733A36D5E05D176005EC8771B28134F43A3AE7296363CCDAA* " +
+                queryPart + " CbsHideOWSBOOL<>1" + (addLang === true ? " owstaxIdCbsMMDLanguages:" + me.searchReqDataTools.langMMDValue : '');
+        },
+        createSearchQueryFullUrl: function createSearchQueryFullUrl(queryPart, addLang) {
+            return "/_api/search/query?querytext='" + me.searchReqDataTools.createSearchQuery(queryPart, addLang) +
+                "'&selectproperties='" + me.searchReqDataTools.selectMP + "'&rowlimit=500" + "&trimduplicates=false&sortlist='cbsSort:ascending'" + "&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+        }
+    };
+
+    me.getData = function CbsPublishingFilesServiceSearch_getData() {
+        /// <summary>build full url for SP Rest ajax call</summary>
+        /// <param name="libraryTitle" type="string">name of the list to be used with _api/lists/getbytitle</param>
+        /// <param name="subFolderUrl" type="string">path of subfolders to be filter on</param>
+        /// <returns type="url">url for SP Rest ajax call</returns>
+        var docsArticlesRelUrl = me.isHeb ? 'CbsDocArticleVariationRelUrlOWSTEXT' : 'CbsDocArticleVariationRelUrlEngOWSTEXT';
+        //var url = me.searchReqDataTools.createSearchQueryFullUrl(docsArticlesRelUrl + ":" + decodeURIComponent(window.location.pathname), true);
+        //var url = me.searchReqDataTools.createSearchQueryFullUrl(docsArticlesRelUrl + ":" + window.location.pathname, true);
+        //there seems to be a bug with the heb/eng, so i remove the '.aspx' and it becomes ok
+
+
+        var pagePathName =
+            window.location.pathname.indexOf('%') != -1 ? window.location.pathname.replace(".aspx", "") :
+            encodeURI(window.location.pathname.replace(".aspx", ""));
+
+
+        var url = me.searchReqDataTools.createSearchQueryFullUrl(docsArticlesRelUrl + ":" + pagePathName, true);
+
+        var isHeaderFile = function isHeaderFile(item) {
+            //var headerFile = false
+             var fileName=item.Path.substring(item.Path.lastIndexOf("/")+1,item.Path.length);         
+            if ((Cbs.Web.ISO3 == "heb" && (fileName.charAt(0) == "e" || item.Path.split('.')[0].lastIndexOf('e') == item.Path.split('.')[0].length - 1)) || (Cbs.Web.ISO3 == "eng" && (fileName.charAt(0) == "h" || item.Path.split('.')[0].lastIndexOf('b') == item.Path.split('.')[0].length - 1)))
+                return false;
+            for (var j = 0; j < me.fileHeaderTypeKeyArr.length; j++) {
+                if (item.owstaxIdCbsMMDItemType && item.owstaxIdCbsMMDItemType.indexOf(me.fileHeaderTypeKeyArr[j]) > -1) {
+                    //headerFile = true;
+                    //break;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (typeof CamlJsonFiles != 'undefined') {
+            for (var i = 0; i < CamlJsonFiles.length; i++) {
+                if (typeof useDecryptFileOnTheFly != 'undefined' && useDecryptFileOnTheFly === true) {
+                    //http://cbsadmin/he/publications/Madad/DecryptFileOnTheFly.ashx?FileGuid=e1502334-3a3a-4801-a04c-7506f92f8576
+                    CamlJsonFiles[i].oldPath = CamlJsonFiles[i].Path;
+                    CamlJsonFiles[i].Path = "DecryptFileOnTheFly.ashx?FileGuid=" + CamlJsonFiles[i].Guid;
+                }
+                me[isHeaderFile(CamlJsonFiles[i]) ? 'HeaderFiles' : 'DisplayData'].push(CamlJsonFiles[i]);
+                //if (Cbs.Web.ISO3 == "heb") {
+
+                //    if (CamlJsonFiles[i].Path.split('.')[0].lastIndexOf('e') != CamlJsonFiles[i].Path.split('.')[0].length - 1) {
+                //        me[isHeaderFile(CamlJsonFiles[i]) ? 'HeaderFiles' : 'DisplayData'].push(CamlJsonFiles[i]);
+                //    }
+                //}
+                //else {
+                //    if (CamlJsonFiles[i].Path.split('.')[0].lastIndexOf('b') != CamlJsonFiles[i].Path.split('.')[0].length - 1) {
+                //        me[isHeaderFile(CamlJsonFiles[i]) ? 'HeaderFiles' : 'DisplayData'].push(CamlJsonFiles[i]);
+                //    }
+                //}
+            }
+            deferred.resolve();
+            return;
+        }
+
+        $http.get(url, { headers: { "Accept": "application/json; odata=verbose" } })
+            .success(function CbsPublishingFilesServiceSearch_getData_success(data, status, headers, config) {
+                $log.log('CbsPublishingFilesServiceSearch - search results');
+                var result = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results;
+                $log.log(result);
+
+                for (var i = 0; i < result.length; i++) {
+                    var item = me.toNormalItem(result[i].Cells.results)
+
+                    var index = item.Path.lastIndexOf('.');
+                    var ext = item.Path.substring(++index).toLowerCase();
+                    item.ext = ext;
+                    item.hasDDL = item.CbsDataSourceOWSTEXT ? true : false;
+                    var variationIndex = item.Path.indexOf(Cbs.Web.VariationRootServerRelativeUrl);
+                    var BoardsGeneratorDomain = Cbs.Web.BoardsGeneratorDomain.replace('https://', '').replace('http://', '');
+                    var IsPathFromDomain = item.Path.indexOf(BoardsGeneratorDomain) > -1;
+
+                    if (variationIndex >= 0 && IsPathFromDomain) {
+                        item.Path = item.Path.substring(variationIndex);
+                    }
+
+                    //fix
+                    if (item.OfficeTitle2) {
+                        item.TitleMP = item.Title;
+                        item.Title = item.OfficeTitle2;
+                    }
+
+                    //me[headerFile ? 'HeaderFiles' : 'DisplayData'].push(item);
+                    me[isHeaderFile(item) ? 'HeaderFiles' : 'DisplayData'].push(item);
+                }
+
+                deferred.resolve();
+            }).error(function CbsPublishingFilesServiceSearch_getData_error(data, status, headers, config) {
+                $log.error('CbsPublishingFilesServiceSearch_getData error');
+                $log.error(this);
+            });//end $http
+    };//end getData
+});
+cbsApp.service('MMDService', function ($http, $q, $log) {
+    var me = this;
+    me.MMD = {};
+    var deferred = $q.defer();
+    me.getData = function MMDService_getData() {
+
+        $log.log('MMDService getData');
+        $http.get('/mmdhandler.ashx', { headers: { "Accept": "application/json; odata=verbose" } })
+             .success(function (data, status, headers, config) {
+                 $log.log('MMDService - search results');
+                 me.MMD = data;
+                 deferred.resolve();
+             }).error(function (data, status, headers, config) {
+                 $log.error('MMDService error');
+                 $log.error(this);
+                 deferred.reject();
+             });
+        return deferred.promise;
+
+    }
+    return;
+});
+cbsApp.service('FilesAggregatorService', function ($http, $q, $log) {
+    $log.log('FilesAggregatorService start');
+    var me = this;
+
+    /***************************
+    *******   display    *******
+    ****************************/
+
+    me.data = [];
+    me.isLinks = false;
+    me.isLinksAndFiles = false;
+
+    var deferred = $q.defer();
+    if (!Cbs.FilesAggregatorControl || !Cbs.FilesAggregatorControl.folderLink) {
+        $log.log('FilesAggregatorService problems inhouse, return empty service');
+        me.getData = function () {
+            deferred.reject();
+            return deferred.promise;
+        };
+        return;
+    }
+
+    me.toNormalItem = function toNormalItem(cells) {
+        var normalItem = {};
+        angular.forEach(cells, function (singleCell) {
+            this[singleCell.Key] = singleCell.Value;
+        }, normalItem);
+        return normalItem;
+    };
+
+    me.searchReqDataTools = {
+        sortMP: function create_sortMP_Fn() {
+            var arr = Cbs.FilesAggregatorControl.fieldsValue.split(',');
+            if (arr.length && arr.length > 0) {
+                return arr[0];
+            }
+            $log.error('FilesAggregatorService sortMP fial, Cbs.FilesAggregatorControl.fieldsValue : ' + Cbs.FilesAggregatorControl.fieldsValue);
+        }(),
+        createSearchQueryFullUrl: function createSearchQueryFullUrl(queryPart) {
+            //debug
+            //Cbs.FilesAggregatorControl.fieldsValue += ",ContentType,ContentTypeId"
+            //ContentTypeId:0x010100 => only docs, not folder
+
+            /*
+            if (Cbs.FilesAggregatorControl.fieldsValue.indexOf('FilesAggregatorPublishingLinkOWSLINK') === -1) {
+                //sp doc link ootb 0x01010A
+                return "/_api/search/query?querytext='ContentTypeId:0x010100* ContentTypeId:0x01010A* " + queryPart +
+                    "'&selectproperties='" + Cbs.FilesAggregatorControl.fieldsValue + "'&rowlimit=500" + "&trimduplicates=false&sortlist='" + me.searchReqDataTools.sortMP + ":ascending'" + "&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+            }
+            else {
+                return "/_api/search/query?querytext='ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC817* " + queryPart +
+                    "'&selectproperties='" + Cbs.FilesAggregatorControl.fieldsValue + "'&rowlimit=500" + "&trimduplicates=false&sortlist='" + me.searchReqDataTools.sortMP + ":ascending'" + "&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+            }*/
+
+            //i cant find out why i make the ContentTypeId:0x01003A78234406224DCFA3B6BFC8CF3F1FC817 query , this should contains both options
+            //sp doc link ootb 0x01010A
+            //return "/_api/search/query?querytext='ContentTypeId:0x010100* ContentTypeId:0x01010A* " + queryPart +
+            return "/_api/search/query?querytext='" + queryPart +
+                "'&selectproperties='" + Cbs.FilesAggregatorControl.fieldsValue + "'&rowlimit=500" + "&trimduplicates=false&sortlist='" + me.searchReqDataTools.sortMP + ":ascending'" + "&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml'";
+        }
+    };
+
+    me.refactorData = function refactorData(result) {
+        $log.log('FilesAggregatorService - refactorData - b4 data');
+        $log.log(result);
+        var data = [];
+
+        var mpArr = Cbs.FilesAggregatorControl.fieldsValue.split(',');
+        var expectedArr = "cbsSort,Path,Title,FilesAggregatorChapterOWSTEXT,FilesAggregatorSubjectOWSTEXT,FilesAggregatorDataSourceOWSTEXT".split(',');
+        var needMapping = Cbs.FilesAggregatorControl.fieldsValue != "cbsSort,Path,Title,FilesAggregatorChapterOWSTEXT,FilesAggregatorSubjectOWSTEXT,FilesAggregatorDataSourceOWSTEXT";
+        if (Cbs.FilesAggregatorControl.fieldsValue.indexOf('URLOWSURLH') > -1) {
+            me.isLinksAndFiles = true;
+        }
+
+        for (var i = 0; i < result.length; i++) {
+            var item = me.toNormalItem(result[i].Cells.results);
+
+            //cbsSort,Path,Title,FilesAggregatorChapterOWSTEXT,FilesAggregatorSubjectOWSTEXT,FilesAggregatorDataSourceOWSTEXT
+            //map item
+            if (needMapping === true) {
+                for (var j = 0; j < mpArr.length && j < expectedArr.length; j++) {
+                    item[expectedArr[j]] = item[mpArr[j]];
+                }
+            }
+
+            if (!item.Path) {
+                continue; //sometimes there r itemz w/o link
+            }
+
+            var index = item.Path.lastIndexOf('.');
+            if (index > -1) {
+                var ext = item.Path.substring(++index).toLowerCase();
+                item.ext = ext;
+            }
+            var variationIndex = item.Path.indexOf(Cbs.Web.VariationRootServerRelativeUrl);
+            var BoardsGeneratorDomain = Cbs.Web.BoardsGeneratorDomain.replace('https://', '').replace('http://', '');
+            var IsPathFromDomain = item.Path.indexOf(BoardsGeneratorDomain) > -1;
+
+            if (variationIndex >= 0 && IsPathFromDomain) {
+                item.Path = item.Path.substring(variationIndex);
+            }
+            item.hasDDL = item.CbsDataSourceOWSTEXT ? true : false;
+
+            data.push(item);
+        }
+
+        var maxRotations = data.length > 10 ? 10 : data.length;
+        for (var i = 0; i < maxRotations; i++) {
+            if (data[i]['Path'] && data[i]['Path'].startsWith("<a") === true) {
+                me.isLinks = true;
+
+                break;
+            }
+        }
+
+        $log.log('FilesAggregatorService - refactorData - after data');
+        $log.log(data);
+        return data;
+    }
+
+    me.getData = function FilesAggregatorService_getData() {
+        $log.log('FilesAggregatorService getData');
+
+
+        var p = 'public-use-files-puf';
+        if (location.href.toLowerCase().indexOf(p) == -1) {
+            var url;
+            if (Cbs.FilesAggregatorControl.fieldsValue.indexOf('FilesAggregatorPublishingLinkOWSLINK') === -1) {
+                //url = me.searchReqDataTools.createSearchQueryFullUrl('Path2:"' + Cbs.FilesAggregatorControl.folderLink + '"'); // cant remember why i did it in this case, ariel
+                if (decodeURI(location.href).toLowerCase().indexOf('links-to-external-sites') != -1)
+                {
+                     Cbs.FilesAggregatorControl.folderLink="/en/ManagedLists/Lists/3/20055";
+                     Cbs.FilesAggregatorControl.fieldsValue="cbsSort,FilesAggregatorPublishingLinkOWSLINK,Title,FilesAggregatorChapterOWSTEXT,FilesAggregatorSubjectOWSTEXT,FilesAggregatorDataSourceOWSTEXT"
+                }
+                url = me.searchReqDataTools.createSearchQueryFullUrl('ParentLinkPartial:"' + Cbs.FilesAggregatorControl.folderLink + '"');
+            }
+            else {
+                url = me.searchReqDataTools.createSearchQueryFullUrl('-Title:"DispForm.aspx" AND ParentLinkPartial:"' + Cbs.FilesAggregatorControl.folderLink + '"');
+            }
+
+            $http.get(url, { headers: { "Accept": "application/json; odata=verbose" } })
+	            .success(function (data, status, headers, config) {
+	                $log.log('FilesAggregatorService - search results');
+	                var result = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results;
+	                me.data = me.refactorData(result);
+	                deferred.resolve();
+	            }).error(function (data, status, headers, config) {
+	                $log.error('FilesAggregatorService error');
+	                $log.error(this);
+	                deferred.reject();
+	            });//end $http
+            return deferred.promise;
+        }
+        else {
+            $http.get('/he/publications/pufhandler.ashx', { headers: { "Accept": "application/json; odata=verbose" } })
+              .success(function (data, status, headers, config) {
+                  $log.log('FilesAggregatorService - search results');
+                  me.data = data;
+
+                  $(me.data).each(function (i, o) {
+                      var p = $(o).attr("Path");
+                      $(o).attr("Path", '/he/publications/' + p);
+                  });
+
+                  me.data = $.grep(me.data, function (o, i) {
+                      if ($(o).attr("Title").charCodeAt(5) == 65533) {
+                          return false;
+                      }
+                      return true;
+                  });
+
+                  deferred.resolve();
+              }).error(function (data, status, headers, config) {
+                  $log.error('FilesAggregatorService error');
+                  $log.error(this);
+                  deferred.reject();
+              });//end 
+            return deferred.promise;
+        }
+
+        /* */
+
+
+
+    };//end getData
+});
+
+/***************************
+******* controllers  *******
+****************************/
+cbsApp.controller('footerLinksCtrl', function footerLinksCtrl($scope, AjaxListsAggregatorService) {
+    $scope.FooterWebLinksOrdered = AjaxListsAggregatorService.FooterWebLinksOrdered;
+});
+
+cbsApp.controller('NavigationCtrl', function NavigationCtrl($scope, AjaxListsAggregatorService, $timeout, $log) {
+    $log.log('NavigationCtrl start');
+    if (Cbs.Web.IsEdit === "True") {
+        $log.log('NavigationCtrl stop - in edit mode');
+        return;
+    }
+    //$scope.data = AjaxListsAggregatorService.CompleteNavigation;
+    $scope.data = angular.copy(AjaxListsAggregatorService.CompleteNavigation);
+    //whereever there is no ListItemUrl cut it
+    //recursion
+    function removeNoLinkChild(navItem) {
+        if (!navItem.Children) {
+            return;
+        }
+        for (var i = 0; i < navItem.Children.length; i++) {
+            var vhild = navItem.Children[i];
+            if (!vhild.ListItemUrl) {
+                navItem.Children.splice(i--, 1);
+            } else {
+                removeNoLinkChild(vhild);
+            }
+        }
+    }
+
+    if ($scope.data) {
+        var subjects = $scope.data[0]; //נושאים
+        for (var i = 0; i < subjects.Children.length; i++) {
+            removeNoLinkChild(subjects.Children[i]);
+            try {
+                if (subjects.Children[i].Children.length === 0) {
+                    subjects.Children.splice(i--, 1);
+                }
+            }
+            catch (err) { }
+        }
+    }
+
+
+    $scope.changeData = function (topLevel, index) {
+        $scope.level1 = topLevel;
+        $scope.level1Index = index;
+        $log.log("$scope.level1Index: " + $scope.level1Index);
+        var menuLI = $("menu > ul > li");
+
+        if (topLevel.Children) {
+            var right = 0;
+            for (var i = 0; i < index; i++) {
+                right += $(menuLI[i]).outerWidth();
+            }
+
+            var lastItem = $(menuLI[index]);
+            right += (lastItem.outerWidth() / 2);
+            right += (lastItem.outerWidth() - lastItem.width()) / 2;
+
+            $(".menuArrow").css(Cbs.Web.ISO3 === "eng" ? "left" : "right", right);
+        }
+    };
+
+    $scope.log = function (msg) {
+        console.log(msg);
+    };
+
+    $scope.ABCArrow = Cbs.Web.ISO3 === "eng" ? "<" : ">";
+
+    $scope.ABCText = Cbs.getResource('megamenuToABC');
+
+    function stopEventBuble($event) {
+        if ($event.stopPropagation) $event.stopPropagation();
+        if ($event.preventDefault) $event.preventDefault();
+        $event.cancelBubble = true;
+        $event.returnValue = false;
+    }
+
+
+    $scope.openCloseClick = function openCloseClick(parentScope, $event) {
+        //$parent.open = !($parent.open)
+        /*if ($event.stopPropagation) $event.stopPropagation();
+        if ($event.preventDefault) $event.preventDefault();
+        $event.cancelBubble = true;
+        $event.returnValue = false;*/
+
+        stopEventBuble($event);
+        var isOpen = !(parentScope.open);
+
+        var obj = parentScope;
+        for (i = 0 ; i < 20 ; i++) {
+            if (obj != null) {
+                obj.open = false;
+                console.log(obj.$index);
+            }
+            obj = parentScope.$$prevSibling;
+        }
+
+        obj = parentScope;
+        for (i = 0 ; i < 20 ; i++) {
+            if (obj != null) {
+                obj.open = false;
+                console.log(obj.$index);
+            }
+            obj = parentScope.$$nextSibling;
+        }
+
+
+        parentScope.open = isOpen;
+    };
+
+    $scope.openCloseLevel = function openCloseLevel(scope, $event) {
+        //showLevel5 = !showLevel5
+        stopEventBuble($event);
+        scope.showLevel5 = !scope.showLevel5;
+    };
+
+});
+
+cbsApp.controller('PubicationContentFilesCtrl', function ($scope, $filter, $log, CbsPublishingFilesServiceSearch, $element) {
+    CbsPublishingFilesServiceSearch.dataPromise.then(function () {
+        $scope.data = CbsPublishingFilesServiceSearch.HeaderFiles;
+
+        if (CbsPublishingFilesServiceSearch.HeaderFiles.length === 0) {
+            $element.hide();
+        }
+    });
+});
+
+
+
+/**************************
+******* directives  *******
+***************************/
+cbsApp.directive('bNgSlide', function ($timeout) {
+    return {
+        link: function (scope, element, attrs) {
+            element.hide();
+            var innerFunction = scope[attrs.bNgSlide];
+            var time = parseInt(attrs.bTime || 300);
+            var delay = parseInt(attrs.bDelay || time);
+            scope[attrs.bNgSlide] = function () {
+                var outerArgs = arguments;
+                element.slideUp(time);
+                clearTimeout(scope.bresleveloperNgShowTimeout);
+
+                if (attrs.bTest) {
+                    var ret = true;
+                    for (var i = 0; i < outerArgs.length; i++) {
+                        if (outerArgs[i][attrs.bTest]) {
+                            ret = false;
+                            break;
+                        }
+                    }
+
+                    if (ret) {
+                        return;
+                    }
+                }
+
+                scope.bresleveloperNgShowTimeout = setTimeout(function () {
+                    innerFunction.apply(null, outerArgs);
+                    scope.$apply();
+                    if (element.queue('fx').length > 1) {
+                        element.queue('fx', element.queue('fx').slice(0, 1));
+                    }//this is what stop(true, true) should really have done
+                    element.slideDown(time);
+                }, time);
+            };// end scope[attrs.bNgSlide]
+        }
+    };
+});
+
+cbsApp.directive('select2', function ($log) {
+    return {
+        restrict: 'A',
+        link: function (scope, elem, attrs) {
+            setTimeout(function () {
+                elem.select2();
+            }, 0);
+        }
+    };
+});
+
+cbsApp.directive('columnConform', function () {
+
+    var currentTallest = 0,
+		        currentRowStart = 0,
+		        rowDivs = [];
+
+    function setConformingHeight(el, newHeight) {
+        // set the height to something new, but remember the original height in case things change
+        el.data("originalHeight", (el.data("originalHeight") === undefined) ? (el.height()) : (el.data("originalHeight")));
+        el.height(newHeight);
+    }
+
+    function getOriginalHeight(el) {
+        // if the height has changed, send the originalHeight
+        return (el.data("originalHeight") === undefined) ? (el.height()) : (el.data("originalHeight"));
+    }
+
+    function columnConform(elem) {
+        // find the tallest DIV in the row, and set the heights of all of the DIVs to match it.
+
+        $(' > li', elem).each(function () {
+            // "caching"
+            var $el = $(this);
+            var topPosition = $el.position().top;
+            if (currentRowStart != topPosition) {
+                // we just came to a new row.  Set all the heights on the completed row
+                for (currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+                    setConformingHeight(rowDivs[currentDiv], currentTallest);
+                }
+
+                // set the variables for the new row
+                rowDivs.length = 0; // empty the array
+                currentRowStart = topPosition;
+                currentTallest = getOriginalHeight($el);
+                rowDivs.push($el);
+
+            } else {
+                // another div on the current row.  Add it to the list and check if it's taller
+                rowDivs.push($el);
+                currentTallest = (currentTallest < getOriginalHeight($el)) ? (getOriginalHeight($el)) : (currentTallest);
+            }
+            // do the last row
+            for (currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+                setConformingHeight(rowDivs[currentDiv], currentTallest);
+            }
+
+        });
+    }
+
+    return {
+        compile: function (tElement, tAttrs, transclude) {
+            return {
+                post: function (scope, elem, attrs) {
+                    // post-link code here...
+                    columnConform(elem);
+                }
+            };
+        }
+    };
+});
+
+cbsApp.directive('megaMenuLevel3Href', function megaMenuLevel3HrefDirective() {
+    return function megaMenuLevel3HrefLink(scope, element, attr) {
+        var level3 = scope[attr.megaMenuLevel3Href];
+
+        if (typeof (level3) == "undefined") return;
+        //fix href for super long links
+        if (level3.URL) {
+            if (level3.URL.indexOf('#Default') > -1) {
+                element.on("click", function megaMenuLevel3HrefClick() {
+                    //alert(window.location.origin + level3.URL);
+                    window.location = window.location.origin + level3.URL;
+                });
+            }
+            else {
+                element.attr("href", level3.URL);
+            }
+        } else if (level3.ListItemUrl) {
+            element.attr("href", level3.ListItemUrl);
+        } else {
+            element.attr("href", "#");
+        }
+    };
+});
+
+cbsApp.directive('addCssCustomProps', function addCssCustomPropsDirective($log) {
+    $log.log('addCssCustomPropsDirective start');
+    return function addCssCustomPropsLink(scope, element, attr) {
+        var item = scope[attr.addCssCustomProps];
+        if (typeof (item) == "undefined") return;
+        if (item.CustomProperties) {
+            for (var p in item.CustomProperties) {
+                element.css(p, item.CustomProperties[p]);
+            }
+        }
+    };
+});
+
+cbsApp.directive('publicationFileImg', function ($log) {
+    return {
+        replace: true,
+        template: '<img ng-src="{{ icon }}" width="24" height="24" alt="{{ alt }}" title="{{ alt }}" data-ext="{{ file.ext }}" />',
+        link: function (scope, element, attr) {
+            if (!scope.file) {
+                $log.error('publicationFileImg - no file (must send file objects as publication-file-img="file"');
+                return;
+            }
+
+            var getIcon = function (ext) {
+                if (!ext) {
+                    $log.warn("publicationFileImg - got undefined ext");
+                    $log.warn(scope);
+                    return '';
+                }
+
+                if (ext.indexOf('doc') > -1) {
+                    return '/Style Library/Cbs/Images/docIcon.png';
+                }
+                if (ext.indexOf('pdf') > -1) {
+                    return '/Style Library/Cbs/Images/pdfIcon2.png';
+                }
+                if (ext.indexOf('xls') > -1) {
+                    return '/Style Library/Cbs/Images/xlsIcon.png';
+                }
+                if (ext.indexOf('htm') > -1) {
+                    return '/Style Library/Cbs/Images/htmlIcon.png';
+                }
+                if (ext.indexOf('zip') > -1) {
+                    return '/_layouts/15/images/iczip.gif';
+                }
+                if (ext.indexOf('one') > -1) {
+                    return '/_layouts/15/images/icont.png';
+                }
+                if (ext.indexOf('aspx') > -1) {
+                    if (element) {
+                        element.closest('tr').css('color', '#2981b7');
+                    }
+                    return '/_layouts/15/IMAGES/ichtm.gif';
+                }
+
+                return '_layouts/15/images/generaldocument.png';
+            };
+
+            //תיקון כותרת לקובץ וורד
+            if (scope.file.ext.indexOf('doc') > -1) {
+                scope.file.mpTitle = scope.file.Title;
+                scope.file.Title = scope.file.OOTBTitle;
+            }
+            //owstaxIdCbsMMDItemType => 60f92ec2-6092-4a20-bea8-dea27ffb35e0 is מפה
+            if (scope.file.owstaxIdCbsMMDItemType && scope.file.owstaxIdCbsMMDItemType.indexOf('60f92ec2-6092-4a20-bea8-dea27ffb35e0') !== -1) {
+                scope.icon = '/Style Library/Cbs/Images/map-icon1.png';
+            }
+            else {
+                scope.icon = getIcon(scope.file.ext);
+            }
+
+            scope.alt = (Cbs.Web.ISO3 === "heb" ? scope.file.Title : scope.file.CbsEnglishTitleOWSTEXT) + '.' + scope.file.ext;
+        }
+    };
+});
+
+cbsApp.directive('loading', function () {
+    return {
+        replace: true,
+        template: '<div class="loading"><img src="/Style Library/Cbs/Images/ajax-loader.gif"/></div>',
+        link: function (scope, element, attr) {
+            scope.$watch('loading', function (val) {
+                if (val)
+                    $(element).show();
+                else
+                    $(element).hide();
+            });
+        }
+    };
+});
+
+cbsApp.directive('bNgLightBox', function ($log, $window) {
+    return {
+        scope: {
+            onOpen: '&', onSave: '&', onClose: '&',      // & means Pass a reference to the method 
+            valOpen: '@', valSave: '@', valClose: '@',   // @Store the string associated by fromName
+            buttonClass: '@', viewPort: '@'               // =pass value
+        },
+        template: '<style>.box-content-wrapper {height:100%; z-index: 1;position: fixed; background-color: rgba(0,0,0,.5); overflow:auto; top:0; right:0;}.box-content { background-color:white; overflow:auto; margin: 1%; padding: 1%;  border-radius: 15px;}.box-buttons {padding: 0 0 15px 0;}.box-buttons button {float: none;}.box-button span {float: right; margin-top:-16px; font-family:cursive;cursor:pointer;}</style>' +
+                  '<div class="box-wrapper" ><div class="box-button" ng-if="buttons"><button type="button" ng-class="buttonClass" ng-click="ngLightBoxFunction(funcOptions.open)">{{ valOpen }}</button></div>        <div class="box-content-wrapper" ng-show="openContent" ><div class="box-content" ng-if="openContent" ><div class="box-buttons" ng-if="buttons"><button type="button" ng-class="buttonClass" ng-click="ngLightBoxFunction(funcOptions.save)">{{ valSave }}</button><button type="button" ng-class="buttonClass" ng-click="ngLightBoxFunction(funcOptions.close)">{{ valClose }}</button></div><div class="box-button" ng-if="!buttons"><span ng-click="ngLightBoxFunction(funcOptions.close,$event)">x</span></div><div class="box-content-transclude"  ng-transclude ></div></div></div></div>',
+        transclude: true,
+        link: function (scope, elem, attrs) {
+            var funcOptions = scope.funcOptions = { open: 'open', close: 'close', save: 'save' };
+            scope.buttons = attrs.onOpen ? true : false;
+
+            if (!scope.buttons) {
+                elem.parent().on('click', function () {
+                    $log.log('bNgLightBox parent click');
+                    scope.ngLightBoxFunction(funcOptions.open);
+                    scope.$apply();
+                });
+
+                scope.close = function (e) {
+                    $log.log('close click, scope.openContent: ' + scope.openContent);
+                    scope.openContent = false;
+                    e.stopPropagation();
+                };
+            }
+
+            scope.ngLightBoxFunction = function (funcOption, e) {
+                scope.openContent = funcOption === funcOptions.open;
+                if (scope.openContent === true) {
+                    var boxContentWrapper = elem.children().children();
+                    if (boxContentWrapper.length > 1) {
+                        boxContentWrapper = angular.element(boxContentWrapper[1]);
+                    }
+                    //boxContentWrapper[0].style.height = $window.innerHeight + 'px';
+                    boxContentWrapper[0].style.width = $window.innerWidth + 'px';
+                }
+
+                if (!scope.buttons && e) {
+                    e.stopPropagation();
+                }
+                else {
+                    try {
+                        switch (funcOption) {
+                            case funcOptions.open: scope.onOpen(); break;
+                            case funcOptions.close: scope.onClose(); break;
+                            case funcOptions.save: scope.onSave(); break;
+                        }
+                    } catch (e) {
+                        $log.error('ngLightBox.on-' + funcOption + ' function error, exception: ' + e);
+                    }
+                }
+            };
+
+            if (scope.viewPort) {
+                var vp = $(scope.viewPort);
+                if (vp.length === 1) {
+                    elem.appendTo(vp);
+                }
+                else {
+                    $log.error('bNgLightBox - scope.viewPort found non or more than 1 element');
+                }
+            }
+        }
+    };
+});
+
+/***********************
+******* filters  *******
+************************/
+cbsApp.filter('unsafe', function ($sce) {
+    return function (val) {
+        return $sce.trustAsHtml(val);
+    };
+});
+
+cbsApp.filter('unsafeURL', function ($sce) {
+    return function (val) {
+        return $sce.trustAsResourceUrl(val);
+    };
+});
+
+cbsApp.filter('toResource', function () {
+    //usage : {{ key | toResource }}
+    return function (key) {
+        var r = Cbs.getResource(key);
+        if (!r) {
+            return key + "does not exists in UIResource";
+        }
+        return r;
+    };
+});
+
+cbsApp.filter('toResourceLink', function () {
+    //usage : {{ key | toResourceLink | unsafe }}       
+    return function (key) {
+        var r = Cbs.getResourceLink(key);
+        if (!r) {
+            return key + "does not exists in UIResourceLinks";
+        }
+        return r;
+    };
+});
+
+cbsApp.filter('toResourceHtml', function () {
+    //usage : {{ key | toResourceHtml | unsafe }}
+    return function (key) {
+        var r = Cbs.getResourceHTML(key);
+        if (!r) {
+            return key + "does not exists in getResourceHTMLs";
+        }
+        return r;
+    };
+});
+
+cbsApp.filter('toHtml', function () {
+    //usage : {{ key | toResourceHtml | unsafe }}
+    return function (val) {
+        return $("<div></div>").html(val).text();
+    };
+});
+
+
+//source https://github.com/angular-ui/angular-ui-OLDREPO/blob/master/modules/filters/unique/unique.js
+/**
+ * Filters out all duplicate items from an array by checking the specified key
+ * @param [key] {string} the name of the attribute of each object to compare for uniqueness
+ if the key is empty, the entire object will be compared
+ if the key === false then no filtering will be performed
+ * @return {array}
+ */
+cbsApp.filter('unique', function () {
+    //return function (items, filterOn) {
+    return function (items, filterOn, doNotIncludeEmpty) {
+        if (filterOn === false) {
+            return items;
+        }
+        if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+            var hashCheck = {}, newItems = [];
+            var extractValueToCompare = function (item) {
+                if (angular.isObject(item) && angular.isString(filterOn)) {
+                    return item[filterOn];
+                } else {
+                    return item;
+                }
+            };
+            angular.forEach(items, function (item) {
+                var valueToCheck, isDuplicate = false;
+                for (var i = 0; i < newItems.length; i++) {
+                    if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+                if (!isDuplicate) {
+                    newItems.push(item);
+                }
+            });
+            items = newItems;
+        }
+        return items;
+    };
+});
+
+
+/* dndDraggable plugin that i made from a module to a directive*/
+angular.module("cbsApp").directive("dndDraggable", ["$parse", "$timeout", "dndDropEffectWorkaround", "dndDragTypeWorkaround", function (e, t, n, r) { return function (i, s, o) { s.attr("draggable", "true"); if (o.dndDisableIf) { i.$watch(o.dndDisableIf, function (e) { s.attr("draggable", !e) }) } s.on("dragstart", function (u) { u = u.originalEvent || u; u.dataTransfer.setData("Text", angular.toJson(i.$eval(o.dndDraggable))); u.dataTransfer.effectAllowed = o.dndEffectAllowed || "move"; s.addClass("dndDragging"); t(function () { s.addClass("dndDraggingSource") }, 0); n.dropEffect = "none"; r.isDragging = true; r.dragType = o.dndType ? i.$eval(o.dndType) : undefined; e(o.dndDragstart)(i, { event: u }); u.stopPropagation() }); s.on("dragend", function (t) { t = t.originalEvent || t; var u = n.dropEffect; i.$apply(function () { switch (u) { case "move": e(o.dndMoved)(i, { event: t }); break; case "copy": e(o.dndCopied)(i, { event: t }); break } }); s.removeClass("dndDragging"); s.removeClass("dndDraggingSource"); r.isDragging = false; t.stopPropagation() }); s.on("click", function (t) { t = t.originalEvent || t; i.$apply(function () { e(o.dndSelected)(i, { event: t }) }); t.stopPropagation() }); s.on("selectstart", function () { if (this.dragDrop) this.dragDrop(); return false }) } }]).directive("dndList", ["$parse", "$timeout", "dndDropEffectWorkaround", "dndDragTypeWorkaround", function (e, t, n, r) { return function (i, s, o) { function h(e, t, n) { var r = l ? e.offsetX || e.layerX : e.offsetY || e.layerY; var i = l ? t.offsetWidth : t.offsetHeight; var s = l ? t.offsetLeft : t.offsetTop; s = n ? s : 0; return r < s + i / 2 } function p() { return Array.prototype.indexOf.call(f.children, a) } function d(e) { if (!r.isDragging && !c) return false; if (!g(e.dataTransfer.types)) return false; if (o.dndAllowedTypes && r.isDragging) { var t = i.$eval(o.dndAllowedTypes); if (angular.isArray(t) && t.indexOf(r.dragType) === -1) { return false } } if (o.dndDisableIf && i.$eval(o.dndDisableIf)) return false; return true } function v() { u.remove(); s.removeClass("dndDragover"); return true } function m(t, n, s) { return e(t)(i, { event: n, index: p(), item: s || undefined, external: !r.isDragging, type: r.isDragging ? r.dragType : undefined }) } function g(e) { if (!e) return true; for (var t = 0; t < e.length; t++) { if (e[t] === "Text" || e[t] === "text/plain") return true } return false } var u = angular.element("<li class='dndPlaceholder'></li>"); var a = u[0]; var f = s[0]; var l = o.dndHorizontalList && i.$eval(o.dndHorizontalList); var c = o.dndExternalSources && i.$eval(o.dndExternalSources); s.on("dragover", function (e) { e = e.originalEvent || e; if (!d(e)) return true; if (a.parentNode != f) { s.append(u) } if (e.target !== f) { var t = e.target; while (t.parentNode !== f && t.parentNode) { t = t.parentNode } if (t.parentNode === f && t !== a) { if (h(e, t)) { f.insertBefore(a, t) } else { f.insertBefore(a, t.nextSibling) } } } else { if (h(e, a, true)) { while (a.previousElementSibling && (h(e, a.previousElementSibling, true) || a.previousElementSibling.offsetHeight === 0)) { f.insertBefore(a, a.previousElementSibling) } } else { while (a.nextElementSibling && !h(e, a.nextElementSibling, true)) { f.insertBefore(a, a.nextElementSibling.nextElementSibling) } } } if (o.dndDragover && !m(o.dndDragover, e)) { return v() } s.addClass("dndDragover"); e.preventDefault(); e.stopPropagation(); return false }); s.on("drop", function (e) { e = e.originalEvent || e; if (!d(e)) return true; e.preventDefault(); var t = e.dataTransfer.getData("Text") || e.dataTransfer.getData("text/plain"); var r; try { r = JSON.parse(t) } catch (s) { return v() } if (o.dndDrop) { r = m(o.dndDrop, e, r); if (!r) { return v() } } var u = i.$eval(o.dndList); i.$apply(function () { u.splice(p(), 0, r) }); if (e.dataTransfer.dropEffect === "none") { if (e.dataTransfer.effectAllowed === "copy" || e.dataTransfer.effectAllowed === "move") { n.dropEffect = e.dataTransfer.effectAllowed } else { n.dropEffect = e.ctrlKey ? "copy" : "move" } } else { n.dropEffect = e.dataTransfer.dropEffect } v(); e.stopPropagation(); return false }); s.on("dragleave", function (e) { e = e.originalEvent || e; s.removeClass("dndDragover"); t(function () { if (!s.hasClass("dndDragover")) { u.remove() } }, 100) }) } }]).factory("dndDragTypeWorkaround", function () { return {} }).factory("dndDropEffectWorkaround", function () { return {} })
+/* dndDraggable plugin that i made from a module to a directive*/
+
+
+function handleLongTextAreas() {
+    $(".pageItemSummary").each(
+	function (i, o) {
+	    counter = 0; $(this).find("*").each(
+			function (ii, oo) {
+			    var text = $(this).text();
+			    if (text.length > 200) {
+			        text = text.substr(0, 200);
+			        text = text.substr(0, text.lastIndexOf(' '));
+			        $(this).text(text + "...");
+			    }
+			    if (text != '') {
+			        counter++;
+			    }
+			    if (counter > 3 || $(this).position().top > 50) {
+			        $(this).css("display", "none")
+			    }
+
+			}
+		)
+	});
+
+    $(".truncate,.truncate p").each(function (i, o) {
+        var text = $(this).text();
+        if (text.length > 200) {
+            text = text.substr(0, 200);
+            text = text.substr(0, text.lastIndexOf(' ')) + "...";
+            $(this).text(text);
+        }
+    });
+
+
+}
+
+function getFileIcon(txt) {
+    var ext = txt;
+    if (ext.indexOf('--') != -1) {
+        ext = txt.split('--')[1];
+    }
+
+    var icon = '/_layouts/15/IMAGES/ichtm.gif';
+    if (typeof (ext) != 'undefined') {
+        ext = ext.replace('-', '');
+
+        if (ext.indexOf('doc') > -1) {
+            return '/Style Library/Cbs/Images/docIcon.png';
+        }
+        if (ext.indexOf('pdf') > -1) {
+            return '/Style Library/Cbs/Images/pdfIcon2.png';
+        }
+        if (ext.indexOf('xls') > -1) {
+            return '/Style Library/Cbs/Images/xlsIcon.png';
+        }
+        if (ext.indexOf('htm') > -1) {
+            return '/Style Library/Cbs/Images/htmlIcon.png';
+        }
+        if (ext.indexOf('ppt') > -1) {
+            return '/Style Library/Cbs/Images/pptIcon.png';
+        }
+        if (ext.indexOf('zip') > -1) {
+            return '/_layouts/15/images/iczip.gif';
+        }
+        if (ext.indexOf('one') > -1) {
+            return '/_layouts/15/images/icont.png';
+        }
+        if (ext.indexOf('aspx') > -1) {
+            return '/_layouts/15/IMAGES/ichtm.gif';
+        }
+
+
+
+        icon = "/_layouts/images/ic" + ext + ".gif";
+    }
+    return icon;
+}
+
+
+function changeBoardLanguage() {
+    try {
+        //if (decodeURI(location.href).toLowerCase().indexOf('/מחוללים.aspx') != -1)
+        {
+            var bgi = $("#BoardsGeneratorIframe");
+            if (bgi) {
+                $(bgi).css("height", "800px");
+                var l = $(bgi).attr('src');
+                var uptodate=GetUrlKeyValue("uptodate");
+                var sub = GetUrlKeyValue("subject");
+                var lvl = GetUrlKeyValue("level_1");
+                if (lvl == "") lvl = GetUrlKeyValue("level_2");
+                if (lvl == "") lvl = GetUrlKeyValue("level_3");
+
+                if (lvl == "" && sub != "") lvl = sub;
+                if (lvl != "") {
+                    if (l.indexOf('?') == -1) {
+                        l += "?level_1=" + lvl;
+                    }
+                    else {
+                        l += "&level_1=" + lvl;
+                    }
+
+                }
+
+               if (Cbs.Web.ISO3 == 'eng'){
+
+                    if (l.indexOf('?') == -1) {
+                        l += "?l=1"
+                    }
+                    else {
+                        l += "&l=1"
+                    }
+                }
+                if(uptodate!='')
+                {
+                 if (l.indexOf('?') == -1) {
+                        l +="?uptodate=1"
+                    }
+                    else {
+                        l += "&uptodate=1"
+                    }
+                }
+                $(bgi).attr('src', l);
+            }
+        }
+    }
+    catch (err)
+    { }
+}
+
+function clearSubjecSearchBox() {
+    try {
+        if (location.href.toLowerCase().indexOf('/search/') != -1) {
+            var sb = $("#SearchBox").find("input");
+            if ($(sb).val().toLowerCase().indexOf('cbsmmdarticletype') != -1 ||
+			$(sb).val().toLowerCase().indexOf('owstaxidcbsmmdsubjects') != -1) {
+                $("#SearchBox").find("input").val("");
+            }
+        }
+    }
+    catch (err) { }
+}
+
+$(document).ready(function () {
+    //hide selected subject if is english:
+    //if (Cbs.Web.ISO3 == "eng")
+    // $(".subjectSelect").hide();
+
+    //fix padding when showing iframe
+    $("iframe[title='מציג הדף']").closest(".ms-webpart-chrome").css("padding", "0px");
+    //hide event started 	
+    $(".dateFinish").parent().hide();
+    //הסתרת רכיב של רישום לאירוע
+    $(".EventLeftSide").parent().hide();
+    addStatistical();
+    if (location.href.toLowerCase().indexOf('/en/subjects/') != -1) {
+        $("#hebstats").css("display", "none");
+    }
+    //setTimeout(function () { changeBoardLanguage(); }, 400);
+    clearSubjecSearchBox();
+
+    setTimeout(function () {
+        if (location.href.toLowerCase().indexOf('statistics') != -1 && $(".oneColumn").find("iframe").length > 0 && $("#BoardsGeneratorIframe").length == 0) {
+            try { $(".oneColumn").find("iframe")[0].id = 'BoardsGeneratorIframe'; } catch (err) { }
+
+        }
+        if (location.href.toLowerCase().indexOf('settlements') != -1) {
+            try { $(".YishuvAscx").find("iframe")[0].id = 'BoardsGeneratorIframe'; } catch (err) { }
+            try { $("iframe[src$='YishuvimPage.aspx']")[0].id = 'BoardsGeneratorIframe'; } catch (err) { }
+        }
+changeBoardLanguage();
+
+    }, 100);
+
+
+    try {
+    
+       if (decodeURI(location.href).toLowerCase().indexOf('מחוללים/מפקד​-האוכלוסין-והדיור-1995​.aspx') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/pages/Mifkad95/WizardPage.aspx")
+            }
+        }
+
+        if (decodeURI(location.href).toLowerCase().indexOf('נתונים-כלכליים-לפי-תקן-imf.aspx') != -1 || decodeURI(location.href).toLowerCase().indexOf('economic-data-for-israel-according-to-the-sdds-of-imf.aspx')!=-1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/WebParts/SddsPage.aspx")
+            }
+        }
+         if (decodeURI(location.href).toLowerCase().indexOf('sddsplus.aspx') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/WebParts/SddsPagePlus.aspx")
+            }
+        }
+ if (decodeURI(location.href).toLowerCase().indexOf('searchinseries.aspx') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", $("#WebPartWPQ1").find("iframe").attr("src").replace("boardsgenerator", "conbgprod"));
+            }
+        }
+        
+
+
+        if (decodeURI(location.href).toLowerCase().indexOf('מחשבון-הצמדה-למדדים.aspx') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/prices/calculator.aspx")
+            }
+        }
+        if(decodeURI(location.href).toLowerCase().indexOf('linkage-calculations.aspx')!= -1){
+         if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/prices/calculator.aspx?r&l=1")
+            }
+
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('מדדי-מחירים-מדדים-עיקריים') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/WebParts/PriceIndicesPage.aspx")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('main price indices') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/WebParts/PriceIndicesPage.aspx?l=1")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('ממשק-api') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/APIService/APIservicePage.aspx")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('מדדי-מחירים-באמצעות-api') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/APIService/PricesByAPIPage.aspx")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('סדרות-עיתיות-באמצעות-api') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/APIService/SeriesByAPIPage.aspx")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('סדרות-sdmx-באמצעות-api') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/APIService/SDMXByApiPage.aspx")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('אינדיקטורים-עיקריים') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/WebParts/MainIndictorsPage.aspx?l=0")
+            }
+        }
+        if (decodeURI(location.href).toLowerCase().indexOf('main-indicators') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/Pages/WebParts/MainIndictorsPage.aspx?l=1")
+            }
+        }
+
+    if (decodeURI(location.href).toLowerCase().indexOf('generator-of-the-2008-census') != -1) {
+            if (location.host.toLowerCase().indexOf('internal') != -1) {
+                $("#WebPartWPQ1").find("iframe").attr("src", "https://conbgprod.cbs.gov.il/pages/Mifkad/WizardPage.aspx")
+            }
+        }
+        var cookie = getCookie("popup");
+        //if (cookie != "popup")
+        {
+
+            /*		    	var html = '<br/>'+
+            '<div style="text-align:center">'+
+            '<a1 style="font-size:28px">התחדשנו!!</a1><br/><br/>'+
+            '<span>לאחר ציפייה ארוכה... <strong>אתר חדש ללמ"ס</strong></span><br/><br/>'+
+            '<span>אנו ממשיכים לבדוק ולעדכן, אך האתר החדש הוא מעתה האתר הרשמי של הלמ"ס.</span><br/><br/>'+
+            '<span>חיפשתם נתון ולא מצאתם? איתרתם תקלה?</span><br/><br/>'+
+            '<span>אנא צרו עמנו קשר בדוא"ל <a href="mailto:info@cbs.gov.il">info@cbs.gov.il<a></span><br/><br/>'+
+            '<span>הלשכה המרכזית לסטטיסטיקה</span><br/><br/><br/>'+
+            '<span style="font-size:14px">לגלישה מיטבית מומלץ להשתמש בדפדפן כרום</span>'+
+            '</div>';*/
+
+
+
+            var html = '<br/>' +
+            '<div style="text-align:center">' +
+            '<span>גולשים יקרים,</span><br/>' +
+            '<div style="line-height:25px;max-width:650px">מדדי המחירים פורסמו היום לראשונה באתר החדש. לנוחיותכם, הם התפרסמו גם באתר הישן בקישור הבא:</div><a href="http://old.cbs.gov.il">old.cbs.gov.il</a> <br/><br/>' +
+            '<span>הלשכה המרכזית לסטטיסטיקה</span><br/><br/>' +
+            '</div>';
+            /*setCookie("popup", "popup", 365);
+            $("#popupcontent").html(html);
+            $("#popupcontent").dialog({
+            height: 230,
+            width:700});*/
+        }
+    }
+    catch (err)
+    { }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
+}
+
+
+
+
+$('document').ready(function () {
+    try {
+        var a = -1;
+        $(".generalBox .cbs-grey-link").each(function (i, o) {
+            if ($(o).text().indexOf('קודמים') > a || $(o).text().indexOf('Older') > a) {
+                $(o).css("color", "red");
+                $(o).on('click', function () { toOlderPublications() });
+            }
+        });
+
+    }
+    catch (err)
+    { }
+});
+
+function toOlderPublications() {
+
+    try {
+        //var articleTypeId = Cbs.PageProperties.CbsMMDArticleType.length > 0 ? Cbs.PageProperties.CbsMMDArticleType[0].TermID : null;
+        //var subjectId = Cbs.PageProperties.CbsMMDSubjects.length > 0 ? Cbs.PageProperties.CbsMMDSubjects[0].TermID : null;
+        //var articleDate = Cbs.PageProperties.ArticleStartDate ? Cbs.PageProperties.ArticleStartDate : null;
+
+        ////var fullSearchUrl = '/he/Pages/search/lastpublications.aspx#Default='
+        //var fullSearchUrl = '/he/Pages/search/SearchResultsPublications.aspx#Default='
+
+        //if (location.href.toLowerCase().indexOf('/mediarelease/') != -1) {
+        //    fullSearchUrl = '/he/Pages/search/SearchResultsPressReleases.aspx#Default='
+        //}
+
+        //var fullSearchHash = '{"k":"","r":[';
+        //if (articleTypeId) {
+        //    //fullSearchHash += '{"n":"owstaxIdCbsMMDArticleType","t":["string(\\"#0' + articleTypeId + '\\")"],"o":"and","k":false,"m":null},';
+        //}
+        //if (subjectId) {
+        //    fullSearchHash += '{"n":"owstaxIdCbsMMDSubjects","t":["string(\\"#0' + subjectId + '\\")"],"o":"and","k":false,"m":null},';
+        //}
+
+        ///*if (subjectId) {                        
+        //	var t = '';
+        //	for(i = 0; i < Cbs.PageProperties.CbsMMDSubjects.length; i++)
+        //	{
+        //		t += '"string(\\"#' + Cbs.PageProperties.CbsMMDSubjects[i].TermID + '\\")",';											
+        //	}
+        //	t = t.substring(0, t.length - 1);
+        //	fullSearchHash += '{"n":"owstaxIdCbsMMDSubjects","t":['+ t +'],"o":"and","k":false,"m":null},';                            
+        //}*/
+
+
+        //if (articleDate) {
+        //    fullSearchHash += '{"n":"ArticleStartDateDateTime","t":["range(min, ' + articleDate + 'Z)"],"o":"and","k":false,"m":null}]}';
+        //}
+        var fullSearchUrl;
+        var root = Cbs.Web.ISO3.toLowerCase().substring(0, Cbs.Web.ISO3.length - 1);
+        if (location.href.toLowerCase().indexOf('/mediarelease/') != -1) {
+            // '/' + Cbs.Web.ISO3.toLowerCase().substring(0, Cbs.Web.ISO3.length() - 1) +
+            fullSearchUrl = '/' + root + '/Pages/search/pressreleases.aspx?CbsArticleName='
+        }
+        else {
+            fullSearchUrl = '/' + root + '/Pages/search/publications.aspx?CbsArticleName='
+        }
+        //שינוי בפרסומים קודמים להעלות אחרי שהעורכי תוכן ידכנו את השדה החדש "שם פרסום" בדפי הפרסום!!!
+        //var publicationName = Cbs.PageProperties.CbsPublicationTypeLookUp.substr(Cbs.PageProperties.CbsPublicationTypeLookUp.indexOf('#') + 1, Cbs.PageProperties.CbsPublicationTypeLookUp.length);
+        // window.location.href = fullSearchUrl + encodeURI(publicationName);
+        var title = Cbs.PageProperties.Title;
+        var monthes = Cbs.BaseData.getMonthes();
+        var monthesLength = monthes.length;
+        while (monthesLength--) {
+            if (title.indexOf(monthes[monthesLength]) != -1) {
+                title = title.slice(0, title.indexOf(monthes[monthesLength]));
+            }
+        }
+        index = title.search(/\d{4}/);
+        if (index != -1)
+            title = title.slice(0, index);
+
+        title = title.replace(/,\s*$/, "");
+        title = title.replace(/-\s*$/, "");
+        title.trim();
+        window.location.href = fullSearchUrl + title;
+
+    }
+    catch (err)
+    { }
+
+
+}
+
+$("document").ready(function () {
+
+
+    if (location.href.toLowerCase().indexOf("//internal") == -1) {
+        $("head").append('<script async src="https://www.googletagmanager.com/gtag/js?id=UA-111397393-1"></script>');
+        setTimeout(function () {
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'UA-111397393-1');
+        }, 1000);
+    }
+
+
+});
+
+
+var statItems = new Array();
+var htmlLi = '';
+var htmlUL = '<ul class="cbs-List">ULSTATS</ul>';
+var area;
+var areaTitle;
+var engStyle;
+var linkTitle;
+var link;
+function addStatistical() {
+    if (location.href.toLowerCase().indexOf('/subjects/pages/') == -1) {
+        return;
+    }
+    var viewXml = {
+        ViewXml: "<View>" +
+            "<Query>" + "<Where><Contains>" +
+            "<FieldRef Name='CbsMMDSubjects' />" +
+            "<Value Type='TaxonomyFieldTypeMulti'>" + Cbs.PageProperties.CbsMMDSubjects[0].Label + "</Value>" +
+            "</Contains></Where>" + "<OrderBy Override='TRUE'><FieldRef Name='CbsDataPublishDate' Ascending='FALSE'/></OrderBy>" +
+            "</Query><ViewFields><FieldRef Name='Title' /><FieldRef Name='CbsDataPublishDate' /></ViewFields><RowLimit>2</RowLimit></View>"
+    }
+    // var data = { "query" : {"__metadata": 
+    //{ "type": "SP.CamlQuery" }, "ViewXml":caml }};
+    var root = Cbs.Web.ISO3 == "heb" ? "/he" : "/en";
+    var listName = Cbs.Web.ISO3 == "heb" ? "עלוני סטטיסטי-קל" : "Statistical";
+    var call = jQuery.ajax({
+        url: _spPageContextInfo.siteAbsoluteUrl + root + "/_api/Web/Lists/getByTitle('" + listName + "')/GetItems(query=@v1)?@v1=" + JSON.stringify(viewXml) + "&QueryTemplatePropertiesUrl='spfile://webroot/queryparametertemplate.xml",
+        // data: data,
+        type: "POST",
+        dataType: "json",
+        headers: {
+            Accept: "application/json;odata=verbose",
+            "X-RequestDigest": jQuery("#__REQUESTDIGEST").val()
+        }
+    });
+    call.done(function (data, textStatus, jqXHR) {
+        if (data.d.results[0] === undefined) {
+            return "";
+        }
+        $.each(data.d.results, function (index, item) {
+            area = "engstats";
+            areaTitle = "\"Statisti-lite\"- Pamphlets";
+            engStyle = "style='margin-left:10px'";
+            linkTitle="To all Statistilite Pamphlets";
+            link = "/Pages/search/Statisticals.aspx?CbsSubject="+encodeURI(Cbs.PageProperties.CbsMMDSubjects[0].Label);
+            if (Cbs.Web.ISO3 == "heb") {
+                area = "hebstats";
+                areaTitle = "עלוני סטטיסטיקל";
+                engStyle = "";
+                linkTitle="לכל עלוני הסטטיסטיקל"
+            }
+            var newDate = new Date(item.CbsDataPublishDate);
+            newDate = newDate.getDate() + "/" + (newDate.getMonth() + 1) + "/" + newDate.getFullYear().toString().substring(2, 4);
+            var imageUrl = item['__metadata'].uri + "/FieldValuesAsHtml?$select=PublishingRollupImage,FileLeafRef";
+            $.ajax({
+                url: imageUrl,
+                type: "GET",
+                processData: false,
+                contentType: "application/json;odata=verbose",
+                headers: {
+                    "Accept": "application/json;odata=verbose"
+                },
+                async: false,
+                success: function (data) {
+                    var itemHref = root + "/Statistical/" + data.d.FileLeafRef;
+                    htmlLi += '<li>' +
+                                      '<div class="ms-srch-item CbsArticle CbsArticleStatistical">' +
+                                         '<div class="pageItemImg">' + data.d.PublishingRollupImage + '</div>' +
+                                            '<div class="pageItemDate" ' + engStyle + '>' + newDate + '</div>' +
+                                          '<div class="pageItemTitle" ' + engStyle + '><a href="' + itemHref + '">' + item.Title + '</a></div>' +
+                                          '<div class="pageItemSummary"></div>' +
+                                      '</div>' +
+                                  '</li>';
+                },
+                error: function (error) {
+                    console.error(JSON.stringify(error));
+                }
+            });
+        });
+        htmlUL = '<h2 style="text-align:justify;" class="ms-webpart-titleText"><nobr><span>' + areaTitle + '</span><span id="WebPartCaptionWPQ6"></span></nobr></h2>' + htmlUL.replace('ULSTATS', htmlLi)+'<a href='+root+link+'>'+linkTitle +' ></a>'
+        $("#" + area).empty().append(htmlUL).css("background-color", "white").css("padding", "10px").css("margin-bottom", "20px");
+    });
+    call.fail(function (jqXHR, textStatus, errorThrown) {
+        var response = "";
+        try {
+            var parsed = JSON.parse(jqXHR.responseText);
+            response = parsed.error.message.value;
+        } catch (e) {
+            response = jqXHR.responseText;
+        }
+        console.error("Call failed. Error: " + response);
+    });
+}
+//function addStatistical() {
+//  if (location.href.toLowerCase().indexOf('/subjects/pages/') == -1) {
+//      return;
+//  }
+//  var root = Cbs.Web.ISO3 == "heb" ? "he" : "en";
+//  var url = '/_api/search/query?querytext=%27parentlinkpartial:/' + root + ' owstaxIdCbsMMDItemType:"עלון סטטיסטי-קל"' +
+//	' owstaxIdCbsMMDSubjects:' + Cbs.PageProperties.CbsMMDSubjects[0].Label + '%27&selectproperties=%27PublishingRollupImage,Path,CbsDataPublishDateOWSDATE,Title%27&sortlist=%27CbsDataPublishDateOWSDATE:descending%27&rowlimit=2&QueryTemplatePropertiesUrl=%27spfile://webroot/queryparametertemplate.xml%27';
+//  $.ajax({
+//      url: url,
+//      type: "GET",
+//      headers: { "Accept": "application/json;odata=verbose" },
+//     success: function (data) {
+//        if (data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results[0] === undefined) { return ""; }
+//        var stats = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results;
+//    $.each(stats, function (index, property) {
+//      var i = toNormalItem(property.Cells.results)
+
+//      area = "engstats";
+//      areaTitle = "\"Statisti-lite\"- Pamphlets";
+//     engStyle = "style='margin-left:10px'";
+//     if (Cbs.Web.ISO3 == "heb") {
+//        area = "hebstats";
+//        areaTitle = "עלוני סטטיסטיקל";
+//        engStyle = "";
+//    }
+
+//     var newDate = new Date(i.CbsDataPublishDateOWSDATE);
+//     newDate = newDate.getDate() + "/" + (newDate.getMonth() + 1) + "/" + newDate.getFullYear().toString().substring(2, 4);
+//     htmlLi += '<li>' +
+//                     '<div class="ms-srch-item CbsArticle CbsArticleStatistical">' +
+//                        '<div class="pageItemImg">' + i.PublishingRollupImage + '</div>' +
+//                 '<div class="pageItemDate" ' + engStyle + '>' + newDate + '</div>' +
+//                       '<div class="pageItemTitle" ' + engStyle + '><a href="' + i.Path.split('cbs.gov.il')[1] + '">' + i.Title + '</a></div>' +
+//                 '<div class="pageItemSummary"></div>' +
+//             '</div>' +
+//          '</li>';
+//   });
+//  htmlUL = '<h2 style="text-align:justify;" class="ms-webpart-titleText"><nobr><span>' + areaTitle + '</span><span id="WebPartCaptionWPQ6"></span></nobr></h2>' + htmlUL.replace('ULSTATS', htmlLi);
+//  $("#" + area).empty().append(htmlUL).css("background-color", "white").css("padding", "10px").css("margin-bottom", "20px");;
+//  }
+//  });
+//}

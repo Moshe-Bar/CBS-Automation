@@ -1,0 +1,395 @@
+﻿/*
+ *  example options
+ *
+var options = {
+    isStaticData: false,
+    //case of rest search we need titlesRestUrl, itemRestSearchUrlFunc
+    titlesRestUrl: 'restURL',
+    itemRestSearchUrlFunc: function myfunction() {
+        return { iAmSearchItem : true } 
+    },
+    //case of static data, these 2 can be false and
+    staticData: [],
+
+    //and the rest as usual
+    titleFieldName : 'fieldName', 
+    shortDescFieldName : 'fieldName', 
+    longDescFieldName : 'fieldName', 
+    pageLinkFieldName : 'fieldName', 
+    boolFieldName: 'fieldName'
+}
+*/
+
+
+
+$.fn.highlightner = function (options) {
+
+    var self = this;
+
+    self.logThis = function (startDate, message) {
+        var d2 = new Date();
+        var ms = d2.getMilliseconds() - startDate.getMilliseconds();
+        var s = d2.getSeconds() - startDate.getSeconds();
+        console.log(message + " : " + s.toString() + ":" + ms.toString());
+    };
+
+    self.isHighlighted = function (containerHTML, what, spanClass) {
+        //assume test of existense already been made
+        var arr = containerHTML.split(what, 2);
+        var idxOpenSpan = arr[1].indexOf("<span");
+        var idxCloseSpan = arr[1].indexOf("</span");
+        if (idxCloseSpan == -1) {
+            //if there is no closing span than for sure there is not highllight here
+            return false;
+        }
+        if (idxOpenSpan > -1 && idxCloseSpan > idxOpenSpan) {
+            // there are both and the opener 1st
+            return false;
+        }
+
+        //if last part has a closer then the 1st part must have an opener
+        //NN to test before for closer cause i have a closer just after
+        idxOpenSpan = arr[0].lastIndexOf("<span");
+        var spanToEnd = arr[0].substring(idxOpenSpan);
+        var idxhighlightSpanClass = spanToEnd.indexOf(spanClass);
+        if (idxhighlightSpanClass == -1) {
+            //no class, its another span
+            return false;
+        }
+
+        return true;
+    };
+
+    self.findElementsDirectlyContainingText = function (ancestor, text) {
+        var elements = [];
+        walk(ancestor);
+        return elements;
+
+        function walk(element) {
+            var n = element.childNodes.length;
+            var i, child;
+            for (i = 0; i < n; i++) {
+                child = element.childNodes[i];
+                if (child.nodeType === 3 && child.data.indexOf(text) !== -1) {
+                    elements.push(element);
+                    break;
+                }
+            }
+            for (i = 0; i < n; i++) {
+                child = element.childNodes[i];
+                if (child.nodeType === 1)
+                    walk(child);
+            }
+        }
+    };
+
+    self.highlightItem = function (containerHTML, what, spanClass, onlyOnce) {
+        if (self.isHighlighted(containerHTML, what, spanClass)) {
+            // what does not exist or is alreatyy highlighted
+            return containerHTML;
+        }
+
+        var pattern, replaceWith;
+        var createPattern = function (rgx, onlyOnce) {
+            if (onlyOnce)
+                return new RegExp(rgx);
+            else
+                return new RegExp(rgx, 'g');
+        };
+
+        //מקרה קצה הוא שבאלמנט יש 100 אחוז מן הערך, א"א לעשות רגקס כי הוא יכול לחתוך את המילה
+        if (what == containerHTML) {
+            return ' <span ' + (spanClass ? 'class="' + spanClass + '"' : '') + '>' + what + '</span> ';
+        }
+
+        //>lorem\s|>lorem<|\slorem<
+        //pre replace for all those open/close chars
+        pattern = createPattern('>' + what + '\\s', onlyOnce);
+        replaceWith = '><span ' + (spanClass ? 'class="' + spanClass + '"' : '') + '>' + what + '</span> ';
+        containerHTML = containerHTML.replace(pattern, replaceWith);
+        pattern = createPattern('\\s' + what + '<', onlyOnce);
+        replaceWith = ' <span ' + (spanClass ? 'class="' + spanClass + '"' : '') + '>' + what + '</span><';
+        containerHTML = containerHTML.replace(pattern, replaceWith);
+        pattern = createPattern('>' + what + '<', onlyOnce);
+        replaceWith = '><span ' + (spanClass ? 'class="' + spanClass + '"' : '') + '>' + what + '</span><';
+        containerHTML = containerHTML.replace(pattern, replaceWith);
+
+        pattern = createPattern('^' + what + '[.,\\s]|\\s' + what + '[.,\\s]|\\s' + what + '[.,\\s]$', true);
+        var matchArr = containerHTML.match(pattern);
+        var extra = '';
+
+        if (matchArr != null && matchArr.length > 0) {
+            if (matchArr[0][matchArr[0].length - 1] == '.') {
+                extra = '.';
+            }
+            if (matchArr[0][matchArr[0].length - 1] == ',') {
+                extra = ',';
+            }
+        }
+        replaceWith = ' <span ' + (spanClass ? 'class="' + spanClass + '"' : '') + '>' + what + extra +'</span> ';
+        containerHTML = containerHTML.replace(pattern, replaceWith);
+
+        return containerHTML;
+    };
+
+    self.findTopMostContainer = function (allWords, titleFieldName, container) {
+        var _container = $(container);
+        container = _container[0];
+        var grandpa;
+
+        for (var i = 0; i < allWords.length; i++) {
+            var what = allWords[i][titleFieldName];
+            //var regex = new RegExp('^' + what + '\\s+|\\s+' + what + '\\s+|\\s+' + what + '$');
+            var regex = new RegExp('^' + what + '[.,\\s]+|\\s+' + what + '[.,\\s]+|\\s+' + what + '[.,\\s]$');
+
+            var directContainers = self.findElementsDirectlyContainingText(container, what);
+            for (var j = 0; j < directContainers.length; j++) {
+                var current = directContainers[j];
+                if (!grandpa) {
+                    grandpa = current;
+                    continue;
+                }
+
+                if ($.contains(grandpa, current) || current == grandpa)
+                    continue;
+
+                var selfText = $(current).contents().filter(function () {
+                    return this.nodeType == Node.TEXT_NODE;
+                }).text();
+
+                if (regex.test(selfText)) {
+                    grandpa = $(grandpa).parents().has(current).first()[0];
+                }
+
+                if (grandpa == container) {
+                    console.log(_container);
+                    return _container;
+                }
+            }
+        }
+        console.log($(grandpa));
+        return $(grandpa);
+    };
+
+    self.highlighter = function (wrapperElements, titlesRestUrl, itemRestSearchUrlFunc, titleFieldName, shortDescFieldName, longDescFieldName, pageLinkFieldName, boolFieldName) {
+        if (wrapperElements.length === 0) {
+            console.warn('highlightner - no elements');
+            return;
+        }
+
+        //ajax for all the words
+        var array = [];
+        //go get all terms titles
+        if (self.options.isStaticData === true) {
+            array = self.options.staticData;
+            if (array) {
+                for (var i = 0; i < array.length; i++) {
+                    array[i].LinkTitle = array[i].LinkTitle.trim();
+                }
+            }
+            else {
+                console.warn('highlightner - self.options.staticData ?? ');
+                console.warn(self);
+            }
+        }
+        else {
+            var d1 = new Date();
+            jQuery.ajax({
+                url: titlesRestUrl,
+                method: "GET",
+                headers: { "content-type": "application/json;odata=verbose", "accept": "application/json;odata=verbose" },
+                success: function (data, status, xhr) {
+                    //map search
+                    var results = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results;
+                    array = $.map(results, function (item, index) {
+                        var cells = item.Cells.results;
+                        var newCells = {};
+                        for (var i = 0; i < cells.length; i++) {
+                            var key = cells[i].Key;
+                            var val = cells[i].Value;
+                            newCells[key] = val;
+                        }
+
+                        return newCells;
+                    });
+
+                    //remake something with jquery
+                    //array = array.orderByDescending(function (t) { return t[titleFieldName].length; });
+                    array.sort(function (a, b) {
+                        return a[titleFieldName].length < b[titleFieldName].length ? -1 : 1;
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    console.log(this);
+                },
+                async: false
+            });
+            self.logThis(d1, "ajax to items");
+            if (array.length == 0) {
+                console.warn('highlightner - no items from ajax to terms');
+                return;
+            }
+        }
+
+        for (var j = 0; j < wrapperElements.length; j++) {
+            try {
+                //wrapperElement = $(wrapperElement);
+                wrapperElement = $(wrapperElements[j]);
+                d1 = new Date();
+                var grandpa = self.findTopMostContainer(array, titleFieldName, wrapperElement);
+                if (!grandpa) {
+                    return;
+                }
+                self.logThis(d1, "findTopMostContainer");
+
+                d1 = new Date();
+                var grandpaHTML = grandpa.html();
+                if (!grandpaHTML) {
+                    console.log("no HTML in grandpa");
+                    return;
+                }
+                //wrapperElement.css("display", "block").find("div").css("display", "block");
+
+                //ZERO WIDTH SPACE char fix
+                grandpaHTML = grandpaHTML.replace(/[\u200B-\u200D\uFEFF]/g, '');
+                for (var i = 0; i < array.length; i++) {
+                    if (grandpaHTML.indexOf(array[i][titleFieldName]) > -1 && (array[i]["CbsDisplayBubble"] == "כן" || array[i]["CbsDisplayBubble"] == "Yes"))
+                        //testing if grandpa contains word
+                        
+                        grandpaHTML = self.highlightItem(grandpaHTML, array[i][titleFieldName].trim(), "highlightSpan word_" + array[i][titleFieldName], array[i][boolFieldName]);
+                        
+                      
+                }
+                grandpa.html(grandpaHTML);
+                //wrapperElement.css("display", "").find("div").css("display", "");
+
+                self.logThis(d1, "highlight");
+
+                //open the tooltip
+                var popupElement = $('<div></div>');
+                var innerPopupHtml = $('<div class="TermTooltip"></div>');
+                innerPopupHtml.append("<p style='display:block;' class='description'></p>");
+                innerPopupHtml.append("<div class='readmore'></div>");
+                innerPopupHtml.appendTo(popupElement);
+
+                var successFunc = function (results, spanElement, qtipApi) {
+                    var title, shortTxt, longTxt, link;
+
+                    if (self.options.isStaticData === true) {
+                        title = results[titleFieldName];
+                        shortTxt = results[shortDescFieldName];
+                        longTxt = results[longDescFieldName];
+                        link = '<a target="_blank" href="' + results[pageLinkFieldName] + '">קרא עוד</a>';
+                    }
+                    else {
+                        for (var i = 0; i < results.length; i++) {
+                            switch (results[i].Key) {
+                                case titleFieldName:
+                                    title = results[i].Value;
+                                    break;
+                                case shortDescFieldName:
+                                    shortTxt = results[i].Value;
+                                    break;
+                                case longDescFieldName:
+                                    longTxt = results[i].Value;
+                                    break;
+                                case pageLinkFieldName:
+                                    link = '<a target="_blank" href="' + results[i].Value + '">קרא עוד</a>';
+                                    break;
+                            }
+                        }
+                    }
+                    //$("p", popupElement).html(shortTxt);
+                    //$(".description", popupElement).html(longTxt);
+                    var newLink=pageLinkFieldName
+                    newLink=$(newLink).attr("href",$(newLink).attr("href")+"?k="+title)
+                    link = newLink;   // yael
+
+                    //decode html
+                    shortTxt = $("<div>").html(shortTxt).text();
+                    $(".description", popupElement).html(shortTxt);  // yael
+
+                    var readMore = $(".readmore", popupElement);
+
+                    if (link) {
+                        readMore.html(link);
+                    }
+
+                    if (self.options.isStaticData === true) {
+                        setTimeout(function myfunction() {
+                            qtipApi.set('content.text', popupElement.html())
+                        }, 10);
+                    }
+                    else {
+                        qtipApi.set('content.text', popupElement.html())
+                    }
+                };
+
+                var allSpans = $(".highlightSpan", wrapperElement);
+                allSpans.each(function () {
+                    var spanElement = $(this);
+                    var key = $(spanElement).text().replace(/[.,]/, '');
+                    $(spanElement).text().replace(/[.,]/, '');
+                    spanElement.qtip({
+                        content: {
+                            text: function (event, api) {
+                                if (self.options.isStaticData === true) {
+                                    var results = $.grep(array, function grepItem(item) {
+                                        return item.LinkTitle === key;
+                                    })[0];
+                                    spanElement.data('fullItem', results);
+                                    successFunc(results, spanElement, api);
+                                    return 'Loading...';
+                                }
+                                else {
+                                    jQuery.ajax({
+                                        url: itemRestSearchUrlFunc(key),
+                                        method: "GET",
+                                        headers: { "content-type": "application/json;odata=verbose", "accept": "application/json;odata=verbose" },
+                                        success: function (data, status, xhr) {
+                                            var results = data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results[0].Cells.results;
+                                            spanElement.data('fullItem', results);
+                                            successFunc(results, spanElement, api);
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log(this);
+                                            api.set('content.text', status + ': ' + error)
+                                        },
+                                        cache: true
+                                    });
+                                    return 'Loading...';
+                                }
+                            },
+                            title: key,
+                            button: "Close"
+                        },
+                        hide: {
+                            fixed: true,
+                            delay: 300
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center',
+                            target: spanElement,
+                            viewport: wrapperElement
+                        },
+                        style: {
+                            classes: 'qtip-shadow qtip-rounded qtip-bootstrap'
+                        }
+
+                    });
+                });
+            } catch (e) {
+                console.log("highlighter threw an error");
+                console.log(e);
+            }
+        }//end for elements
+    };
+
+    self.options = options;
+    self.highlighter($(self), options.titlesRestUrl, options.itemRestSearchUrlFunc, options.titleFieldName, options.shortDescFieldName, options.longDescFieldName, options.pageLinkFieldName, options.boolFieldName);
+
+    return self;
+};
+

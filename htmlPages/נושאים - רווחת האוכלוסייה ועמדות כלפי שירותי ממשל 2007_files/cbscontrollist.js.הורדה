@@ -1,0 +1,98 @@
+/* קובץ זה משויך כעת לקובץ HTML בעל שם זהה והוא שואב ממנו תוכן. עד לביטול השיוך בין הקבצים, לא תוכל להעביר את הקובץ, למחוק אותו, לשנות את שמו או לבצע בו שינויים אחרים. */
+
+function DisplayTemplate_dca67a0bd9bf435b8128023995740ba4(ctx) {
+  var ms_outHtml=[];
+  var cachePreviousTemplateData = ctx['DisplayTemplateData'];
+  ctx['DisplayTemplateData'] = new Object();
+  DisplayTemplate_dca67a0bd9bf435b8128023995740ba4.DisplayTemplateData = ctx['DisplayTemplateData'];
+
+  ctx['DisplayTemplateData']['TemplateUrl']='~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsControlList.js';
+  ctx['DisplayTemplateData']['TemplateType']='Control';
+  ctx['DisplayTemplateData']['TargetControlType']=['Content Web Parts'];
+  this.DisplayTemplateData = ctx['DisplayTemplateData'];
+
+ms_outHtml.push('',''
+,''
+); 
+    if (!$isNull(ctx.ClientControl) &&
+        !$isNull(ctx.ClientControl.shouldRenderControl) &&
+        !ctx.ClientControl.shouldRenderControl())
+    {
+        return "";
+    }
+    ctx.ListDataJSONGroupsKey = "ResultTables";
+    var $noResults = Srch.ContentBySearch.getControlTemplateEncodedNoResultsMessage(ctx.ClientControl);
+
+    var noResultsClassName = "ms-srch-result-noResults";
+
+    var ListRenderRenderWrapper = function(itemRenderResult, inCtx, tpl)
+    {
+        var iStr = [];
+        iStr.push('<li>');
+        iStr.push(itemRenderResult);
+        iStr.push('</li>');
+        return iStr.join('');
+    }
+    ctx['ItemRenderWrapper'] = ListRenderRenderWrapper;
+ms_outHtml.push(''
+,'    <ul class="cbs-List">'
+,''
+,'            ', ctx.RenderGroups(ctx) ,''
+,'        </ul>'
+);
+// Check if the web part should be hidden (when no results are retrieved)
+if (ctx.ClientControl.get_shouldShowNoResultMessage()) {
+    var containerClass = $htmlEncode(ctx.ClientControl.get_nextUniqueId() + "_hide");
+    AddPostRenderCallback(ctx, function() {
+        // Check if page is in edit mode
+        var inDesignMode = document.forms[MSOWebPartPageFormName].MSOLayout_InDesignMode;
+        var wikiInEditMode = document.forms[MSOWebPartPageFormName]._wikiPageMode;
+        var inEdit = false;
+        if (typeof inDesignMode !== "undefined") {
+            inEdit = inDesignMode.value === "1" ? true : false;
+        }
+        if (typeof wikiInEditMode !== "undefined") {
+            inEdit = wikiInEditMode.value === "Edit" ? true : false;
+        }
+        // Hide the webpart when page is not in edit mode
+        if (!inEdit) {
+   
+            var container = document.getElementsByClassName(containerClass);
+            if (container.length) {
+                var elm = container[0];
+                //debugger;
+                $(elm).parents(".ms-webpart-chrome.ms-webpart-chrome-fullWidth:first").hide();
+                
+            }
+        }
+    });
+        
+ms_outHtml.push(''
+,'    <div class="', containerClass ,'"></div>'
+);
+}
+ms_outHtml.push(''
+,''
+,'    '
+);
+
+  ctx['DisplayTemplateData'] = cachePreviousTemplateData;
+  return ms_outHtml.join('');
+}
+function RegisterTemplate_dca67a0bd9bf435b8128023995740ba4() {
+
+if ("undefined" != typeof (Srch) &&"undefined" != typeof (Srch.U) &&typeof(Srch.U.registerRenderTemplateByName) == "function") {
+  Srch.U.registerRenderTemplateByName("CBS_Control_List", DisplayTemplate_dca67a0bd9bf435b8128023995740ba4);
+}
+
+if ("undefined" != typeof (Srch) &&"undefined" != typeof (Srch.U) &&typeof(Srch.U.registerRenderTemplateByName) == "function") {
+  Srch.U.registerRenderTemplateByName("~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsControlList.js", DisplayTemplate_dca67a0bd9bf435b8128023995740ba4);
+}
+//
+        $includeLanguageScript("~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsControlList.js", "~sitecollection/_catalogs/masterpage/Display Templates/Language Files/{Locale}/CustomStrings.js");
+    //
+}
+RegisterTemplate_dca67a0bd9bf435b8128023995740ba4();
+if (typeof(RegisterModuleInit) == "function" && typeof(Srch.U.replaceUrlTokens) == "function") {
+  RegisterModuleInit(Srch.U.replaceUrlTokens("~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsControlList.js"), RegisterTemplate_dca67a0bd9bf435b8128023995740ba4);
+}

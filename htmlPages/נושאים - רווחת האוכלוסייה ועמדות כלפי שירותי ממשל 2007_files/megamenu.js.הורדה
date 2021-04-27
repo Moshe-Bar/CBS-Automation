@@ -1,0 +1,3293 @@
+﻿ALA.SubjectsTaxoWithPagesUrls = [{
+    "Label": "נושאים",
+    "ListItemUrl": null,
+    "IconUrl": null,
+    "Children": [{
+        "Label": "אדם וחברה",
+        "ListItemUrl": null,
+        "IconUrl": null,
+        "Id": "cadd06ea-c21c-4dd9-86e2-3f3a7235ccc1",
+        "Children": [{
+            "Label": "אוכלוסייה",
+            "ListItemUrl": "/he/subjects/Pages/אוכלוסייה.aspx",
+            "IconUrl": null,
+            "Id": "c1b801ff-274e-491c-b2de-20ef44975e0a",
+            "Children": [{
+                "Label": "תכונות דמוגרפיות",
+                "ListItemUrl": "/he/subjects/Pages/תכונות-דמוגרפיות.aspx",
+                "IconUrl": null,
+                "Id": "d50058ed-ab7a-43f1-8fec-7190e163e021",
+                "Children": [{
+                    "Label": "אוכלוסייה לפי דת וקבוצת אוכלוסייה",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-לפי-דת-וקבוצת-אוכלוסייה.aspx",
+                    "IconUrl": null,
+                    "Id": "5461a9b0-0e9b-4d8d-a39f-719638a22203",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה לפי מוצא",
+                    "ListItemUrl": "/he/subjects/Pages/-אוכלוסייה-לפי-מוצא.aspx",
+                    "IconUrl": null,
+                    "Id": "dc7a4bb8-6d38-426c-a428-7dfaf6d4f3fe",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה לפי מין",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-לפי-מין.aspx",
+                    "IconUrl": null,
+                    "Id": "7fed3954-2d1e-4604-98fe-6af99f7458fa",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה לפי מצב משפחתי",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-לפי-מצב-משפחתי.aspx",
+                    "IconUrl": null,
+                    "Id": "b21f4d8e-93aa-4f5f-9271-67843b6baf8b",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "תחזיות אוכלוסייה",
+                "ListItemUrl": "/he/subjects/Pages/תחזיות-אוכלוסייה.aspx",
+                "IconUrl": null,
+                "Id": "fb99ab84-e47c-480f-94d8-4e640214f81b",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תפרוסת גאוגרפית",
+                "ListItemUrl": "/he/subjects/Pages/תפרוסת-גאוגרפית-של-האוכלוסייה.aspx",
+                "IconUrl": null,
+                "Id": "42494796-41ed-4e4a-95c2-c33df452209e",
+                "Children": [{
+                    "Label": "אוכלוסייה ביישובים",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-ביישובים.aspx",
+                    "IconUrl": null,
+                    "Id": "a12574e3-7c4c-439c-80ff-8b66c210aaca",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה במועצות אזוריות",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-במועצות-אזוריות.aspx",
+                    "IconUrl": null,
+                    "Id": "d4ff466d-93fa-48be-a72b-3b164f7f3e0d",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה במחוזות, בנפות ובאזורים טבעיים",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-במחוזות,-בנפות-ובאזורים-טבעיים.aspx",
+                    "IconUrl": null,
+                    "Id": "64346fac-5e63-4bd2-b60a-e4ca7f409e9a",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה במטרופולינים",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-במטרופולינים.aspx",
+                    "IconUrl": null,
+                    "Id": "96b2dad9-a3d4-429e-941f-d4558380b9b4",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "אוכלוסייה לפי צורת יישוב",
+                    "ListItemUrl": "/he/subjects/Pages/אוכלוסייה-לפי-צורת-יישוב.aspx",
+                    "IconUrl": null,
+                    "Id": "64a01a6a-2478-4e00-8cb2-783216f30162",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "נישואין וגירושין",
+                "ListItemUrl": "/he/subjects/Pages/נישואין-וגירושין.aspx",
+                "IconUrl": null,
+                "Id": "fc97204d-cce4-4e65-9aea-eabfbc663f5c",
+                "Children": [{
+                    "Label": "גירושין",
+                    "ListItemUrl": "/he/subjects/Pages/גירושין.aspx",
+                    "IconUrl": null,
+                    "Id": "e3b56148-ba02-4cdd-9389-4af92de2cf9c",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "נישואין",
+                    "ListItemUrl": "/he/subjects/Pages/נישואין.aspx",
+                    "IconUrl": null,
+                    "Id": "c8fe1c09-8a86-4716-8c71-70ecba688ce7",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "ילודה ופריון",
+                "ListItemUrl": "/he/subjects/Pages/ילודה-ופריון.aspx",
+                "IconUrl": null,
+                "Id": "da14dcd3-3a7f-4748-8653-249eb9389746",
+                "Children": [{
+                    "Label": "לידות חי",
+                    "ListItemUrl": "/he/subjects/Pages/לידות-חי.aspx",
+                    "IconUrl": null,
+                    "Id": "c1cac4e8-74b6-4866-bc7f-5385b9d03583",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הפסקות היריון",
+                    "ListItemUrl": "/he/subjects/Pages/הפסקות-היריון.aspx",
+                    "IconUrl": null,
+                    "Id": "e50d5b90-c965-4989-8983-ff3a52271fa9",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "לידות מת",
+                    "ListItemUrl": "/he/subjects/Pages/לידות-מת.aspx",
+                    "IconUrl": null,
+                    "Id": "df22120c-f28a-4f49-a860-f2d26ae20b77",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מומים מולדים",
+                    "ListItemUrl": "/he/subjects/Pages/מומים-מולדים.aspx",
+                    "IconUrl": null,
+                    "Id": "57557bdc-05d9-48e8-b599-45fdd4cd930c",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הריונות ידועים",
+                    "ListItemUrl": "/he/subjects/Pages/הריונות-ידועים.aspx",
+                    "IconUrl": null,
+                    "Id": "57557bdc-05d9-48e8-b599-45fdd4cd930c",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "תמותה ותוחלת חיים",
+                "ListItemUrl": "/he/subjects/Pages/תמותה-ותוחלת-חיים.aspx",
+                "IconUrl": null,
+                "Id": "9154cffe-64f3-42d8-b271-c027fcbeaf04",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "הגירה פנימית",
+                "ListItemUrl": "/he/subjects/Pages/הגירה-פנימית.aspx",
+                "IconUrl": null,
+                "Id": "a3699d73-2073-40d0-89b9-55474ff53af1",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "עלייה והגירה בין-לאומית",
+                "ListItemUrl": "/he/subjects/Pages/עלייה-והגירה-בין-לאומית.aspx",
+                "IconUrl": null,
+                "Id": "3e01f809-b720-4ff5-a352-9762d40fd9ad",
+                "Children": [{
+                    "Label": 'ישראלים בחו"ל',
+                    "ListItemUrl": "/he/subjects/Pages/ישראלים-בחול.aspx",
+                    "IconUrl": null,
+                    "Id": "fc7255c2-e1d7-43f9-820c-23ffb0e593ed",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": 'עובדים מחו"ל',
+                    "ListItemUrl": "/he/subjects/Pages/עובדים-מחול.aspx",
+                    "IconUrl": null,
+                    "Id": "14ac04ad-c127-44a7-a031-62c17e7b7ed6",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "עלייה לישראל",
+                    "ListItemUrl": "/he/subjects/Pages/עלייה-לישראל.aspx",
+                    "IconUrl": null,
+                    "Id": "30aa4a8c-979b-452d-9eda-6bc3fc378c67",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "משקי בית ומשפחות",
+                "ListItemUrl": "/he/subjects/Pages/משקי-בית-ומשפחות.aspx",
+                "IconUrl": null,
+                "Id": "d344cc4b-06f9-4901-9bd1-df36694e0071",
+                "Children": [{
+                    "Label": "משקי בית",
+                    "ListItemUrl": "/he/subjects/Pages/משקי-בית.aspx",
+                    "IconUrl": null,
+                    "Id": "41560b8c-2f8d-4b2a-aa7c-3f8ab9765d10",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "משפחות",
+                    "ListItemUrl": "/he/subjects/Pages/משפחות.aspx",
+                    "IconUrl": null,
+                    "Id": "93a5b936-d936-43d9-b078-055f2cb60716",
+                    "Children": null,
+                    "CustomProperties": null
+
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "אוכלוסיית דיור משותף",
+                "ListItemUrl": "/he/subjects/Pages/אוכלוסיית-דיור-משותף.aspx",
+                "IconUrl": null,
+                "Id": "fb99ab84-e47c-480f-94d8-4e640214f81b",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "35px -18px",
+                "margin": "9.4px auto"
+            }
+        }, {
+            "Label": "בריאות",
+            "ListItemUrl": "/he/subjects/Pages/בריאות.aspx",
+            "IconUrl": null,
+            "Id": "8071f02a-816b-4e20-b895-94a59999d0eb",
+            "Children": [{
+                "Label": "ילודה ופריון",
+                "ListItemUrl": "/he/subjects/Pages/ילודה-ופריון.aspx",
+                "IconUrl": null,
+                "Id": "9dcadf87-f0f5-4f7c-be98-094b8c809927",
+                "Children": [{
+                    "Label": "לידות חי",
+                    "ListItemUrl": "/he/subjects/Pages/לידות-חי.aspx",
+                    "IconUrl": null,
+                    "Id": "ff5e8a4e-4a28-4189-960f-c4e02d1d6f75",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הפסקות היריון",
+                    "ListItemUrl": "/he/subjects/Pages/הפסקות-היריון.aspx",
+                    "IconUrl": null,
+                    "Id": "f7f25d58-711f-4728-8fbd-6852d8e0ac99",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "לידות מת",
+                    "ListItemUrl": "/he/subjects/Pages/לידות-מת.aspx",
+                    "IconUrl": null,
+                    "Id": "5af6b9cb-1f7e-44fc-a515-b06ddab1e47c",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הריונות ידועים",
+                    "ListItemUrl": "/he/subjects/Pages/הריונות-ידועים.aspx",
+                    "IconUrl": null,
+                    "Id": "57557bdc-05d9-48e8-b599-45fdd4cd930c",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "תמותה ותוחלת חיים",
+                "ListItemUrl": "/he/subjects/Pages/תמותה-ותוחלת-חיים.aspx",
+                "IconUrl": null,
+                "Id": "f8bf8537-f392-476d-85c7-b30df2db71af",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "סיבות מוות",
+                "ListItemUrl": "/he/subjects/Pages/סיבות-מוות.aspx",
+                "IconUrl": null,
+                "Id": "04c5c004-98d1-4dfb-be4d-3489b7a3b6d5",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תחלואה",
+                "ListItemUrl": "/he/subjects/Pages/תחלואה.aspx",
+                "IconUrl": null,
+                "Id": "94bdfc8d-9aec-48c3-b43a-6ca0ef2b1fa1",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שימוש בשירותי בריאות",
+                "ListItemUrl": "/he/subjects/Pages/שימוש-בשירותי-בריאות.aspx",
+                "IconUrl": null,
+                "Id": "3b2d7d0c-b2ea-4925-8415-52b966d20902",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "משאבים פיזיים וכוח אדם במערכת הבריאות",
+                "ListItemUrl": "/he/subjects/Pages/משאבים-פיזיים-וכוח-אדם-במערכת-הבריאות.aspx",
+                "IconUrl": null,
+                "Id": "1c336fb0-851a-4fd3-8d4d-a4c64f6fb85f",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "התנהגויות בריאות",
+                "ListItemUrl": "/he/subjects/Pages/התנהגויות-בריאות.aspx",
+                "IconUrl": null,
+                "Id": "fff3667d-485a-4d64-bf04-964862152a0c",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "אנשים עם מוגבלות",
+                "ListItemUrl": "/he/subjects/Pages/בעלי-מוגבלויות-וצרכים-מיוחדים.aspx",
+                "IconUrl": null,
+                "Id": "5ca9fdfe-b15a-42ca-a864-377d337dc7ce",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "הוצאה לאומית לבריאות",
+                "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לבריאות.aspx",
+                "IconUrl": null,
+                "Id": "099ac681-ea44-4616-ac61-d3456b36b2d9",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "124px 0px",
+                "width": "14px"
+            }
+        }, {
+            "Label": "רווחה",
+            "ListItemUrl": "/he/subjects/Pages/רווחה.aspx",
+            "IconUrl": null,
+            "Id": "1690aa2e-fb78-4bae-a849-d6748f30191e",
+            "Children": [{
+                "Label": "מקבלי שירותים ממשרד העבודה, הרווחה והשירותים החברתיים",
+                "ListItemUrl": "/he/subjects/Pages/מקבלי-שירותים-ממשרד-הרווחה-והשירותים-החברתיים.aspx",
+                "IconUrl": null,
+                "Id": "b77054bc-9e37-4140-b3e0-86c47342666e",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "אנשים עם מוגבלות",
+                "ListItemUrl": "/he/subjects/Pages/בעלי-מוגבלויות-וצרכים-מיוחדים.aspx",
+                "IconUrl": null,
+                "Id": "5ca9fdfe-b15a-42ca-a864-377d337dc7ce",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "158px -19px",
+                "height": "15px",
+                "width": "15px"
+            }
+        }, {
+            "Label": "רמת חיים",
+            "ListItemUrl": "/he/subjects/Pages/רמת-חיים.aspx",
+            "IconUrl": null,
+            "Id": "e8ccc86f-7140-4031-9d17-ba53586b54a5",
+            "Children": [{
+                "Label": "הכנסות והוצאות של משקי בית",
+                "ListItemUrl": "/he/subjects/Pages/הכנסות-והוצאות-משק-בית.aspx",
+                "IconUrl": null,
+                "Id": "b1b24d67-8604-4b14-b6f8-077587d1f1e8",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "בעלות על מוצרים",
+                "ListItemUrl": "/he/subjects/Pages/בעלות-על-מוצרים.aspx",
+                "IconUrl": null,
+                "Id": "b0a5e509-673b-4d97-b954-0966de1b5b9b",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד חברתי-כלכלי ",
+                "ListItemUrl": "/he/subjects/Pages/רמת-חיים-מדד-חברתי-כלכלי-של-הרשויות-המקומיות.aspx",
+                "IconUrl": null,
+                "Id": "28dcdc8a-9462-4314-834d-8ff5908f66d2",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תכונות כלכליות של משקי בית",
+                "ListItemUrl": "/he/subjects/Pages/משקי-בית-תכונות-כלכליות.aspx",
+                "IconUrl": null,
+                "Id": "1b112a31-a3a8-4602-817a-f83d57f77f7e",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "90px -19px",
+                "height": "15px",
+                "width": "15px"
+            }
+        }, {
+            "Label": "חינוך והשכלה",
+            "ListItemUrl": "/he/subjects/Pages/חינוך-והשכלה.aspx",
+            "IconUrl": null,
+            "Id": "ad873a80-65e1-4859-8ec8-98788f4c665f",
+            "Children": [{
+                "Label": "חינוך קדם-יסודי (גני ילדים) ומעונות יום",
+                "ListItemUrl": "/he/subjects/Pages/גני-ילדים-ומעונות-יום.aspx",
+                "IconUrl": null,
+                "Id": "b67817ff-c420-45d1-90ef-7f37e312868a",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חינוך יסודי",
+                "ListItemUrl": "/he/subjects/Pages/חינוך-יסודי.aspx",
+                "IconUrl": null,
+                "Id": "d7f8ab4c-2f34-4a03-8299-156a4e685eb3",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חינוך על-יסודי",
+                "ListItemUrl": "/he/subjects/Pages/חינוך-על-יסודי.aspx",
+                "IconUrl": null,
+                "Id": "c1442d8f-0620-4af9-b936-745231af59fa",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חינוך על-תיכון לא-אקדמי",
+                "ListItemUrl": "/he/subjects/Pages/חינוך-על-תיכון-לא-אקדמי.aspx",
+                "IconUrl": null,
+                "Id": "3c06f814-52f5-4123-ae92-86289c438315",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "השכלה גבוהה",
+                "ListItemUrl": "/he/subjects/Pages/השכלה-גבוהה.aspx",
+                "IconUrl": null,
+                "Id": "a389128a-89a1-4682-b28e-a0c506de0bfb",
+                "Children": [{
+                    "Label": "מועמדים ללימודים במוסדות להשכלה גבוהה",
+                    "ListItemUrl": "/he/subjects/Pages/מועמדים-להשכלה-גבוהה.aspx",
+                    "IconUrl": null,
+                    "Id": "e11b0c43-c789-4dee-88a5-a37bc6546d91",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "סטודנטים במוסדות להשכלה גבוהה",
+                    "ListItemUrl": "/he/subjects/Pages/סטודנטים-להשכלה-גבוהה.aspx",
+                    "IconUrl": null,
+                    "Id": "328c6ec2-be85-4d6f-acf2-536226835ee4",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מקבלי תארים ממוסדות להשכלה גבוהה",
+                    "ListItemUrl": "/he/subjects/Pages/מקבלי-תארים-מהאוניברסיטאות.aspx",
+                    "IconUrl": null,
+                    "Id": "8fe44f05-f08e-4d40-945f-fe1f5c8747c3",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "מיומנויות (PIAAC) וחינוך מבוגרים",
+                "ListItemUrl": "/he/subjects/Pages/מיומנויות-וחינוך-מבוגרים.aspx",
+                "IconUrl": null,
+                "Id": "b8799bb3-820f-4115-b37f-23758a05107d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מהלכי לימודים",
+                "ListItemUrl": "/he/subjects/Pages/מהלכי-לימודים.aspx",
+                "IconUrl": null,
+                "Id": "184191ae-499b-4bfd-b22e-4f59d090961d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדע, מחקר ופיתוח במגזר השכלה גבוהה",
+                "ListItemUrl": "/he/subjects/Pages/מדע-מחקר-ופיתוח.aspx",
+                "IconUrl": null,
+                "Id": "1465ade7-36bf-4905-b913-7c7867ed34e8",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "השכלה ועבודה",
+                "ListItemUrl": "/he/subjects/Pages/השכלה-ועבודה.aspx",
+                "IconUrl": null,
+                "Id": "9c5ea00f-5882-4034-88cf-732aa13f10c4",
+                "Children": [{
+                    "Label": "עובדים אקדמאים",
+                    "ListItemUrl": "/he/subjects/Pages/עובדים-אקדמאיים.aspx",
+                    "IconUrl": null,
+                    "Id": "1c68dc14-0c9f-46fa-8aa8-9cd91cea3e35",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "עובדים לא אקדמאים",
+                    "ListItemUrl": "/he/subjects/Pages/עובדים-לא-אקדמאים.aspx",
+                    "IconUrl": null,
+                    "Id": "90e7386c-3469-4774-b46d-5bf26c7510c1",
+                    "Children": [{
+                        "Label": "בעלי הכשרה מקצועית",
+                        "ListItemUrl": "/he/subjects/Pages/בעלי-הכשרה-מקצועית.aspx",
+                        "IconUrl": null,
+                        "Id": "33b4d073-4c04-4e0b-a48a-1ca67604d091",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "ללא הכשרה מקצועית",
+                        "ListItemUrl": "/he/subjects/Pages/ללא-הכשרה-מקצועית.aspx",
+                        "IconUrl": null,
+                        "Id": "1e6121a0-49d1-427e-a93c-0d7ce01459f2",
+                        "Children": null,
+                        "CustomProperties": null
+                    }],
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            },
+            {
+                "Label": "סגל הוראה בחינוך הגבוה",
+                "ListItemUrl": "/he/subjects/Pages/סגל-הוראה-בחינוך-הגבוה.aspx",
+                "IconUrl": null,
+                "Id": "053d9cf5-bd35-4afa-9b9a-c2b600a7e1d9",
+                "Children": null,
+                "CustomProperties": null
+            },
+            {
+                "Label": "עובדי הוראה במערכת החינוך",
+                "ListItemUrl": "/he/subjects/Pages/כוחות-הוראה-מורים-וגננות.aspx",
+                "IconUrl": null,
+                "Id": "6e39fd76-1ec9-4ac4-a60c-d76aee5fe3c2",
+                "Children": [{
+                    "Label": "כניסה להוראה של בוגרי המסגרות להכשרת עובדי הוראה",
+                    "ListItemUrl": "/he/subjects/Pages/כניסה-להוראה-של-בוגרי-המסגרות-להכשרת-עובדי-הוראה--.aspx",
+                    "IconUrl": null,
+                    "Id": "89f0293d-8512-4ce5-954a-48f914638f41",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "השתלמות של עובדי הוראה",
+                    "ListItemUrl": "/he/subjects/Pages/השתלמות-של-עובדי-הוראה.aspx",
+                    "IconUrl": null,
+                    "Id": "c17556c5-f4ad-4c07-8005-bad81de58f89",
+                    "Children": null,
+                    "CustomProperties": null
+                }
+                ],
+                "CustomProperties": null
+            }, {
+                "Label": "תחזיות סטטיסטיות במערכת החינוך",
+                "ListItemUrl": "/he/subjects/Pages/תחזיות-במערכת-החינוך.aspx",
+                "IconUrl": null,
+                "Id": "29ea7350-45c5-4f76-823e-87bd2bacadcc",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חינוך - נתונים כספיים",
+                "ListItemUrl": "/he/subjects/Pages/חינוך-נתונים-כספיים.aspx",
+                "IconUrl": null,
+                "Id": "6629ef1c-902e-4e70-bac8-058aa4834838",
+                "Children": [{
+                    "Label": "הוצאה לאומית לחינוך",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לחינוך.aspx",
+                    "IconUrl": null,
+                    "Id": "bda863b6-027d-40af-a7ad-fcc36b3b37bd",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה פרטית לחינוך",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-פרטית-לחינוך.aspx",
+                    "IconUrl": null,
+                    "Id": "19423ba2-8077-4240-a4a8-14b81d309136",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה ציבורית לחינוך",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-ציבורית-לחינוך.aspx",
+                    "IconUrl": null,
+                    "Id": "c17556c5-f4ad-4c07-8005-bad81de58f89",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "רמת השכלה",
+                "ListItemUrl": "/he/subjects/Pages/רמת-השכלה.aspx",
+                "IconUrl": null,
+                "Id": "ac9d8be3-8650-4c62-b4cc-7d69de36cdac",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "25px 0px",
+                "height": "17px",
+                "width": "11px"
+            }
+        }, {
+            "Label": "תרבות, בידור וספורט",
+            "ListItemUrl": "/he/subjects/Pages/תרבות-בידור-וספורט.aspx",
+            "IconUrl": null,
+            "Id": "19b0cb5b-ca6a-4662-ae50-b383fa3a3323",
+            "Children": [{
+                "Label": "הוצאה לאומית לתרבות, לבידור ולספורט",
+                "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לתרבות-לבידור-ולספורט.aspx",
+                "IconUrl": null,
+                "Id": "08472f22-5133-4f98-8315-7c8a286ab5c7",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "14px 0px",
+                "height": "17px",
+                "width": "13px"
+            }
+        }, {
+            "Label": "פשיעה ומשפט",
+            "ListItemUrl": "/he/subjects/Pages/פשיעה-ומשפט.aspx",
+            "IconUrl": null,
+            "Id": "f83ad1b3-64e0-43df-8794-277cabc7c6ec",
+            "Children": [{
+                "Label": "נפגעי עבריינות ותחושת ביטחון אישי",
+                "ListItemUrl": "/he/subjects/Pages/נפגעי-עבריינות.aspx",
+                "IconUrl": null,
+                "Id": "8308e21d-4460-4464-b10d-18d441829394",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "פשיעה מדווחת למשטרת ישראל",
+                "ListItemUrl": "/he/subjects/Pages/פשיעה-מדווחת-למשטרת-ישראל.aspx",
+                "IconUrl": null,
+                "Id": "09f61820-1871-424d-8607-93afec25db6f",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "עומדים לדין",
+                "ListItemUrl": "/he/subjects/Pages/נאשמים.aspx",
+                "IconUrl": null,
+                "Id": "5fe4c26d-22c5-4d2d-ac62-54c063ba4bef",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מורשעים בדין",
+                "ListItemUrl": "/he/subjects/Pages/מורשעים-בדין.aspx",
+                "IconUrl": null,
+                "Id": "657accfa-ab30-4069-a888-89547e7a69d8",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "423px 1px",
+                "width": "13px"
+            }
+        }, {
+            "Label": "בטיחות בדרכים",
+            "ListItemUrl": "/he/subjects/Pages/בטיחות-בדרכים.aspx",
+            "IconUrl": null,
+            "Id": "149b5e64-b810-427d-97fe-96d62f210dfd",
+            "Children": [{
+                "Label": "תאונות דרכים עם נפגעים",
+                "ListItemUrl": "/he/subjects/Pages/תאונות-דרכים-עם-נפגעים.aspx",
+                "IconUrl": null,
+                "Id": "6a82bda8-134d-453d-b42b-d9eb5538c323",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "עבירות תנועה",
+                "ListItemUrl": "/he/subjects/Pages/עברות-תנועה.aspx",
+                "IconUrl": null,
+                "Id": "5fd9e7f9-0398-412f-b9f1-a1387bb7df10",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "528px -19px",
+                "height": "20px",
+                "width": "20px"
+            }
+        }],
+        "CustomProperties": null
+    }, {
+        "Label": "כלכלה",
+        "ListItemUrl": null,
+        "IconUrl": "/he/PublishingImages/_8.jpg",
+        "Id": "4feb782e-c459-4ff3-8e37-945b51c7a4a1",
+        "Children": [{
+            "Label": "שוק העבודה",
+            "ListItemUrl": "/he/subjects/Pages/שוק-העבודה.aspx",
+            "IconUrl": null,
+            "Id": "e8cbe37b-9854-4874-8d11-a564beb678fb",
+            "Children": [{
+                "Label": "שכירים / משרות שכיר",
+                "ListItemUrl": "/he/subjects/Pages/שכירים-ומשרות-שכיר.aspx",
+                "IconUrl": null,
+                "Id": "cb437bf1-5407-4a77-a5b4-21a98a5f0942",
+                "Children": [{
+                    "Label": "משרות שכיר",
+                    "ListItemUrl": "/he/subjects/Pages/משרות-שכיר.aspx",
+                    "IconUrl": null,
+                    "Id": "3ca63a69-085f-4312-b75b-187a4f80984b",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "שכירים",
+                    "ListItemUrl": "/he/subjects/Pages/שכירים.aspx",
+                    "IconUrl": null,
+                    "Id": "050e793c-163d-482d-8083-7f527495a81e",
+                    "Children": [{
+                        "Label": "מגזרים במשק",
+                        "ListItemUrl": "/he/subjects/Pages/מגזרים-במשק.aspx",
+                        "IconUrl": null,
+                        "Id": "3939f214-67a1-40d3-9a5b-7eebaac8f291",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "עובדי מדינה",
+                        "ListItemUrl": "/he/subjects/Pages/עובדי-מדינה.aspx",
+                        "IconUrl": null,
+                        "Id": "193056b4-26fc-4efc-9cef-b6a8029e7fee",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "עובדים זרים",
+                        "ListItemUrl": "/he/subjects/Pages/עובדים-זרים.aspx",
+                        "IconUrl": null,
+                        "Id": "8f4ec93e-a9d2-412f-a89c-b5aeabbb3410",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "עובדים ישראליים",
+                        "ListItemUrl": "/he/subjects/Pages/עובדים-ישראלים.aspx",
+                        "IconUrl": null,
+                        "Id": "9d0f3bf2-95fb-4b23-b9fe-8f9f1806405b",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "עצמאים ומעסיקים",
+                        "ListItemUrl": "/he/subjects/Pages/עצמאים-ומעסיקים.aspx",
+                        "IconUrl": null,
+                        "Id": "f3758444-152f-461d-9327-da52c7feac40",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "רשויות מקומיות",
+                        "ListItemUrl": "/he/subjects/Pages/רשויות-מקומיות.aspx",
+                        "IconUrl": null,
+                        "Id": "594f209b-82ba-4ce4-aaec-e741beccc031",
+                        "Children": [{
+                            "Label": "הרשויות המקומיות - נתונים פיזיים וכספיים",
+                            "ListItemUrl": "/he/subjects/Pages/הרשויות-המקומיות-נתונים-פיזיים-וכספיים.aspx",
+                            "IconUrl": null,
+                            "Id": "ec687f8e-b345-4d02-9acf-18bbcda24779",
+                            "Children": null,
+                            "CustomProperties": null
+                        }, {
+                            "Label": "אפיון הרשויות המקומיות ודירוגן",
+                            "ListItemUrl": "/he/subjects/Pages/אפיון-הרשויות-המקומיות-ודירוגן.aspx",
+                            "IconUrl": null,
+                            "Id": "e45e3330-fd31-4d01-b1b4-64dc1f9a049f",
+                            "Children": [{
+                                "Label": "מדד חברתי כלכלי ",
+                                "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-של-הרשויות-המקומיות.aspx",
+                                "IconUrl": null,
+                                "Id": "6f87bf02-99b5-4668-9349-0e1f7fb29df4",
+                                "Children": [{
+                                    "Label": "מדד חברתי כלכלי 1995",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-1995.aspx",
+                                    "IconUrl": null,
+                                    "Id": "bdf4c00a-2ede-46ef-b4d9-3a7429b997f8",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }, {
+                                    "Label": "מדד חברתי כלכלי 1999",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-1999.aspx",
+                                    "IconUrl": null,
+                                    "Id": "23de17e2-f1a7-4292-8029-d7a71ac2fd5e",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }, {
+                                    "Label": "מדד חברתי כלכלי 2001",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2001.aspx",
+                                    "IconUrl": null,
+                                    "Id": "fe245156-82aa-47da-8129-5ab58c130c05",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }, {
+                                    "Label": "מדד חברתי כלכלי 2003",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2003.aspx",
+                                    "IconUrl": null,
+                                    "Id": "78ef07e2-4ab4-423f-a56a-9fc42ebd2d28",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }, {
+                                    "Label": "מדד חברתי כלכלי 2006",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2006.aspx",
+                                    "IconUrl": null,
+                                    "Id": "7d6b0622-9599-48a1-b64e-f65f0f4bd387",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }, {
+                                    "Label": "מדד חברתי כלכלי 2008",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2008.aspx",
+                                    "IconUrl": null,
+                                    "Id": "23213869-d10d-44ff-9a60-d46c77e94f56",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }, {
+                                    "Label": "מדד חברתי כלכלי 2013",
+                                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2013.aspx",
+                                    "IconUrl": null,
+                                    "Id": "4c833030-a940-4698-9fd3-fc583d3e05c2",
+                                    "Children": null,
+                                    "CustomProperties": null
+                                }],
+                                "CustomProperties": null
+                            }, {
+                                "Label": "מדד קומפקטיות",
+                                "ListItemUrl": "/he/subjects/Pages/מדד-קומפקטיות-של-עיריות-ומועצות-מקומיות.aspx",
+                                "IconUrl": null,
+                                "Id": "785287e3-ad6d-4cb7-a4cc-1bfaf11a9193",
+                                "Children": null,
+                                "CustomProperties": null
+                            }, {
+                                "Label": "מדד פריפריאליות",
+                                "ListItemUrl": "/he/subjects/Pages/מדד-פריפריאליות-של-רשויות-מקומיות.aspx",
+                                "IconUrl": null,
+                                "Id": "a8fdeafb-379b-4c2f-908b-e3f59a0c48a8",
+                                "Children": null,
+                                "CustomProperties": null
+                            }],
+                            "CustomProperties": null
+                        }],
+                        "CustomProperties": {
+                            "background-position": "-29px 0px",
+                            "height": "13px",
+                            "width": "10px"
+                        }
+                    }],
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "עצמאים ומעסיקים",
+                "ListItemUrl": "/he/subjects/Pages/עצמאים-ומעסיקים.aspx",
+                "IconUrl": null,
+                "Id": "2a75ac78-e6c0-4be2-a661-dc595a24c146",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מחפשי עבודה",
+                "ListItemUrl": "/he/subjects/Pages/מחפשי-עבודה-בלתי-מועסקים.aspx",
+                "IconUrl": null,
+                "Id": "d5269784-9850-476e-99d3-c43f8d858d43",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "משרות פנויות",
+                "ListItemUrl": "/he/subjects/Pages/משרות-פנויות.aspx",
+                "IconUrl": null,
+                "Id": "4c18093b-c206-4788-9959-eb678cf4c9e8",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שכר / הכנסות",
+                "ListItemUrl": "/he/subjects/Pages/שכר-הכנסות.aspx",
+                "IconUrl": null,
+                "Id": "1eeb211c-7f95-4125-b84e-5f3d53f5b046",
+                "Children": [{
+                    "Label": "הכנסות שכירים ועצמאים",
+                    "ListItemUrl": "/he/subjects/Pages/הכנסות-שכירים-ועצמאיים.aspx",
+                    "IconUrl": null,
+                    "Id": "ecb045d4-f4ac-4f60-805a-5d6be0bb7fb7",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "שכר למשרת שכיר",
+                    "ListItemUrl": "/he/subjects/Pages/שכר-למשרות-שכיר.aspx",
+                    "IconUrl": null,
+                    "Id": "4e96fcc7-a523-4f9e-8dd8-e05cc9901770",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "אינם משתתפים בכוח העבודה",
+                "ListItemUrl": "/he/subjects/Pages/אינם-משתתפים-בכוח-העבודה.aspx",
+                "IconUrl": null,
+                "Id": "83a4358f-397d-48d0-ab17-735dde27b656",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תכונות כלכליות של משקי בית",
+                "ListItemUrl": "/he/subjects/Pages/משקי-בית-תכונות-כלכליות.aspx",
+                "IconUrl": null,
+                "Id": "2cfc6b71-75fd-413c-a6e7-fe0ed149dde9",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "178px -1px",
+                "height": "15px",
+                "width": "15px"
+            }
+        }, {
+            "Label": "מדדי מחירים",
+            "ListItemUrl": "/he/subjects/Pages/מדדי-מחירים.aspx",
+            "IconUrl": null,
+            "Id": "f2bc8d97-4582-405d-a483-c33b72d51916",
+            "Children": [{
+                "Label": "מדד המחירים לצרכן",
+                "ListItemUrl": "/he/subjects/Pages/מדד-המחירים-לצרכן.aspx",
+                "IconUrl": null,
+                "Id": "093d47a9-ed1a-4275-abab-37044da5317c",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מחירי דירות",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-דירות.aspx",
+                "IconUrl": null,
+                "Id": "fb640b57-b842-4a1d-a81f-923e8c0d5643",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד המחירים של תפוקת התעשייה ליעדים מקומיים",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירים-של-תפוקת-התעשייה-ליעדים-מקומיים.aspx",
+                "IconUrl": null,
+                "Id": "e7dcd9bf-4799-449b-837f-2904edcb8742",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד המחירים של תפוקת התעשייה ליצוא",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירים-של-תפוקת-התעשייה-ליצוא.aspx",
+                "IconUrl": null,
+                "Id": "67a94e1d-1b78-40d8-8bdb-e6e45eb2587e",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדדי מחירים בענפי השירותים",
+                "ListItemUrl": "/he/subjects/Pages/מדדי-מחירים-בענפי-השירותים.aspx",
+                "IconUrl": null,
+                "Id": "65448ea3-6711-47d7-9434-878bdf7644f2",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה בבנייה למגורים",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בבנייה-למגורים.aspx",
+                "IconUrl": null,
+                "Id": "7734ea27-8136-42cc-b1d6-dab05ce50121",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה בבנייה למסחר ולמשרדים",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בבנייה-למסחר-ולמשרדים.aspx",
+                "IconUrl": null,
+                "Id": "d178a617-d5bd-4261-b8ae-a464a8a37f4c",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה בסלילה ובגישור",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בסלילה-ובגישור.aspx",
+                "IconUrl": null,
+                "Id": "7cad9db8-dc6c-4c92-a9c3-137b0f5cca89",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה בחקלאות",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בחקלאות.aspx",
+                "IconUrl": null,
+                "Id": "2a809e4c-dcfe-41f4-8080-cb242cfdb4f0",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה באוטובוסים",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-באוטובוסים.aspx",
+                "IconUrl": null,
+                "Id": "d8a74ecb-c331-426c-b03c-3bb4047ed870",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה באוטובוסים זעירים ציבוריים",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-באוטובוסים-זעירים-ציבוריים.aspx",
+                "IconUrl": null,
+                "Id": "f7033dc1-8850-487b-b64a-e3a7a1e48c53",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "44px -19px",
+                "height": "18px",
+                "width": "9px"
+            }
+        }, {
+            "Label": "חשבונות לאומיים",
+            "ListItemUrl": "/he/subjects/Pages/חשבונות-לאומיים.aspx",
+            "IconUrl": null,
+            "Id": "c600caf3-44ee-4c85-b27a-84a5d803c421",
+            "Children": [{
+                "Label": 'תוצר מקומי גולמי (תמ"ג)',
+                "ListItemUrl": "/he/subjects/Pages/תוצר-מקומי-גולמי.aspx",
+                "IconUrl": null,
+                "Id": "bade4bb5-a9f3-41d5-af04-8732bc8e2b58",
+                "Children": [{
+                    "Label": "הוצאה לצריכה פרטית",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לצריכה-פרטית.aspx",
+                    "IconUrl": null,
+                    "Id": "eec5aabd-f6b5-4603-802b-3a03d96ff77b",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה לצריכה ציבורית",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לצריכה-ציבורית.aspx",
+                    "IconUrl": null,
+                    "Id": "0605201f-c5e0-429a-959f-0dfc1c8cc95c",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "השקעה גולמית",
+                    "ListItemUrl": "/he/subjects/Pages/השקעה-מקומית-גולמית.aspx",
+                    "IconUrl": null,
+                    "Id": "ccccfdf3-299b-472e-9c6e-70ed3cb5b276",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "יבוא ויצוא בחשבונות הלאומיים",
+                    "ListItemUrl": "/he/subjects/Pages/יבוא-ויצוא-בחשבונות-הלאומיים.aspx",
+                    "IconUrl": null,
+                    "Id": "58c0a00d-3fd6-41fc-8f03-439711e5070c",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "תוצר ענפי המשק - גישת הייצור",
+                    "ListItemUrl": "/he/subjects/Pages/תוצר-ענפי-המשק-גישת-הייצור.aspx",
+                    "IconUrl": null,
+                    "Id": "dfb0db4b-0c37-4681-89d1-04349595b802",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מועסקים, שעות עבודה ותמורה לעבודה בחשבונות הלאומיים",
+                    "ListItemUrl": "/he/subjects/Pages/מועסקים-שעות-עבודה-ותמורה-לעבודה-בחשבונות-הלאומיים.aspx",
+                    "IconUrl": null,
+                    "Id": "7ece5d2a-d8cf-4bb8-9fd7-3ea58913fa21",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "הכנסה לאומית וחיסכון לאומי",
+                "ListItemUrl": "/he/subjects/Pages/הכנסה-לאומית-וחיסכון-לאומי.aspx",
+                "IconUrl": null,
+                "Id": "30897735-ac4b-48c0-b6c5-edb1908d514d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "המגזר הממשלתי",
+                "ListItemUrl": "/he/subjects/Pages/המגזר-הממשלתי.aspx",
+                "IconUrl": null,
+                "Id": "9529f75e-8560-4ec7-a517-058e6ca53387",
+                "Children": [{
+                    "Label": "הוצאה לצריכה ציבורית",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לצריכה-ציבורית.aspx",
+                    "IconUrl": null,
+                    "Id": "e17b4ed1-2fad-4340-bd15-62b1e3ed8be1",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "חשבונות המגזר הממשלתי",
+                    "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי.aspx",
+                    "IconUrl": null,
+                    "Id": "796c1edd-b780-4508-b0f5-b2eadc2e440c",
+                    "Children": [{
+                        "Label": "חשבונות המגזר הממשלתי לפי GFS",
+                        "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי-לפי--GFS.aspx",
+                        "IconUrl": null,
+                        "Id": "78e5fff1-66ac-42da-87ab-88aa2d9dd14a",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "חשבונות המגזר הממשלתי לפי SNA",
+                        "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי-לפי--SNA.aspx",
+                        "IconUrl": null,
+                        "Id": "25d7eae9-6daa-41e2-b670-cf03269b97c6",
+                        "Children": null,
+                        "CustomProperties": null
+                    }],
+                    "CustomProperties": null
+                }, {
+                    "Label": "חוב ממשלתי",
+                    "ListItemUrl": "/he/subjects/Pages/חוב-ממשלתי.aspx",
+                    "IconUrl": null,
+                    "Id": "33d3ca96-1009-4c3a-a4ba-e5199aa12225",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "ביטחון",
+                    "ListItemUrl": "/he/subjects/Pages/ביטחון.aspx",
+                    "IconUrl": null,
+                    "Id": "1127b6f5-0dc2-4090-960b-447a17c0e49b",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מיסים",
+                    "ListItemUrl": "/he/subjects/Pages/מסים.aspx",
+                    "IconUrl": null,
+                    "Id": "012cfb7a-0e67-4434-926f-6387ddc6e93d",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "הוצאה לאומית",
+                "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית.aspx",
+                "IconUrl": null,
+                "Id": "81908e0f-f07b-490a-b336-b7666c16ad27",
+                "Children": [{
+                    "Label": "הוצאה לאומית לתרבות, לבידור ולספורט",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לתרבות-לבידור-ולספורט.aspx",
+                    "IconUrl": null,
+                    "Id": "1241d0bc-c3f6-4615-b5f5-847150881865",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה לאומית לבריאות",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לבריאות.aspx",
+                    "IconUrl": null,
+                    "Id": "009557ee-acd5-4781-880e-8af522ed2b5f",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה לאומית לחינוך",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לחינוך.aspx",
+                    "IconUrl": null,
+                    "Id": "57fbad5f-63af-4335-8d7d-7e2b171ab797",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה לאומית למחקר ופיתוח אזרחי",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-למחקר-ופיתוח-אזרחי.aspx",
+                    "IconUrl": null,
+                    "Id": "88d3eee1-8700-4fa5-97fa-0227ce5e63aa",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הוצאה לאומית לרווחה",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-לרווחה.aspx",
+                    "IconUrl": null,
+                    "Id": "e5e62ca5-2f13-4762-a096-3029f17047cd",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "לוחות היצע ושימושים ולוחות תשומה-תפוקה",
+                "ListItemUrl": "/he/subjects/Pages/לוחות-תשומה-תפוקה.aspx",
+                "IconUrl": null,
+                "Id": "a2efea30-d334-4338-b4a5-60ae04866c3f",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חשבונות לפי מגזר מוסדי",
+                "ListItemUrl": "/he/subjects/Pages/חשבונות-המשק-לפי-מגזר-מוסדי.aspx",
+                "IconUrl": null,
+                "Id": "9f5d33e1-2d81-495f-a1fc-ab70e71aad19",
+                "Children": [{
+                    "Label": "החשבונות השוטפים וחשבון ההון",
+                    "ListItemUrl": "/he/subjects/Pages/החשבונות-השוטפים-וחשבון-ההון.aspx",
+                    "IconUrl": null,
+                    "Id": "2caa775b-b5b1-4080-9b9d-2adaa6e6f693",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "המאזן הלאומי",
+                    "ListItemUrl": "/he/subjects/Pages/המאזן-הלאומי.aspx",
+                    "IconUrl": null,
+                    "Id": "575cfe49-0ca5-483d-840f-d1ff8cbbbbce",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "החשבון הפיננסי",
+                    "ListItemUrl": "/he/subjects/Pages/חשבון-פיננסי.aspx",
+                    "IconUrl": null,
+                    "Id": "fde744a7-3997-47d5-aefe-aa8ef7974669",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "חשבונות המגזר הממשלתי",
+                    "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי.aspx",
+                    "IconUrl": null,
+                    "Id": "3ad34077-ff2e-4e43-94db-2a9301747b7d",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }
+            , {
+                "Label": "מלכ''רים ופילנתרופיה",
+                "ListItemUrl": "/he/subjects/Pages/מגזר-שלישי-ופילנתרופיה-מלכר-עמותה-חברה-לתועלת-הציבור.aspx",
+                "IconUrl": null,
+                "Id": "bdd4c644-2c45-4621-8cab-190573f034b9",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-29px 2px",
+                "height": "15px",
+                "width": "11px"
+            }
+        }, {
+            "Label": "חשבונות בין-לאומיים",
+            "ListItemUrl": "/he/subjects/Pages/חשבונות-בין-לאומיים.aspx",
+            "IconUrl": null,
+            "Id": "6d025977-fa71-4957-b8d6-45061d647a95",
+            "Children": [{
+                "Label": "מאזן התשלומים",
+                "ListItemUrl": "/he/subjects/Pages/מאזן-התשלומים.aspx",
+                "IconUrl": null,
+                "Id": "9b2454ea-c20f-4e6b-88ed-4c05c5ad342c",
+                "Children": [{
+                    "Label": "החשבון הפיננסי של מאזן התשלומים",
+                    "ListItemUrl": "/he/subjects/Pages/החשבון-הפיננסי-של-מאזן-התשלומים.aspx",
+                    "IconUrl": null,
+                    "Id": "5b5ee116-a90e-4683-af43-d931ba93d272",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "החשבון השוטף של מאזן התשלומים",
+                    "ListItemUrl": "/he/subjects/Pages/החשבון-השוטף-של-מאזן-התשלומים.aspx",
+                    "IconUrl": null,
+                    "Id": "283c961f-ee7e-4ee4-9699-0a72906a4c3d",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "השקעה ישירה בחשבון הפיננסי של מאזן התשלומים",
+                    "ListItemUrl": "/he/subjects/Pages/השקעה-ישירה-בחשבון-הפיננסי-של-מאזן-התשלומים.aspx",
+                    "IconUrl": null,
+                    "Id": "8fff8c39-d367-4b6b-80e5-2c91d52b3927",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": 'נכסים והתחייבויות של המשק בחו"ל',
+                "ListItemUrl": "/he/subjects/Pages/נכסים-והתחייבויות-של-המשק-עם-חול.aspx",
+                "IconUrl": null,
+                "Id": "6a5656ea-f386-4ed3-b73d-7588fc18ea32",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "פעילות חברות רב-לאומיות בישראל (גלובליזציה)",
+                "ListItemUrl": "/he/subjects/Pages/פעילות-חברות-רב-לאומיות-גלובליזציה.aspx",
+                "IconUrl": null,
+                "Id": "7d62aa66-684e-433a-9921-8f7619e93383",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-59px -19px",
+                "height": "18px",
+                "width": "15px"
+            }
+        }, {
+            "Label": "יבוא ויצוא סחורות ושירותים",
+            "ListItemUrl": "/he/subjects/Pages/יבוא-ויצוא-סחורות-ושירותים.aspx",
+            "IconUrl": null,
+            "Id": "b2da7e00-76fe-4f85-8e26-b9352f14ec0a",
+            "Children": [{
+                "Label": "סחורות",
+                "ListItemUrl": "/he/subjects/Pages/סחורות.aspx",
+                "IconUrl": null,
+                "Id": "69b86677-62de-4e42-8761-5a6d59d6d451",
+                "Children": [{
+                    "Label": "יבוא סחורות",
+                    "ListItemUrl": "/he/subjects/Pages/יבוא-סחורות.aspx",
+                    "IconUrl": null,
+                    "Id": "5008e5f4-5571-4f3e-a685-c5bc3b0a3e99",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "יצוא סחורות",
+                    "ListItemUrl": "/he/subjects/Pages/יצוא-סחורות.aspx",
+                    "IconUrl": null,
+                    "Id": "d2fdda5a-7cb6-4dc0-8b40-e4603011b3c2",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מאזן הסחר בסחורות",
+                    "ListItemUrl": "/he/subjects/Pages/מאזן-הסחר-בסחורות.aspx",
+                    "IconUrl": null,
+                    "Id": "b3926714-d4c0-499b-9899-719e29a12ead",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדדי מחירים בסחר בסחורות",
+                    "ListItemUrl": "/he/subjects/Pages/מדדי-מחירים-בסחר-בסחורות.aspx",
+                    "IconUrl": null,
+                    "Id": "c7daa4cd-b967-49f8-80a2-bf33ffeb71d4",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "סחר בסחורות לפי ארצות",
+                    "ListItemUrl": "/he/subjects/Pages/סחר-בסחורות-לפי-ארצות.aspx",
+                    "IconUrl": null,
+                    "Id": "e8fd96a5-e65e-473a-9d50-03dff3a23a1b",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "שירותים",
+                "ListItemUrl": "/he/subjects/Pages/שירותים.aspx",
+                "IconUrl": null,
+                "Id": "8fbd0402-5bbb-456b-97d6-855a63e456d4",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "יבוא ויצוא בחשבונות הלאומיים",
+                "ListItemUrl": "/he/subjects/Pages/יבוא-ויצוא-בחשבונות-הלאומיים.aspx",
+                "IconUrl": null,
+                "Id": "9b7dfafc-19a8-419d-a47d-b12b9fed4bbe",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-85px 0px",
+                "height": "18px",
+                "width": "23px"
+            }
+        }, {
+            "Label": "עסקים",
+            "ListItemUrl": "/he/subjects/Pages/עסקים.aspx",
+            "IconUrl": null,
+            "Id": "91e94d3b-e084-4602-a95f-825217ac9d9f",
+            "Children": [{
+                "Label": "מאפייני עסקים",
+                "ListItemUrl": "/he/subjects/Pages/מאפייני-עסקים.aspx",
+                "IconUrl": null,
+                "Id": "7e58192d-86d1-4903-877f-9aabb9485c76",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "פדיון",
+                "ListItemUrl": "/he/subjects/Pages/פדיון.aspx",
+                "IconUrl": null,
+                "Id": "977935b2-5b1b-4037-84b3-d031b4f64de1",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מגמות בעסקים",
+                "ListItemUrl": "/he/subjects/Pages/מגמות-בעסקים.aspx",
+                "IconUrl": null,
+                "Id": "977935b2-5b1b-4037-84b3-d031b4f64de1",
+                "Children": null,
+                "CustomProperties": null
+
+            }, {
+                "Label": "רכישות בכרטיסי אשראי",
+                "ListItemUrl": "/he/subjects/Pages/רכישות-בכרטיסי-אשראי.aspx",
+                "IconUrl": null,
+                "Id": "91d35d62-d6b0-40c8-bbd1-e7557fa666af",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "רשתות שיווק",
+                "ListItemUrl": "/he/subjects/Pages/רשתות-שיווק.aspx",
+                "IconUrl": null,
+                "Id": "2632a2ef-44f5-4662-af2c-c9fbdab649d7",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חשבון הייצור והחשבון המאזני",
+                "ListItemUrl": "/he/subjects/Pages/חשבון-הייצור-והחשבון-המאזני.aspx",
+                "IconUrl": null,
+                "Id": "b2c2cbb1-46dc-4b22-ae0a-2384aa285a2a",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-26px -19px",
+                "height": "18px",
+                "width": "20px"
+            }
+        }, {
+            "Label": "תעשייה",
+            "ListItemUrl": "/he/subjects/Pages/תעשייה.aspx",
+            "IconUrl": null,
+            "Id": "6ae42738-ccec-4bc9-b1e9-1a5c3b086f97",
+            "Children": null,
+            "CustomProperties": {
+                "background-position": "-12px 0px",
+                "height": "18px",
+                "width": "17px"
+            }
+        }, {
+            "Label": "כספים והון",
+            "ListItemUrl": "/he/subjects/Pages/כספים-והון.aspx",
+            "IconUrl": null,
+            "Id": "b2650b2b-8c10-412a-939c-17d86f44ba26",
+            "Children": [{
+                "Label": "אוריינות פיננסית",
+                "ListItemUrl": "/he/subjects/Pages/אוריינות-פיננסית.aspx",
+                "IconUrl": null,
+                "Id": "ec523ae4-ed5e-4148-aae1-dfde401c7111",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שוק הכספים וההון",
+                "ListItemUrl": "/he/subjects/Pages/שוק-הכספים-וההון.aspx",
+                "IconUrl": null,
+                "Id": "803e8d06-7d93-4878-a1fc-15c4100a707a",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שערי חליפין",
+                "ListItemUrl": "/he/subjects/Pages/שערי-חליפין.aspx",
+                "IconUrl": null,
+                "Id": "af58e736-fa8e-48b1-8f58-a90a3b496197",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-167px 0px",
+                "height": "18px",
+                "width": "17px"
+            }
+        }, {
+            "Label": "מדע, טכנולוגיה ותקשורת",
+            "ListItemUrl": "/he/subjects/Pages/מדע-טכנולוגיה-ותקשורת.aspx",
+            "IconUrl": null,
+            "Id": "64ea39a6-ce9c-4214-8012-41ae3d5d3fab",
+            "Children": [{
+                "Label": "מחקר ופיתוח",
+                "ListItemUrl": "/he/subjects/Pages/מחקר-ופיתוח.aspx",
+                "IconUrl": null,
+                "Id": "22b310a3-431d-4dad-aba2-69a5d32d0f08",
+                "Children": [{
+                    "Label": "הוצאה לאומית למחקר ופיתוח אזרחי",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאה-לאומית-למחקר-ופיתוח-אזרחי.aspx",
+                    "IconUrl": null,
+                    "Id": "81f146fe-817a-4029-bfc6-e7d160a3805c",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדע, מחקר ופיתוח במגזר השכלה גבוהה",
+                    "ListItemUrl": "/he/subjects/Pages/מדע-מחקר-ופיתוח.aspx",
+                    "IconUrl": null,
+                    "Id": "62af1390-aba1-4871-b669-da267e77ce6a",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מחקר ופיתוח עסקי",
+                    "ListItemUrl": "/he/subjects/Pages/מחקר-ופיתוח-עסקי.aspx",
+                    "IconUrl": null,
+                    "Id": "d5a5f5e0-56e9-4d05-bafb-153af71c72be",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "חדשנות",
+                "ListItemUrl": "/he/subjects/Pages/חדשנות.aspx",
+                "IconUrl": null,
+                "Id": "4d6ecd91-3aa2-4015-9629-08330da793e2",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "ענפי טכנולוגיות מידע ותקשורת (ICT)",
+                "ListItemUrl": "/he/subjects/Pages/ענפי-טכנולוגיות-מידע-ותקשורת.aspx",
+                "IconUrl": null,
+                "Id": "c0fec72a-c031-4063-bef3-77bb5dfbdf29",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חברות הזנק (סטארט-אפ)",
+                "ListItemUrl": "/he/subjects/Pages/חברות-בענפי-השירותים-עתירי-הידע.aspx",
+                "IconUrl": null,
+                "Id": "2dfc3741-34ac-4a77-a9dd-baab561c568d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "הייטק",
+                "ListItemUrl": "/he/subjects/Pages/הייטק.aspx",
+                "IconUrl": null,
+                "Id": "8b686880-9a70-4492-a614-44c4a01fc3c8",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "ביוטכנולוגיה",
+                "ListItemUrl": "/he/subjects/Pages/ביוטכנולוגיה.aspx",
+                "IconUrl": null,
+                "Id": "72b61812-bf46-431b-b2cf-ed10902e0795",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-131px -18px",
+                "height": "15px",
+                "width": "12px"
+            }
+        }, {
+            "Label": "תיירות ושירותי הארחה",
+            "ListItemUrl": "/he/subjects/Pages/תיירות-ושירותי-הארחה.aspx",
+            "IconUrl": null,
+            "Id": "111501c0-7ba5-4792-848f-f8634425a48d",
+            "Children": [{
+                "Label": "תיירות נכנסת ויוצאת",
+                "ListItemUrl": "/he/subjects/Pages/תיירות-נכנסת-ויוצאת.aspx",
+                "IconUrl": null,
+                "Id": "afadbc69-a3e7-4826-b0e0-87ca4093c49f",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מלונות ואירוח",
+                "ListItemUrl": "/he/subjects/Pages/מלונות-ואירוח.aspx",
+                "IconUrl": null,
+                "Id": "ee8eaa67-6b0b-4506-bea5-3d0a06b5dcad",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תיירות פנים",
+                "ListItemUrl": "/he/subjects/Pages/תיירות-פנים.aspx",
+                "IconUrl": null,
+                "Id": "5e65ff8d-001a-414a-8f55-68fa55d7d049",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תיירות - נתונים כספיים",
+                "ListItemUrl": "/he/subjects/Pages/תיירות-נתונים-כספיים.aspx",
+                "IconUrl": null,
+                "Id": "0dbef483-97bf-4562-afa5-9c66200270db",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-118px -18px",
+                "height": "15px",
+                "width": "12px"
+            }
+        }],
+        "CustomProperties": null
+    }, {
+        "Label": "סביבה ותשתיות",
+        "ListItemUrl": null,
+        "IconUrl": null,
+        "Id": "29be0344-4582-4f93-8013-b5a55ae9b0d6",
+        "Children": [{
+            "Label": "אנרגיה",
+            "ListItemUrl": "/he/subjects/Pages/אנרגיה.aspx",
+            "IconUrl": null,
+            "Id": "4e7a85a7-ef21-459f-a157-991f5eaad5b2",
+            "Children": [{
+                "Label": "מאזן האנרגיה",
+                "ListItemUrl": "/he/subjects/Pages/מאזן-האנרגיה.aspx",
+                "IconUrl": null,
+                "Id": "5fd149ff-f263-47da-b95d-ecb0f5feb526",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "פחם",
+                "ListItemUrl": "/he/subjects/Pages/פחם.aspx",
+                "IconUrl": null,
+                "Id": "5077310c-9017-4b16-b1d6-334da31ebc85",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חשמל",
+                "ListItemUrl": "/he/subjects/Pages/חשמל.aspx",
+                "IconUrl": null,
+                "Id": "0afafd02-c58a-4d0a-8f01-fc53bb061906",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "נפט גולמי ותוצריו",
+                "ListItemUrl": "/he/subjects/Pages/נפט-גולמי-ותוצריו.aspx",
+                "IconUrl": null,
+                "Id": "33bf8a8a-70f0-46c4-96d5-92a1b8d56a8b",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "גז טבעי",
+                "ListItemUrl": "/he/subjects/Pages/גז-טבעי.aspx",
+                "IconUrl": null,
+                "Id": "bc9e4065-491c-4be2-b606-a68fabbdd28e",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "זיהום אוויר וגזי חממה",
+                "ListItemUrl": "/he/subjects/Pages/זיהום-אוויר-וגזי-חממה.aspx",
+                "IconUrl": null,
+                "Id": "f9e3db96-10b3-4539-bd65-124a49094b77",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-196px 0px",
+                "height": "13px",
+                "width": "11px"
+            }
+        }, {
+            "Label": "סביבה",
+            "ListItemUrl": "/he/subjects/Pages/סביבה.aspx",
+            "IconUrl": null,
+            "Id": "e8d3a177-988b-4fcd-98ab-cbe431252284",
+            "Children": [{
+                "Label": "הוצאה לשמירה על הסביבה",
+                "ListItemUrl": "/he/subjects/Pages/הוצאה-לשמירה-על-הסביבה.aspx",
+                "IconUrl": null,
+                "Id": "4e9d7e39-681c-4d7e-9f52-f62988388790",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מים ושפכים",
+                "ListItemUrl": "/he/subjects/Pages/מים-ושפכים.aspx",
+                "IconUrl": null,
+                "Id": "e3e13875-8438-4599-92c3-964ec032b044",
+                "Children":[{
+                "Label": "משקעים וימי גשם",
+                "ListItemUrl": "/he/subjects/Pages/משקעים-וימי-גשם.aspx",
+                "IconUrl": null,
+                "Id": "dd369182-6b84-43bf-9491-825ff2eb6417",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מצב משאבי המים",
+                "ListItemUrl": "/he/subjects/Pages/מצב-משאבי-המים.aspx",
+                "IconUrl": null,
+                "Id": "cb54b060-93a9-47dc-8add-3dc2cb6f99f7",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "הפקה ואספקה של מים - נתונים כספיים וכמותיים",
+                "ListItemUrl": "/he/subjects/Pages/הפקה-ואספקה-של-מים-נתונים-כספיים-וכמותיים.aspx",
+                "IconUrl": null,
+                "Id": "ece54aa3-16fc-48eb-81e3-197a8d08aa14",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "צריכת מים - נתונים כספיים וכמותיים",
+                "ListItemUrl": "/he/subjects/Pages/צריכת-מים-נתונים-כספיים-וכמותיים.aspx",
+                "IconUrl": null,
+                "Id": "44acf95b-cde2-4912-8335-db55e53432a6",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "איכות המים",
+                "ListItemUrl": "/he/subjects/Pages/איכות-המים.aspx",
+                "IconUrl": null,
+                "Id": "a64c0146-b561-40e0-9fcf-d39956434c61",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "טיפול בשפכים",
+                "ListItemUrl": "/he/subjects/Pages/טיפול-בשפכים.aspx",
+                "IconUrl": null,
+                "Id": "6c7e58db-b6e9-45b0-a04e-84593d388d5a",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חשבון המים",
+                "ListItemUrl": "/he/subjects/Pages/חשבון-המים.aspx",
+                "IconUrl": null,
+                "Id": "44b25494-2cf0-43b8-a3bc-b84ca9b3e62a",
+                "Children": null,
+                "CustomProperties": null
+            }],
+                "CustomProperties": null
+            }, {
+                "Label": "זיהום אוויר וגזי חממה",
+                "ListItemUrl": "/he/subjects/Pages/זיהום-אוויר-וגזי-חממה.aspx",
+                "IconUrl": null,
+                "Id": "230de9f2-589d-40da-ae9f-effc72691881",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "פסולת ומחזור",
+                "ListItemUrl": "/he/subjects/Pages/פסולת-ומחזור.aspx",
+                "IconUrl": null,
+                "Id": "205e03a1-5e0d-42d2-bf83-d3321d77f91c",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מגוון ביולוגי",
+                "ListItemUrl": "/he/subjects/Pages/מגוון-ביולוגי.aspx",
+                "IconUrl": null,
+                "Id": "16257f79-75ef-45c6-a24f-114a0bfc9efb",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חקלאות וסביבה",
+                "ListItemUrl": "/he/subjects/Pages/חקלאות-וסביבה.aspx",
+                "IconUrl": null,
+                "Id": "24dafc19-d37b-4264-86ad-511b22a2d5fb",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-186px 0px",
+                "height": "13px",
+                "width": "11px"
+            }
+        }, {
+            "Label": "מים ושפכים",
+            "ListItemUrl": "/he/subjects/Pages/מים-ושפכים.aspx",
+            "IconUrl": null,
+            "Id": "35e798f3-0b96-4f14-a8dd-9072dd3cef47",
+            "Children": [{
+                "Label": "משקעים וימי גשם",
+                "ListItemUrl": "/he/subjects/Pages/משקעים-וימי-גשם.aspx",
+                "IconUrl": null,
+                "Id": "dd369182-6b84-43bf-9491-825ff2eb6417",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מצב משאבי המים",
+                "ListItemUrl": "/he/subjects/Pages/מצב-משאבי-המים.aspx",
+                "IconUrl": null,
+                "Id": "cb54b060-93a9-47dc-8add-3dc2cb6f99f7",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "הפקה ואספקה של מים - נתונים כספיים וכמותיים",
+                "ListItemUrl": "/he/subjects/Pages/הפקה-ואספקה-של-מים-נתונים-כספיים-וכמותיים.aspx",
+                "IconUrl": null,
+                "Id": "ece54aa3-16fc-48eb-81e3-197a8d08aa14",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "צריכת מים - נתונים כספיים וכמותיים",
+                "ListItemUrl": "/he/subjects/Pages/צריכת-מים-נתונים-כספיים-וכמותיים.aspx",
+                "IconUrl": null,
+                "Id": "44acf95b-cde2-4912-8335-db55e53432a6",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "איכות המים",
+                "ListItemUrl": "/he/subjects/Pages/איכות-המים.aspx",
+                "IconUrl": null,
+                "Id": "a64c0146-b561-40e0-9fcf-d39956434c61",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "טיפול בשפכים",
+                "ListItemUrl": "/he/subjects/Pages/טיפול-בשפכים.aspx",
+                "IconUrl": null,
+                "Id": "6c7e58db-b6e9-45b0-a04e-84593d388d5a",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חשבון המים",
+                "ListItemUrl": "/he/subjects/Pages/חשבון-המים.aspx",
+                "IconUrl": null,
+                "Id": "44b25494-2cf0-43b8-a3bc-b84ca9b3e62a",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-89px -19px",
+                "height": "17px",
+                "width": "14px"
+            }
+        }, {
+            "Label": "גאוגרפיה",
+            "ListItemUrl": "/he/subjects/Pages/גאוגרפיה.aspx",
+            "IconUrl": null,
+            "Id": "ea02a733-e529-4bb9-b774-f340956d1ba5",
+            "Children": [{
+                "Label": "יישובים וחלוקות גאוגרפיות נוספות",
+                "ListItemUrl": "/he/subjects/Pages/יישובים-וחלוקות-גאוגרפיות-נוספות.aspx",
+                "IconUrl": null,
+                "Id": "03138028-b397-4b45-a791-1f8c3aed67e0",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מאפיינים גאופיזיים",
+                "ListItemUrl": "/he/subjects/Pages/מאפיינים-גאופיזיים.aspx",
+                "IconUrl": null,
+                "Id": "69c315fd-6239-4182-a2b1-b6927ea5b948",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "אפיון הרשויות המקומיות ודירוגן",
+                "ListItemUrl": "/he/subjects/Pages/אפיון-הרשויות-המקומיות-ודירוגן.aspx",
+                "IconUrl": null,
+                "Id": "2e33b013-0232-4a1a-818c-6f7818665e17",
+                "Children": [{
+                    "Label": "מדד חברתי-כלכלי ",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-של-הרשויות-המקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "71e0c9fe-37ee-46d9-95b2-ad82a62da4bc",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד קומפקטיות",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-קומפקטיות-של-עיריות-ומועצות-מקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "744901e9-99a7-4baf-967c-897e61ce5873",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד פריפריאליות",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-פריפריאליות-של-רשויות-מקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "da305636-d89c-4d48-bcc1-b63872daa430",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-136px 0px",
+                "height": "17px",
+                "width": "14px"
+            }
+        }, {
+            "Label": 'בינוי, דיור ונדל"ן',
+            "ListItemUrl": "/he/subjects/Pages/בינוי-דיור-ונדלן.aspx",
+            "IconUrl": null,
+            "Id": "883a2c77-8b1f-4678-86c6-a8de79724489",
+            "Children": [{
+                "Label": "היתרי בנייה",
+                "ListItemUrl": "/he/subjects/Pages/היתרי-בנייה.aspx",
+                "IconUrl": null,
+                "Id": "af542c23-a876-4767-aaab-554f895e77e4",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "התחלות בנייה וגמר בנייה",
+                "ListItemUrl": "/he/subjects/Pages/התחלות-בנייה-וגמר-בנייה.aspx",
+                "IconUrl": null,
+                "Id": "f49c5acb-d451-44a7-a850-6829f4fb246d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מכירת דירות חדשות",
+                "ListItemUrl": "/he/subjects/Pages/מכירת-דירות-חדשות.aspx",
+                "IconUrl": null,
+                "Id": "8f719f14-9059-4760-a3b5-d0f477cef0fb",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "סלילת כבישים והנחת צנרת",
+                "ListItemUrl": "/he/subjects/Pages/סלילת-כבישים-והנחת-צנרת.aspx",
+                "IconUrl": null,
+                "Id": "b14b50ac-e7cb-4160-a117-e1e62972c36d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "צפיפות ותנאי דיור",
+                "ListItemUrl": "/he/subjects/Pages/צפיפות-ותנאי-דיור.aspx",
+                "IconUrl": null,
+                "Id": "43648abe-b87b-40d1-9476-7876056ff3dc",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דירות ומבנים",
+                "ListItemUrl": "/he/subjects/Pages/מרשם-דירות.aspx",
+                "IconUrl": null,
+                "Id": "681e8d27-38be-45cd-9df3-d71b7826165d",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": 'בינוי דיור ונדל"ן - מדדים',
+                "ListItemUrl": "/he/subjects/Pages/מדדים-בבינוי-דיור-ונדלן.aspx",
+                "IconUrl": null,
+                "Id": "1830b117-82a7-47de-a699-29ebef7480fe",
+                "Children": [{
+                    "Label": "מחירי דירות",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-דירות.aspx",
+                    "IconUrl": null,
+                    "Id": "fb640b57-b842-4a1d-a81f-923e8c0d5643",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד מחירי תשומה בבנייה למגורים",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בבנייה-למגורים.aspx",
+                    "IconUrl": null,
+                    "Id": "a9cce27c-f94f-4dd9-a864-84a26db5d498",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד מחירי תשומה בבנייה למסחר ולמשרדים",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בבנייה-למסחר-ולמשרדים.aspx",
+                    "IconUrl": null,
+                    "Id": "d4eff7a4-20ef-43f6-8a75-755db6175484",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד מחירי תשומה בסלילה ובגישור",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-בסלילה-ובגישור.aspx",
+                    "IconUrl": null,
+                    "Id": "57a137d6-0d7b-4a8a-98e7-4ccd83d45628",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד קומפקטיות",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-קומפקטיות-של-עיריות-ומועצות-מקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "b6341397-9cac-4c87-b663-6377c5e02652",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": 'בינוי דיור ונדל"ן - נתונים כספיים',
+                "ListItemUrl": "/he/subjects/Pages/נתונים-כספיים-בבינוי-דיור-ונדלן.aspx",
+                "IconUrl": null,
+                "Id": "8a89ea62-00bc-45b7-965e-8ec047ce84a4",
+                "Children": [{
+                    "Label": "הוצאות ובעלות על דיור",
+                    "ListItemUrl": "/he/subjects/Pages/הוצאות-ובעלות-על-דיור.aspx",
+                    "IconUrl": null,
+                    "Id": "2aaae516-d994-4c59-88cf-1e6e77007f87",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "השקעה גולמית בבינוי",
+                    "ListItemUrl": "/he/subjects/Pages/השקעה-גולמית-בבינוי.aspx",
+                    "IconUrl": null,
+                    "Id": "ca8b2b1b-cf40-450f-866d-77e7ea68bdfe",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מחירים ממוצעים של דירות בבעלות",
+                    "ListItemUrl": "/he/subjects/Pages/מחירים-ממוצעים-של-דירות-בבעלות.aspx",
+                    "IconUrl": null,
+                    "Id": "0ecda34b-21d8-4824-99de-17ec9a471df6",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מחירים ממוצעים של שכר דירה",
+                    "ListItemUrl": "/he/subjects/Pages/מחירים-ממוצעים-של-שכר-דירה.aspx",
+                    "IconUrl": null,
+                    "Id": "39ac3974-71c3-48a9-8fd3-4d4340fb6e1d",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "שווי מוערך של נכסים למגורים",
+                    "ListItemUrl": "/he/subjects/Pages/שווי-מוערך-של-נכסים-למגורים.aspx",
+                    "IconUrl": null,
+                    "Id": "8f27634c-be6c-4041-a333-456c4dc6d64f",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "8px -17px",
+                "height": "17px",
+                "width": "22px"
+            }
+        }, {
+            "Label": "חקלאות",
+            "ListItemUrl": "/he/subjects/Pages/חקלאות.aspx",
+            "IconUrl": null,
+            "Id": "6f6b0aae-f070-4edf-8228-11a75c23ab9b",
+            "Children": [{
+                "Label": "חשבון ענף החקלאות",
+                "ListItemUrl": "/he/subjects/Pages/חשבון-ענף-החקלאות.aspx",
+                "IconUrl": null,
+                "Id": "6b7ba209-eed6-4f91-a519-353a4cac977f",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שטחי חקלאות ויער",
+                "ListItemUrl": "/he/subjects/Pages/שטחי-חקלאות-ויער.aspx",
+                "IconUrl": null,
+                "Id": "9d88f420-5656-4efa-9eb2-49c178967082",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תשומה והון בחקלאות",
+                "ListItemUrl": "/he/subjects/Pages/תשומה-והון-בחקלאות.aspx",
+                "IconUrl": null,
+                "Id": "47b6ac6e-25da-4d5f-853e-7c15082b4037",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תוצרת חקלאית",
+                "ListItemUrl": "/he/subjects/Pages/תוצרת-חקלאית.aspx",
+                "IconUrl": null,
+                "Id": "5fe95aff-4cd2-4622-b200-8fdd76211494",
+                "Children": [{
+                    "Label": "תוצרת בעלי חיים",
+                    "ListItemUrl": "/he/subjects/Pages/תוצרת-בעלי-חיים.aspx",
+                    "IconUrl": null,
+                    "Id": "168c75eb-29e5-4eb4-ad60-221c73ebdf77",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "תוצרת צמחית",
+                    "ListItemUrl": "/he/subjects/Pages/תוצרת-צמחית.aspx",
+                    "IconUrl": null,
+                    "Id": "ff1edb62-850b-442b-b187-aa961d1bb1a3",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "חקלאות וסביבה",
+                "ListItemUrl": "/he/subjects/Pages/חקלאות-וסביבה.aspx",
+                "IconUrl": null,
+                "Id": "84dcbfb7-97b7-4357-a9e4-cc2d16173162",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מאזן אספקת המזון",
+                "ListItemUrl": "/he/subjects/Pages/מאזן-אספקת-המזון.aspx",
+                "IconUrl": null,
+                "Id": "90ca416b-ae6f-4ed0-923a-48e67cbc5df6",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-44px -17px",
+                "height": "17px",
+                "width": "16px"
+            }
+        }, {
+            "Label": "תחבורה",
+            "ListItemUrl": "/he/subjects/Pages/תחבורה.aspx",
+            "IconUrl": null,
+            "Id": "1724d74c-fd3c-4e2f-a68c-3f6084eabb11",
+            "Children": [{
+                "Label": "דרכים",
+                "ListItemUrl": "/he/subjects/Pages/דרכים.aspx",
+                "IconUrl": null,
+                "Id": "c7a3d25f-435b-41fc-8a55-b5eb4cf066aa",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "כלי רכב",
+                "ListItemUrl": "/he/subjects/Pages/כלי-רכב.aspx",
+                "IconUrl": null,
+                "Id": "f92a27d4-2a12-4ab5-9176-de6e2b323850",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "נסועה (קילומטרז')",
+                "ListItemUrl": "/he/subjects/Pages/נסועה-קילומטרז.aspx",
+                "IconUrl": null,
+                "Id": "905d0996-2eb5-49cb-ad26-47495c2ccb13",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "ספירות תנועה בדרכים בין-עירוניות",
+                "ListItemUrl": "/he/subjects/Pages/ספירות-תנועה-בדרכים-בין-עירוניות.aspx",
+                "IconUrl": null,
+                "Id": "30d7f170-5c3c-4cc0-ad95-6d40a0d0d517",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מורשים לנהוג",
+                "ListItemUrl": "/he/subjects/Pages/מורשים-לנהוג.aspx",
+                "IconUrl": null,
+                "Id": "bec5810d-ff5c-44df-8890-c6adadfcd204",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "עבירות תנועה",
+                "ListItemUrl": "/he/subjects/Pages/עברות-תנועה.aspx",
+                "IconUrl": null,
+                "Id": "679b0141-0972-4205-872f-8c55a746b964",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "תאונות דרכים עם נפגעים",
+                "ListItemUrl": "/he/subjects/Pages/תאונות-דרכים-עם-נפגעים.aspx",
+                "IconUrl": null,
+                "Id": "46626fb7-97cf-474a-badf-005a6e48e514",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שירותי אוטובוסים בקווים קבועים",
+                "ListItemUrl": "/he/subjects/Pages/שירותי-אוטובוסים-בקווים-קבועים.aspx",
+                "IconUrl": null,
+                "Id": "c4c8afef-e392-418d-b7ed-226af802cd10",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מדד מחירי תשומה באוטובוסים",
+                "ListItemUrl": "/he/subjects/Pages/מדד-מחירי-תשומה-באוטובוסים.aspx",
+                "IconUrl": null,
+                "Id": "207c76b2-55a5-46f1-bb3a-2dfab49c4c78",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שירותי רכבת",
+                "ListItemUrl": "/he/subjects/Pages/שירותי-רכבת.aspx",
+                "IconUrl": null,
+                "Id": "948a2706-3557-4226-90ea-1a5e84973670",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "הובלה ימית ואווירית",
+                "ListItemUrl": "/he/subjects/Pages/הובלה-ימית-ואווירית.aspx",
+                "IconUrl": null,
+                "Id": "c69169fc-b743-47dc-bd77-069dc8f87679",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שירותים של נמלי ים",
+                "ListItemUrl": "/he/subjects/Pages/שירותים-של-נמלי-הים.aspx",
+                "IconUrl": null,
+                "Id": "2f3e505f-207a-4bfd-8105-49a36e13082a",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "שירותים של נמלי תעופה",
+                "ListItemUrl": "/he/subjects/Pages/שירותים-של-נמלי-תעופה.aspx",
+                "IconUrl": null,
+                "Id": "30a0b7fc-71cd-43ac-93ce-0f790d6e7ff1",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דואר ובלדרות",
+                "ListItemUrl": "/he/subjects/Pages/דואר-ובלדרות.aspx",
+                "IconUrl": null,
+                "Id": "dcb94122-79f3-41a5-8314-e19d4296db2f",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-103px -19px",
+                "height": "15px",
+                "width": "16px"
+            }
+        }],
+        "CustomProperties": null
+    }, {
+        "Label": "ממשל ושלטון מקומי",
+        "ListItemUrl": null,
+        "IconUrl": null,
+        "Id": "5127d347-39fa-47db-9512-40696cde2713",
+        "Children": [{
+            "Label": "המגזר הממשלתי",
+            "ListItemUrl": "/he/subjects/Pages/המגזר-הממשלתי.aspx",
+            "IconUrl": null,
+            "Id": "b4355776-5d83-42a6-9caf-81961f9a70af",
+            "Children": [{
+                "Label": "הוצאה לצריכה ציבורית",
+                "ListItemUrl": "/he/subjects/Pages/הוצאה-לצריכה-ציבורית.aspx",
+                "IconUrl": null,
+                "Id": "0ff71b7c-eb94-43f8-bf18-e74cd2a5cea9",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "חשבונות המגזר הממשלתי",
+                "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי.aspx",
+                "IconUrl": null,
+                "Id": "2062dfdc-6575-4722-b23c-9a0b79ad3da1",
+                "Children": [{
+                    "Label": "חשבונות המגזר הממשלתי לפי GFS",
+                    "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי-לפי--GFS.aspx",
+                    "IconUrl": null,
+                    "Id": "555920be-a696-4369-8ee4-6611484552dd",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "חשבונות המגזר הממשלתי לפי SNA",
+                    "ListItemUrl": "/he/subjects/Pages/חשבונות-המגזר-הממשלתי-לפי--SNA.aspx",
+                    "IconUrl": null,
+                    "Id": "5da0be7f-1718-40ee-9544-db14a75736d8",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }, {
+                "Label": "חוב ממשלתי",
+                "ListItemUrl": "/he/subjects/Pages/חוב-ממשלתי.aspx",
+                "IconUrl": null,
+                "Id": "37791761-f129-45e8-a3e3-b288bc8b8492",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "ביטחון",
+                "ListItemUrl": "/he/subjects/Pages/ביטחון.aspx",
+                "IconUrl": null,
+                "Id": "1db0ff28-2fd5-4a70-afc2-a18206e8ffbb",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מיסים",
+                "ListItemUrl": "/he/subjects/Pages/מסים.aspx",
+                "IconUrl": null,
+                "Id": "f60395dc-1f6c-41c4-97f0-3e328fc22905",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-123px 0px",
+                "height": "15px",
+                "width": "12px"
+            }
+        }, {
+            "Label": "רשויות מקומיות",
+            "ListItemUrl": "/he/subjects/Pages/רשויות-מקומיות.aspx",
+            "IconUrl": null,
+            "Id": "92412c8d-ee84-4e26-92f1-03e7d428cc09",
+            "Children": [{
+                "Label": "רשויות מקומיות - נתונים פיזיים וכספיים",
+                "ListItemUrl": "/he/subjects/Pages/הרשויות-המקומיות-נתונים-פיזיים-וכספיים.aspx",
+                "IconUrl": null,
+                "Id": "ec687f8e-b345-4d02-9acf-18bbcda24779",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "אפיון הרשויות המקומיות ודירוגן",
+                "ListItemUrl": "/he/subjects/Pages/אפיון-הרשויות-המקומיות-ודירוגן.aspx",
+                "IconUrl": null,
+                "Id": "e45e3330-fd31-4d01-b1b4-64dc1f9a049f",
+                "Children": [{
+                    "Label": "מדד חברתי-כלכלי ",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-של-הרשויות-המקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "6f87bf02-99b5-4668-9349-0e1f7fb29df4",
+                    "Children": [{
+                        "Label": "מדד חברתי כלכלי 1995",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-1995.aspx",
+                        "IconUrl": null,
+                        "Id": "bdf4c00a-2ede-46ef-b4d9-3a7429b997f8",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "מדד חברתי כלכלי 1999",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-1999.aspx",
+                        "IconUrl": null,
+                        "Id": "23de17e2-f1a7-4292-8029-d7a71ac2fd5e",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "מדד חברתי כלכלי 2001",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2001.aspx",
+                        "IconUrl": null,
+                        "Id": "fe245156-82aa-47da-8129-5ab58c130c05",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "מדד חברתי כלכלי 2003",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2003.aspx",
+                        "IconUrl": null,
+                        "Id": "78ef07e2-4ab4-423f-a56a-9fc42ebd2d28",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "מדד חברתי כלכלי 2006",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2006.aspx",
+                        "IconUrl": null,
+                        "Id": "7d6b0622-9599-48a1-b64e-f65f0f4bd387",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "מדד חברתי כלכלי 2008",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2008.aspx",
+                        "IconUrl": null,
+                        "Id": "23213869-d10d-44ff-9a60-d46c77e94f56",
+                        "Children": null,
+                        "CustomProperties": null
+                    }, {
+                        "Label": "מדד חברתי כלכלי 2013",
+                        "ListItemUrl": "/he/subjects/Pages/מדד-חברתי-כלכלי-2013.aspx",
+                        "IconUrl": null,
+                        "Id": "4c833030-a940-4698-9fd3-fc583d3e05c2",
+                        "Children": null,
+                        "CustomProperties": null
+                    }],
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד קומפקטיות",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-קומפקטיות-של-עיריות-ומועצות-מקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "785287e3-ad6d-4cb7-a4cc-1bfaf11a9193",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדד פריפריאליות",
+                    "ListItemUrl": "/he/subjects/Pages/מדד-פריפריאליות-של-רשויות-מקומיות.aspx",
+                    "IconUrl": null,
+                    "Id": "a8fdeafb-379b-4c2f-908b-e3f59a0c48a8",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+                "CustomProperties": null
+            }],
+            "CustomProperties": {
+                "background-position": "-29px 0px",
+                "height": "13px",
+                "width": "10px"
+            }
+        }, {
+            "Label": "בחירות, כנסת וממשל",
+            "ListItemUrl": "/he/subjects/Pages/בחירות-והכנסת.aspx",
+            "IconUrl": null,
+            "Id": "336a2157-a867-4cff-ab70-05edc43083b4",
+            "Children": null,
+            "CustomProperties": {
+                "background-position": "-70px 0px",
+                "height": "13px",
+                "width": "18px"
+            }
+        }],
+        "CustomProperties": null
+    }, {
+        "Label": "נושאים נבחרים / רוחביים",
+        "ListItemUrl": null,
+        "IconUrl": null,
+        "Id": "364b4c7b-10a2-4e26-a314-910a44888b56",
+        "Children": [{
+            "Label": "נשים וגברים",
+            "ListItemUrl": "/he/subjects/Pages/נשים-וגברים.aspx",
+            "IconUrl": null,
+            "Id": "c270ab18-3938-4978-a9bd-5b609a6992b6",
+            "Children": null,
+            "CustomProperties": {
+                "background-position": "-150px 0px",
+                "height": "15px",
+                "width": "16px"
+            }
+        }, {
+            "Label": "ילדים",
+            "ListItemUrl": "/he/subjects/Pages/ילדים.aspx",
+            "IconUrl": null,
+            "Id": "c17efbc1-0f93-4e9c-afeb-1e3678e02b95",
+            "Children": null,
+            "CustomProperties": {
+                "background-position": "-13px -19px",
+                "height": "15px",
+                "width": "12px"
+            }
+        }, 
+        {
+             "Label": "שמות",
+             "ListItemUrl": "/he/subjects/Pages/שמות.aspx",
+             "IconUrl": null,
+             "Id": "c17efbc1-0f93-4e9c-afeb-1e3678e02b95",
+             "Children": null,
+             "CustomProperties": {
+                 "background-position": "-13px -19px",
+                 "height": "15px",
+                 "width": "12px"
+             }
+
+
+         },
+        {
+            "Label": "אזרחים ותיקים",
+            "ListItemUrl": "/he/subjects/Pages/קשישים.aspx",
+            "IconUrl": null,
+            "Id": "ce5125a3-580a-46ed-8777-433d3fa105b3",
+            "Children": null,
+            "CustomProperties": {
+                "background-position": "-157px -19px",
+                "height": "17px",
+                "width": "12px"
+            }
+        }, {
+            "Label": "האוכלוסייה הערבית",
+            "ListItemUrl": "/he/subjects/Pages/האוכלוסייה-הערבית.aspx",
+            "IconUrl": null,
+            "Id": "bbe6a5db-8117-424c-aa26-5ad43e2070f5",
+            "Children": null,
+            "CustomProperties": null
+        }, {
+            "Label": "הסקר החברתי",
+            "ListItemUrl": "/he/subjects/Pages/הסקר-החברתי.aspx",
+            "IconUrl": null,
+            "Id": "d466ae45-8bfc-4617-9e89-1757b88a824e",
+            "Children": [
+               {
+                    "Label": 'תחבורה ובטיחות בדרכים, שימוש בשפות ומדדי רווחה אישית, 2021',
+                    "ListItemUrl": "/he/subjects/Pages/תחבורה-ובטיחות-בדרכים-שימוש-בשפות-ומדדי-רווחה-אישית-2021.aspx",
+                    "IconUrl": null,
+                    "Id": "02ed7c91-9f5d-40e5-afd5-30dc6b24a404",
+                    "Children": null,
+                    "CustomProperties": null
+                  
+                },
+              {
+                      "Label": 'העידן הדיגיטלי, 2020',
+                      "ListItemUrl": "/he/subjects/Pages/העידן-הדיגיטלי-2020.aspx",
+                      "IconUrl": null,
+                      "Id": "02ed7c91-9f5d-40e5-afd5-30dc6b24a404",
+                      "Children": null,
+                      "CustomProperties": null
+                  },
+             {
+                 "Label": 'דיור, משפחתיות, טיפול בבן משפחה עם מוגבלות ונסיעות לחו"ל, 2019',
+                 "ListItemUrl": "/he/subjects/Pages/דיור,-משפחתיות,-טיפול-בבן-משפחה-עם-מוגבלות-ונסיעות-לחול---2019.aspx",
+                 "IconUrl": null,
+                 "Id": "02ed7c91-9f5d-40e5-afd5-30dc6b24a404",
+                 "Children": null,
+                 "CustomProperties": null
+             },
+            {
+                "Label": "מוביליות חברתית, 2018",
+                "ListItemUrl": "/he/subjects/Pages/מוביליות-חברתית-סקר-2018.aspx",
+                "IconUrl": null,
+                "Id": "02ed7c91-9f5d-40e5-afd5-30dc6b24a404",
+                "Children": null,
+                "CustomProperties": null
+            },
+            {
+                "Label": "בריאות ואורח חיים, 2017",
+                "ListItemUrl": "/he/subjects/Pages/בריאות-ואורח-חיים-סקר-2017.aspx",
+                "IconUrl": null,
+                "Id": "54d4cc9e-2290-4bf2-b10f-de1cf7b5087d",
+                "Children": null,
+                "CustomProperties": null
+            },
+                {
+                    "Label": "תנאי עבודה, 2016",
+                    "ListItemUrl": "/he/subjects/Pages/תנאי-עבודה-2016.aspx",
+                    "IconUrl": null,
+                    "Id": "96d1c6f5-c3bd-4991-8e8e-a10ed4c0376e",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "עמדות כלפי שירותי ממשל ומעורבות אזרחית, 2015",
+                    "ListItemUrl": "/he/subjects/Pages/עמדות-כלפי-שירותי-ממשל-ומעורבות-אזרחית.aspx",
+                    "IconUrl": null,
+                    "Id": "c1e8b7ba-387e-4dfe-94a4-b3420f518de2",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "איכות הסביבה והון חברתי, 2014",
+                    "ListItemUrl": "/he/subjects/Pages/איכות-הסביבה-והון-חברתי-2014.aspx",
+                    "IconUrl": null,
+                    "Id": "2376ff04-a94b-4473-9cca-90c83a586a09",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "רווחת האוכלוסייה בישראל, 2013",
+                    "ListItemUrl": "/he/subjects/Pages/רווחת-האוכלוסייה-בישראל-2013.aspx",
+                    "IconUrl": null,
+                    "Id": "3425296a-24b3-427f-b952-61eb474909ab",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הסדרי פנסיה ופרישה והתארגנויות עובדים, 2012",
+                    "ListItemUrl": "/he/subjects/Pages/הסדרי-פנסיה-ופרישה-והתארגנויות-עובדים-2012.aspx",
+                    "IconUrl": null,
+                    "Id": "4a29522d-0b93-4e13-b3d6-a9bd2812a889",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "למידה לאורך החיים ושימוש בשפות, 2011",
+                    "ListItemUrl": "/he/subjects/Pages/-למידה-לאורך-החיים-ושימוש-בשפות-2011.aspx",
+                    "IconUrl": null,
+                    "Id": "104fc110-10a1-4945-9799-6c18b1de9073",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "בריאות ואורח חיים ושימוש במחשב ובאינטרנט, 2010",
+                    "ListItemUrl": "/he/subjects/Pages/בריאות-ואורח-חיים-ושימוש-במחשב-ובאינטרנט-2010.aspx",
+                    "IconUrl": null,
+                    "Id": "da86d774-e10c-499e-9eec-263959a05ef9",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "דתיות ומשפחתיות, 2009",
+                    "ListItemUrl": "/he/subjects/Pages/דתיות-ומשפחתיות--2009.aspx",
+                    "IconUrl": null,
+                    "Id": "30959d25-ee23-4224-949d-1e489c202b70",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מוביליות חברתית, 2008",
+                    "ListItemUrl": "/he/subjects/Pages/מוביליות-חברתית-2008.aspx",
+                    "IconUrl": null,
+                    "Id": "84460306-c108-409b-acb1-013c04033dc8",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "רווחת האוכלוסייה ועמדות כלפי שירותי ממשל, 2007",
+                    "ListItemUrl": "/he/subjects/Pages/רווחת-האוכלוסייה-ועמדות-כלפי-שירותי-ממשל-2007.aspx",
+                    "IconUrl": null,
+                    "Id": "80d791b6-7d54-49d3-806e-d2b666ffce53",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מטפלים ללא תמורה כספית, 2006",
+                    "ListItemUrl": "/he/subjects/Pages/מטפלים-ללא-תמורה-כספית-2006.aspx",
+                    "IconUrl": null,
+                    "Id": "3b6458c8-87b8-48e1-9beb-f4cac86ecb77",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "השתתפות בכוח העבודה, 2005",
+                    "ListItemUrl": "/he/subjects/Pages/השתתפות-בכוח-העבודה-2005.aspx",
+                    "IconUrl": null,
+                    "Id": "01a17da3-9b0f-4157-8f07-c033283f4fc7",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "סידורים לילדים והקשר לתעסוקת הורים, 2004",
+                    "ListItemUrl": "/he/subjects/Pages/סידורים-לילדים-והקשר-לתעסוקת-הורים-2004.aspx",
+                    "IconUrl": null,
+                    "Id": "4bfa888f-569d-4d8b-a7d9-d0960f034364",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "מדידה של רווחת האוכלוסייה בישראל, 2003",
+                    "ListItemUrl": "/he/subjects/Pages/מדידה-של-רווחת-האוכלוסייה-בישראל-2003.aspx",
+                    "IconUrl": null,
+                    "Id": "7cbabf5b-d615-44ce-b0e3-41d51f79b415",
+                    "Children": null,
+                    "CustomProperties": null
+                }, {
+                    "Label": "הסדרי פנסיה וחיסכון, 2002",
+                    "ListItemUrl": "/he/subjects/Pages/הסדרי-פנסיה-וחיסכון--2002.aspx",
+                    "IconUrl": null,
+                    "Id": "53fda083-7425-4995-9be3-29a2625f2a48",
+                    "Children": null,
+                    "CustomProperties": null
+                }],
+            "CustomProperties": null
+        }, {
+            "Label": "דוח פני החברה",
+            "ListItemUrl": "/he/subjects/Pages/דוח-פני-החברה.aspx",
+            "IconUrl": null,
+            "Id": "ed151178-f149-4ade-a52a-41aee5f54d83",
+            "Children": [{
+                "Label": "דוח מס' 12 - פערים לפי רמת השכלה, 2018",
+                "ListItemUrl": "/he/subjects/Pages/דוח-מס-12-פערים-לפי-רמת-השכלה-%202018.aspx",
+                "IconUrl": null,
+                "Id": "93b4db25-c93c-429f-9a85-1b03a5da9930",
+                "Children": null,
+                "CustomProperties": null
+            },{
+                "Label": "דוח מס' 11 - פערים בין מרכז לפריפריה, 2017-2016",
+                "ListItemUrl": "/he/subjects/Pages/דוח-מס'-11-פערים-בין-מרכז-לפריפריה-2017-2016.aspx",
+                "IconUrl": null,
+                "Id": "93b4db25-c93c-429f-9a85-1b03a5da9930",
+                "Children": null,
+                "CustomProperties": null
+            },
+            {
+                "Label": "דוח מס' 10 - דת והגדרה עצמית של מידת דתיות, 2016-2015",
+                "ListItemUrl": "/he/subjects/Pages/דוח-מס-10-דת-והגדרה-עצמית-של-דתיות.aspx",
+                "IconUrl": null,
+                "Id": "93b4db25-c93c-429f-9a85-1b03a5da9930",
+                "Children": null,
+                "CustomProperties": null
+            },
+            {
+                "Label": "דוח מס' 9 - מבוגרים בני 55 ומעלה, 2015-2014",
+                "ListItemUrl": "/he/subjects/Pages/דוח-מס-9-בני-55-ומעלה.aspx",
+                "IconUrl": null,
+                "Id": "93b4db25-c93c-429f-9a85-1b03a5da9930",
+                "Children": null,
+                "CustomProperties": null
+            },
+            {
+                "Label": "דוח מס' 8 - דור העתיד של ישראל: ילדים וצעירים עד גיל 24, 2014-2013",
+                "ListItemUrl": "/he/subjects/Pages/דור-העתיד-של-ישראל-2016.aspx",
+                "IconUrl": null,
+                "Id": "93b4db25-c93c-429f-9a85-1b03a5da9930",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 7 - מבט על הערים הגדולות, 2013-2012",
+                "ListItemUrl": "/he/subjects/Pages/מבט-על-הערים-הגדולות--2014.aspx",
+                "IconUrl": null,
+                "Id": "28919cf4-2ba8-470e-964b-d76fa8998917",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 6 - ישראל מאין ולאן, 2011-2010",
+                "ListItemUrl": "/he/subjects/Pages/ישראל-מאין-ולאן--2013.aspx",
+                "IconUrl": null,
+                "Id": "9db6cd6f-8b7b-4610-bd05-5734be020d85",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 5 - פערים חברתיים-כלכליים, 2010-2009",
+                "ListItemUrl": "/he/subjects/Pages/פערים-חברתיים-כלכליים---2012.aspx",
+                "IconUrl": null,
+                "Id": "c97d6d98-2561-4937-9936-037b7e4d91a1",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 4 - פערים בין משקי בית ומשפחות, 2009-2008",
+                "ListItemUrl": "/he/subjects/Pages/פערים-בין-משקי-בית-ומשפחות---2011.aspx",
+                "IconUrl": null,
+                "Id": "7aa081e1-8cda-4eca-9586-32a6f78721c0",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 3 - פערים בין מרכז לפריפריה, 2008-2007",
+                "ListItemUrl": "/he/subjects/Pages/פערים-בין-מרכז-לפריפריה---2010.aspx",
+                "IconUrl": null,
+                "Id": "ef441ea5-7b22-4abe-ad46-1b87a6697b96",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 2 - פערים בין נשים וגברים, 2007-2006",
+                "ListItemUrl": "/he/subjects/Pages/פערים-בין-נשים-וגברים---2009.aspx",
+                "IconUrl": null,
+                "Id": "7ef2dbf3-ef6e-49f1-b3c8-b515b550cdf3",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "דוח מס' 1 - פערים בין יהודים וערבים, 2006-2005",
+                "ListItemUrl": "/he/subjects/Pages/פערים-בין-יהודים-וערבים---2008.aspx",
+                "IconUrl": null,
+                "Id": "f23f864e-6cb8-443f-94f9-1202c3877098",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": null
+        }, {
+            "Label": "מדדי איכות חיים, קיימות וחוסן לאומי",
+            "ListItemUrl": "/he/subjects/Pages/מדדי-איכות-חיים-קיימות-וחוסן-לאומי.aspx",
+            "IconUrl": null,
+            "Id": "382c6b60-d58f-4b78-a1da-0eec87543b23",
+            "Children": null,
+            "CustomProperties": null
+        }, {
+             "Label": "יעדים לפיתוח בר-קיימה (SDGs)",
+            "ListItemUrl": "/he/subjects/Pages/פיתוח-בר-קיימה.aspx",
+            "IconUrl": null,
+            "Id": "47423e44-7d43-4141-8870-a95b989d0764",
+            "Children": null,
+            "CustomProperties": null
+            
+        }, {
+            "Label": "משקי בית בישראל – סקר ארוך טווח",
+            "ListItemUrl": "/he/subjects/Pages/סקר-ארוך-טווח.aspx",
+            "IconUrl": null,
+            "Id": "eec2f981-5212-4e4f-8313-79e301f8d0a2",
+            "Children": [
+                     {
+                         "Label": "גל 7 - 2019",
+                         "ListItemUrl": "/he/subjects/Pages/גל-שביעי-של-הסקר-2019.aspx",
+                         "IconUrl": null,
+                         "Id": "ae67c6ff-4893-4c5f-9295-06b58d8ab29b",
+                         "Children": null,
+                         "CustomProperties": null
+                     },
+                     {
+                         "Label": "גל 6 - 2018",
+                         "ListItemUrl": "/he/subjects/Pages/גל-שישי-של-הסקר-2018.aspx",
+                         "IconUrl": null,
+                         "Id": "ae67c6ff-4893-4c5f-9295-06b58d8ab29b",
+                         "Children": null,
+                         "CustomProperties": null
+                     },
+                     {
+                         "Label": "גל 5 - 2017",
+                         "ListItemUrl": "/he/subjects/Pages/גל-חמישי-של-הסקר-2017.aspx",
+                         "IconUrl": null,
+                         "Id": "ae67c6ff-4893-4c5f-9295-06b58d8ab29b",
+                         "Children": null,
+                         "CustomProperties": null
+                     }, {
+                         "Label": "גל 4 - 2016",
+                         "ListItemUrl": "/he/subjects/Pages/גל-רביעי-של-הסקר-2016-ינואר-2016-יולי-2016.aspx",
+                         "IconUrl": null,
+                         "Id": "ae67c6ff-4893-4c5f-9295-06b58d8ab29b",
+                         "Children": null,
+                         "CustomProperties": null
+                     }, {
+                         "Label": "גל 3 - 2014-2015",
+                         "ListItemUrl": "/he/subjects/Pages/גל-שלישי-של-הסקר-2014-אוקטובר-2014-יוני-2015.aspx",
+                         "IconUrl": null,
+                         "Id": "49f1d103-ca65-437f-9316-95b3275a5464",
+                         "Children": null,
+                         "CustomProperties": null
+                     }, {
+                         "Label": "גל 2 - 2013",
+                         "ListItemUrl": "/he/subjects/Pages/גל-שני-של-הסקר-2013-אוקטובר-2013-מרס-2014.aspx",
+                         "IconUrl": null,
+                         "Id": "fa6679a0-690d-4ebc-a9a2-fc80e7f786c6",
+                         "Children": null,
+                         "CustomProperties": null
+                     }, {
+                         "Label": "גל 1 - 2012",
+                         "ListItemUrl": "/he/subjects/Pages/גל-ראשון-של-הסקר-2012-יולי-2012-ינואר-2013.aspx",
+                         "IconUrl": null,
+                         "Id": "cc1dda1d-c3b5-42be-8f66-3669bd5aa178",
+                         "Children": null,
+                         "CustomProperties": null
+                     }],
+            "CustomProperties": null
+        }, {
+            "Label": "מפקד",
+            "ListItemUrl": "/he/subjects/Pages/מפקד.aspx",
+            "IconUrl": null,
+            "Id": "4044c6e4-9e50-4fc8-9632-454a20c18096",
+            "Children": [{
+                "Label": "מפקד האוכלוסין 2008",
+                "ListItemUrl": "/he/subjects/Pages/מפקד-האוכלוסין-2008.aspx",
+                "IconUrl": null,
+                "Id": "9def5a77-2ac5-4319-b619-3ea2903ab643",
+                "Children": null,
+                "CustomProperties": null
+            }, {
+                "Label": "מפקד האוכלוסין והדיור 1995",
+                "ListItemUrl": "/he/subjects/Pages/מפקד-האוכלוסין-והדיור-1995.aspx",
+                "IconUrl": null,
+                "Id": "d0199509-27e3-4153-ba38-2f6f6144b574",
+                "Children": null,
+                "CustomProperties": null
+            }],
+            "CustomProperties": null
+        }, {
+            "Label": "עמדות ותחושות הציבור",
+            "ListItemUrl": "/he/subjects/Pages/עמדות-הציבור.aspx",
+            "IconUrl": null,
+            "Id": "9505c05f-c209-4926-bcbe-f8d2a2622768",
+            "Children": [{
+                "Label": "הסקר החברתי",
+                "ListItemUrl": "/he/subjects/Pages/הסקר-החברתי.aspx",
+                "IconUrl": null,
+                "Id": "10a88cad-5ac4-4cdf-b936-557a5721f75d",
+                "Children": null
+            },
+         {
+             "Label": "נפגעי עבריינות ותחושת ביטחון אישי",
+             "ListItemUrl": "/he/subjects/Pages/נפגעי-עבריינות.aspx",
+             "IconUrl": null,
+             "Id": "8308e21d-4460-4464-b10d-18d441829394",
+             "Children": null,
+             "CustomProperties": null
+         },
+         {
+             "Label": "אמון צרכנים",
+             "ListItemUrl": "/he/subjects/Pages/אמון-צרכנים.aspx",
+             "IconUrl": null,
+             "Id": "d0199509-27e3-4153-ba38-2f6f6144b574",
+             "Children": null,
+             "CustomProperties": null
+         }],
+            "CustomProperties": null
+        }],
+        "CustomProperties": null
+    }]
+}];
+
+
+ALA.NavTaxo_HEB = [{
+    "Label": "ניווט עברית",
+    "URL": null,
+    "IconUrl": null,
+    "Children": [{
+        "Label": "פרסומים ותוצרים",
+        "URL": "",
+        "IconUrl": null,
+        "Id": "901ab207-1610-41a3-8a0f-2af5a0983526",
+        "Children": [{
+            "Label": "סוג הפרסום/תוצר",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "740dc79c-9d54-4f5f-b643-7a62244c891c",
+            "Children": [{
+                "Label": "הודעות לתקשורת",
+                "URL": "/he/Pages/search/SearchResultsPressReleases.aspx",
+                "IconUrl": null,
+                "Id": "89075add-eb77-4b21-b93b-9b9501bfd6ec",
+                "Children": null
+            }, {
+                "Label": "פרסומים",
+                "URL": "/he/pages/search/SearchResultsPublications.aspx",
+                "IconUrl": null,
+                "Id": "8b8da4a8-c6e3-4f94-a01f-eb388820b7a6",
+                "Children": null
+            }, {
+                "Label": 'עלוני"סטטיסטיקל"',
+                "URL": "/he/Pages/search/SearchResultsStatistical.aspx",
+                "IconUrl": null,
+                "Id": "1fb3cd22-bbba-466d-aed8-54ccacd603dd",
+                "Children": null
+            }, {
+                "Label": "קבצים לשימוש הציבור (PUF)",
+                "URL": "/he/publications/Pages/2015/תוצרי-Public-Use-Files-PUF-נתוני-פרט-בלתי-מזוהים-למחקר.aspx",
+                "IconUrl": null,
+                "Id": "91be5aa7-d73a-4045-b973-cddfe3835abe",
+                "Children": null
+            }, {
+                "Label": "ניירות עבודה",
+                //"URL": "/he/pages/search/SearchResultsMain.aspx?k=%D7%94%D7%9B%D7%9C#Default=%7B%22k%22%3A%22%D7%AA%D7%95%D7%A6%D7%A8%D7%99%20%D7%9E%D7%97%D7%A7%D7%A8%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDItemType%22%2C%22t%22%3A%5B%22string(%5C%22%230d9d2d180-2669-480b-93fa-b5f7664f96ad%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+                "URL": "/he/pages/search/SearchResultsPublications.aspx#Default=%7B%22k%22%3A%22%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDItemType%22%2C%22t%22%3A%5B%22string(%5C%22L0%7C%230d9d2d180-2669-480b-93fa-b5f7664f96ad%7C%D7%A0%D7%99%D7%99%D7%A8%D7%95%D7%AA%20%D7%A2%D7%91%D7%95%D7%93%D7%94%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+                "IconUrl": null,
+                "Id": "bd86087b-59a0-4ea4-9aab-0650f919c523",
+                "Children": null
+            }]
+        },
+        //{
+         //   "Label": "סוג התוצאה",
+        //    "URL": "",
+        //    "IconUrl": null,
+        //    "Id": "e970cf39-190c-48f1-8475-3e435dd6a30c",
+        //    "Children": [{
+       //         "Label": "לוחות",
+      //          "URL": "/he/Pages/search/SearchResultsMain.aspx?k=#Default=%7B%22k%22%3A%22%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDItemType%22%2C%22t%22%3A%5B%22string(%5C%22%2306b95aa8e-5cab-4c4c-8bab-5ee7b221131a%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+     //           "IconUrl": null,
+     //           "Id": "a3667368-5cdb-4613-aa75-cbf76663dfb4",
+      //          "Children": null
+      //      }, {
+      ///          "Label": "תרשימים",
+      //          "URL": "/he/pages/search/SearchResultsMain.aspx#Default=%7B%22k%22:%22%22,%22r%22:%5B%7B%22n%22:%22owstaxIdCbsMMDItemType%22,%22t%22:%5B%22string(%5C%22%230df418bff-cbbc-4d71-ba3a-5519fce58fa9%5C%22)%22%5D,%22o%22:%22and%22,%22k%22:false,%22m%22:null%7D%5D%7D",
+      //          "IconUrl": null,
+      //          "Id": "18595f6f-8bbd-48fa-8b82-ed79a1e19fb8",
+      //          "Children": null
+       ///     }, {
+        ///        "Label": "מפות",
+        //        "URL": "/he/Pages/search/searchResultsmaps.aspx",
+             //   "IconUrl": null,
+             //   "Id": "981998a1-cca1-4901-bf45-0dbda2204adc",
+            //    "Children": null
+           // }, {
+         //       "Label": "מצגות",
+         //       "URL": "/he/Pages/search/SearchResultsMain.aspx?k=%D7%9E%D7%A6%D7%92%D7%95%D7%AA#Default=%7B%22k%22%3A%22%D7%9E%D7%A6%D7%92%D7%95%D7%AA%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDItemType%22%2C%22t%22%3A%5B%22string(%5C%22%230e340bac1-e255-4967-9b62-cebf002436b0%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+        //        "IconUrl": null,
+        //        "Id": "b80e5c68-a8cc-447f-8919-5e198a5fad97",
+        //        "Children": null
+        //    }]
+     //   },
+         {
+             "Label": "פרסומים תקופתיים",
+             "URL": "",
+             "IconUrl": null,
+             "Id": "967bb85b-bfbd-4e3d-b640-085522034bbe",
+             "Children": [
+           {
+               "Label": "ירחונים",
+               "URL": "/he/Pages/ירחונים.aspx",
+               "IconUrl": null,
+               "Id": "e540bf15-0d6f-407c-b2a8-d4a43d120444",
+               "Children": null
+           }, {
+               "Label": "רבעונים",
+               "URL": "/he/Pages/רבעונים.aspx",
+               "IconUrl": null,
+               "Id": "14f0b4b2-6944-4f58-b8b3-25203cd0e1c8",
+               "Children": null
+           }, {
+               "Label": "פרסומים שנתיים",
+               "URL": "/he/pages/search/SearchResultsPublications.aspx#Default=%7B%22k%22%3A%22%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDInterval%22%2C%22t%22%3A%5B%22string(%5C%22L0%7C%2303aa65854-6eee-4c18-bea6-a232fd3cf6c6%7C%D7%A9%D7%A0%D7%AA%D7%99%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+               "IconUrl": null,
+               "Id": "a86d3e95-8b5a-4d91-b1da-8f3ebe0205cd",
+               "Children": null
+           }, {
+               "Label": "פרסומים רב-שנתיים",
+               "URL": "/he/pages/search/SearchResultsPublications.aspx#Default=%7B%22k%22%3A%22%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDInterval%22%2C%22t%22%3A%5B%22string(%5C%22L0%7C%230707b0767-8987-4f4f-87c2-d007fbc012be%7C%D7%A8%D7%91%20%D7%A9%D7%A0%D7%AA%D7%99%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+               "IconUrl": null,
+               "Id": "9cb47349-4891-4ba8-ac44-88e722e6d0d8",
+               "Children": null
+           }, {
+               "Label": "פרסומים חד-פעמיים",
+               "URL": "/he/pages/search/SearchResultsPublications.aspx#Default=%7B%22k%22%3A%22%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDInterval%22%2C%22t%22%3A%5B%22string(%5C%22L0%7C%23041147d64-0b52-4f8a-a575-9019848369f9%7C%D7%97%D7%93%20%D7%A4%D7%A2%D7%9E%D7%99%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+               "IconUrl": null,
+               "Id": "2401dc09-22b2-4e4d-a916-a6edd334b2e4",
+               "Children": null
+           }]
+         }, {
+             "Label": "פרסומים רוחביים",
+             "URL": "",
+             "IconUrl": null,
+             "Id": "cf295c97-c913-4297-a9cf-954ce9142901",
+             "Children": [{
+                 "Label": "השנתון הסטטיסטי לישראל",
+                 //"URL": "/he/Pages/search/SearchResultsMain.aspx?k=#Default=%7B%22k%22%3A%22%22%2C%22r%22%3A%5B%7B%22n%22%3A%22owstaxIdCbsMMDItemType%22%2C%22t%22%3A%5B%22string(%5C%22%230551f4f8f-f506-4943-8be7-1d03f794111e%5C%22)%22%5D%2C%22o%22%3A%22and%22%2C%22k%22%3Afalse%2C%22m%22%3Anull%7D%5D%7D",
+                 "URL": "/he/Pages/search/yearly.aspx",
+                 "IconUrl": null,
+                 "Id": "ea1f5886-afff-4858-82e5-afb9d17da89f",
+                 "Children": null
+             }, {
+                 "Label": "דוח פני החברה",
+                 "URL": "/he/subjects/Pages/דוח-פני-החברה.aspx",
+                 "IconUrl": null,
+                 "Id": "6cf9c093-a580-4cc1-875b-f362b8d1db46",
+                 "Children": null
+             }, {
+                 "Label": "ישראל במספרים",
+                 "URL": "/he/Pages/search/searchResultsIsraelnFigures.aspx",
+                 "IconUrl": null,
+                 "Id": "faaffb6a-9a43-4081-a3f2-e1af19487692",
+                 "Children": null
+             }, {
+                 "Label": "מדדי איכות חיים, קיימות וחוסן לאומי",
+                 "URL": "/he/subjects/Pages/מדדי-איכות-חיים-קיימות-וחוסן-לאומי.aspx",
+                 "IconUrl": null,
+                 "Id": "fbd96f55-2e87-4843-b8ad-065fc55b272d",
+                 "Children": null
+             }, {
+                 "Label": "הסקר החברתי",
+                 "URL": "/he/subjects/Pages/הסקר-החברתי.aspx",
+                 "IconUrl": null,
+                 "Id": "fbd96f55-2e87-4843-b8ad-065fc55b272d",
+                 "Children": null
+             }, {
+                 "Label": "פעולות ופרסומים סטטיסטיים חדשים בישראל",
+                 "URL": "/he/publications/Pages/2020/פעולות-ופרסומים-סטטיסטיים-חדשים-בישראל-מס-168.aspx",
+                 "IconUrl": null,
+                 "Id": "fbd96f55-2e87-4843-b8ad-065fc55b272d",
+                 "Children": null
+             }]
+         }]
+    }, {
+        "Label": "מידע לפי אזור גאוגרפי",
+        "URL": "",
+        "IconUrl": null,
+        "Id": "4123352e-d42c-44c6-9e19-57a23ca1e102",
+        "Children": [{
+            "Label": "חלוקות גאוגרפיות",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "84d0d571-030b-4470-bbf6-11350c840e60",
+            "Children": [{
+                "Label": "יישובים",
+                "URL": "/he/settlements/Pages/default.aspx?mode=Yeshuv",
+                "IconUrl": null,
+                "Id": "b8fb0d05-360b-424e-9a80-83257d5241e3",
+                "Children": null
+            }, {
+                "Label": "מחוזות",
+                "URL": "/he/settlements/Pages/default.aspx?mode=Machoz",
+                "IconUrl": null,
+                "Id": "e0e24712-b9dc-434b-a09d-d84a4da734d7",
+                "Children": null
+            }, {
+                "Label": "נפות",
+                "URL": "/he/settlements/Pages/default.aspx?mode=Nafa",
+                "IconUrl": null,
+                "Id": "577f7759-6ca7-439e-8d74-e01cadd12c6d",
+                "Children": null
+            }, {
+                "Label": "אזורים טבעיים",
+                "URL": "/he/settlements/Pages/default.aspx?mode=EzorTivi",
+                "IconUrl": null,
+                "Id": "7112d2b2-a051-497c-8fea-5c35209f670c",
+                "Children": null
+            }, {
+                "Label": "מטרופולינים",
+                "URL": "/he/settlements/Pages/default.aspx?mode=Metropolin#",
+                "IconUrl": null,
+                "Id": "de826de2-7e70-4b0b-b747-b1fc4b4d5bf5",
+                "Children": null
+            }, {
+                "Label": "מועצות אזוריות",
+                "URL": "/he/settlements/Pages/default.aspx?mode=MoazaEzorit",
+                "IconUrl": null,
+                "Id": "c30f5a84-ee42-4e0a-b17f-5da8887a3d90",
+                "Children": null
+            }]
+        }, {
+            "Label": "אפיון ודירוג הרשויות המקומיות",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "05eb6eb8-1057-4cef-b4e8-f884bfe210a3",
+            "Children": [{
+                "Label": "מדד חברתי-כלכלי",
+                "URL": "/he/subjects/Pages/מדד-חברתי-כלכלי-של-הרשויות-המקומיות.aspx",
+                "IconUrl": null,
+                "Id": "201927d3-74c2-435c-8894-956761105aea",
+                "Children": null
+            }, {
+                "Label": "מדד פריפריאליות",
+                "URL": "/he/subjects/Pages/מדד-פריפריאליות-של-רשויות-מקומיות.aspx",
+                "IconUrl": null,
+                "Id": "2741b60c-2dea-44c3-b7a1-98df3803c694",
+                "Children": null
+            }, {
+                "Label": "מדד קומפקטיות",
+                "URL": "/he/subjects/Pages/מדד-קומפקטיות-של-עיריות-ומועצות-מקומיות.aspx",
+                "IconUrl": null,
+                "Id": "2862aa67-b582-4779-a0e4-a885a3a4b66f",
+                "Children": null
+            }]
+        }, {
+            "Label": "כלים ומאגרי נתונים",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "6536f5dc-401f-4b4a-a13a-cf5816e7ed48",
+            "Children": [{
+                "Label": "יישובים וחלוקות גאוגרפיות נוספות",
+                "URL": "/he/Statistics/Pages/מחוללים/מחולל-ישובים.aspx",
+                "IconUrl": null,
+                "Id": "31f850b7-5ffe-4b66-b6a7-41bdda5b0ec3",
+                "Children": null
+            }, {
+                "Label": "הסקר החברתי",
+                "URL": "https://surveys.cbs.gov.il/Survey/",
+                "IconUrl": null,
+                "Id": "4bd5f71d-5a04-4e25-a6e7-1823f0e6a80c",
+                "Children": null
+            }, {
+                "Label": "ספירות תנועה",
+                "URL": "/he/Statistics/Pages/מחוללים/מחולל-ספירות-תנועה.aspx",
+                "IconUrl": null,
+                "Id": "bfa80ea3-159b-4414-9435-8a518a1e0837",
+                "Children": null
+            }, {
+                "Label": "מפקד האוכלוסין",
+                "URL": "/he/Statistics/Pages/מחולל-מפקד-האוכלוסין-2008.aspx",
+                "IconUrl": null,
+                "Id": "6d0abe39-935b-4c51-9700-d64d849740e1",
+                "Children": null
+            }, {
+                "Label": "תחבורה",
+                "URL": "/he/subjects/Pages/תחבורה.aspx#תחבורה",
+                "IconUrl": null,
+                "Id": "6d0abe39-935b-4c51-9700-d64d849740e2",
+                "Children": null
+            }]
+        }
+
+        , {
+            "Label": "פרסומים ותוצרים",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "6536f5dc-401f-4b4a-a13a-cf5816e7ed48",
+            "Children": [{
+                "Label": "יישובים בישראל - קובצי היישובים",
+                "URL": "/he/publications/Pages/2019/יישובים-בישראל.aspx",
+                "IconUrl": null,
+                "Id": "31f850b7-5ffe-4b66-b6a7-41bdda5b0ec3",
+                "Children": null
+            }, {
+                "Label": "הרשויות המקומיות בישראל",
+                "URL": "/he/subjects/Pages/הרשויות-המקומיות-נתונים-פיזיים-וכספיים.aspx",
+                "IconUrl": null,
+                "Id": "4bd5f71d-5a04-4e25-a6e7-1823f0e6a80c",
+                "Children": null
+            }, {
+                "Label": 'קטלוג שכבות וקובצי ממ"ג (מערכת מידע גאוגרפי - GIS)',
+                "URL": "/he/subjects/Documents/רשימת_תוצרי_מדף_ממג.pdf",
+                "IconUrl": null,
+                "Id": "4bd5f71d-5a04-4e25-a6e7-1823f0e6a80c",
+                "Children": null
+            }, {
+                "Label": "אוכלוסייה ומרכיבי גידול ביישובים ובאזורים סטטיסטיים",
+                "URL": "/he/publications/Pages/2017/אוכלוסייה-ומרכיבי-גידול-ביישובים-ובאזורים-סטטיסטיים-2017.aspx",
+                "IconUrl": null,
+                "Id": "4bd5f71d-5a04-4e25-a6e7-1823f0e6a80c",
+                "Children": null
+            }, {
+                "Label": "אוכלוסייה ביישובים ובמועצות אזוריות, 2021",
+                "URL": "/he/publications/LochutTlushim/2020/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%942020.xlsx",
+                "IconUrl": null,
+                "Id": "4bd5f71d-5a04-4e25-a6e7-1823f0e6a80c",
+                "Children": null
+            }, {
+                "Label": "שכבות גאוגרפיות​",
+                "URL": "/he/Pages/geo-layers.aspx",
+                "IconUrl": null,
+                "Id": "4bd5f71d-5a04-4e25-a6e7-1823f0e6a80c",
+                "Children": null
+            }
+            ]
+        }
+
+
+        ]
+
+
+
+    }, {
+        "Label": "סקרים ומפקדים",
+        "URL": "",
+        "IconUrl": null,
+        "Id": "bd04b6dc-7b8b-4bd0-8018-abefbfd91bce",
+        "Children": [{
+            "Label": "כללי",
+            "URL": "/he/Pages/search/SearchResultsPolls.aspx?k=",
+            "IconUrl": null,
+            "Id": "a9d7465b-61f9-475e-85d2-7fad7e153a1b",
+            "Children": [
+            /*{
+                "Label": "דרושים/ות סוקרים/ות",
+                "URL": "/he/About/Documents/wantednew/index.aspx",
+                "IconUrl": null,
+                "Id": "3eb36160-c0ed-4874-8479-a10a3c121ddd",
+                "Children": null
+            },*/
+            {
+                "Label": "מידע למשתתפים בסקר",
+                "URL": "/he/Surveys/Pages/default.aspx",
+                "IconUrl": null,
+                "Id": "3eb36160-c0ed-4874-8479-a10a3c121ddd",
+                "Children": null
+            }, {
+                "Label": "רשימת הסקרים",
+                "URL": "/he/Pages/search/SearchResultsPolls.aspx",
+                "IconUrl": null,
+                "Id": "b7e488c9-a537-4417-86cd-cc47aa66e8d7",
+                "Children": null
+            }]
+        }, {
+            "Label": "סקרי נפשות/משפחות",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "d3ed5924-d278-4d92-a835-92099df835fa",
+            "Children": [{
+                "Label": "סקר כוח אדם",
+                "URL": "/he/Surveys/Pages/סקר-כוח-אדם.aspx",
+                "IconUrl": null,
+                "Id": "d3af6349-83a4-4861-891d-035c8f842313",
+                "Children": null
+            }, {
+                "Label": "סקר הוצאות משק הבית",
+                "URL": "/he/Surveys/Pages/סקר-הוצאות-משקי-בית.aspx",
+                "IconUrl": null,
+                "Id": "8de2af52-ce13-40ea-8b51-a22638f01bfa",
+                "Children": null
+            }, {
+                "Label": "הסקר החברתי",
+                "URL": "/he/Surveys/Pages/סקר-חברתי.aspx",
+                "IconUrl": null,
+                "Id": "10a88cad-5ac4-4cdf-b936-557a5721f75d",
+                "Children": null
+            }, {
+                "Label": "סקר משקי בית בישראל – סקר ארוך טווח",
+                "URL": "/he/Surveys/Pages/סקר-משקי-בית-בישראל-סקר-ארוך-טווח.aspx",
+                "IconUrl": null,
+                "Id": "8f9762ed-600c-4158-81c9-fe60ed5b18b9",
+                "Children": null
+            }, {
+                "Label": "סקר ביטחון אישי",
+                "URL": "/he/Surveys/Pages/סקר-ביטחון-אישי.aspx",
+                "IconUrl": null,
+                "Id": "8f9762ed-600c-4158-81c9-fe60ed5b18b9",
+                "Children": null
+            }, {
+                "Label": "סקר אמון צרכנים",
+                "URL": "/he/Surveys/Pages/סקר-אמון-צרכנים.aspx",
+                "IconUrl": null,
+                "Id": "8f9762ed-600c-4158-81c9-fe60ed5b18b9",
+                "Children": null
+            }]
+        }, {
+            "Label": "סקרי עסקים",
+            "URL": "/he/Pages/search/SearchResultsPolls.aspx?k=",
+            "IconUrl": null,
+            "Id": "a9d7465b-61f9-475e-85d2-7fad7e153a1b",
+            "Children": [{
+                "Label": "סקר מדד המחירים לצרכן",
+                "URL": "/he/Surveys/Pages/סקר-מדדי-מחירים-לצרכן-כולל-שכר-דירה.aspx",
+                "IconUrl": null,
+                "Id": "3eb36160-c0ed-4874-8479-a10a3c121ddd",
+                "Children": null
+            }, {
+                "Label": "סקר התקדמות הבנייה ומכירת דירות חדשות (מעקבי בנייה)",
+                "URL": "/he/Surveys/Pages/סקר-התקדמות-הבניה-ומכירת-דירות.aspx",
+                "IconUrl": null,
+                "Id": "d3af6349-83a4-4861-891d-035c8f842313",
+                "Children": null
+            }, {
+                "Label": "סקר משרות פנויות",
+                "URL": "/he/Surveys/Pages/סקר-משרות-פנויות.aspx",
+                "IconUrl": null,
+                "Id": "8de2af52-ce13-40ea-8b51-a22638f01bfa",
+                "Children": null
+            }, {
+                "Label": "סקר הערכת המגמות בעסקים",
+                "URL": "/he/Surveys/Pages/סקר-מגמות-בעסקים.aspx",
+                "IconUrl": null,
+                "Id": "10a88cad-5ac4-4cdf-b936-557a5721f75d",
+                "Children": null
+            }, {
+                "Label": "סקר תעשייה, כרייה וחציבה",
+                "URL": "/he/Surveys/Pages/סקר-תעשיה-כריה-וחציבה.aspx",
+                "IconUrl": null,
+                "Id": "8f9762ed-600c-4158-81c9-fe60ed5b18b9",
+                "Children": null
+            }, {
+                "Label": "סקר מחקר ופיתוח",
+                "URL": "/he/Surveys/Pages/סקר-מחקר-ופיתוח-בסקטור-העסקי-2014.aspx",
+                "IconUrl": null,
+                "Id": "b7e488c9-a537-4417-86cd-cc47aa66e8d7",
+                "Children": null
+            }, {
+                "Label": "שימושים בטכנולוגיות מידע ותקשורת והגנת סייבר בעסקים (ICT)",
+                "URL": "/he/Surveys/Pages/סקר-שימושים-בטכנולוגיות-מידע-ותקשורת-והגנת-סייבר-בעסקים-ICT.aspx",
+                "IconUrl": null,
+                "Id": "b7e488c9-a537-4417-86cd-cc47aa66e8d7",
+                "Children": null
+            }]
+
+        }, {
+            "Label": "מפקדים",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "d3ed5924-d278-4d92-a835-92099df835fa",
+            "Children": [{
+                "Label": "מפקד האוכלוסין",
+                "URL": "/he/Surveys/Pages/מפקד-האוכלוסין.aspx",
+                "IconUrl": null,
+                "Id": "7b9c037e-6956-48ee-8f39-d7bc5e4672ee",
+                "Children": null
+            }, {
+                "Label": "מפקד החקלאות",
+                "URL": "/he/Surveys/Pages/סקר-מקדים-למפקד-החקלאות.aspx",
+                "IconUrl": null,
+                "Id": "2299e00c-2eea-4511-93e3-4a8a24eaf9c4",
+                "Children": null
+            }, {
+                "Label": "מפקד אוכלוסיית דיור משותף ומוסדות",
+                "URL": "/he/Surveys/Pages/מפקד-מוסדות-לינה-ודיור-משותף.aspx",
+                "IconUrl": null,
+                "Id": "2299e00c-2eea-4511-93e3-4a8a24eaf9c4",
+                "Children": null
+            }]
+        }]
+    }, {
+        "Label": "הגדרות, סיווגים ושיטות",
+        "URL": "",
+        "IconUrl": null,
+        "Id": "00cff263-1f62-4ac9-8530-17d3a11e5fd8",
+        "Children": [{
+            "Label": "הגדרות",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "8970b24c-4bbe-4e76-b843-f564a58a82f8",
+            "Children": [{
+                "Label": "מילון מונחים",
+                "URL": "/he/Pages/כל-המונחים.aspx",
+                "IconUrl": null,
+                "Id": "98af6198-83ab-4e3a-a4b8-25a6ab8e03b1",
+                "Children": null
+            }]
+        }, {
+            "Label": "סיווגים",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "ea0fbf0e-ab6a-460c-8ce3-1c3358d5f23c",
+            "Children": [{
+                "Label": "הסיווג האחיד של משלחי היד",
+                "URL": "/he/publications/Pages/2015/הסיווג-האחיד-של-משלחי-היד-2011.aspx",
+                "IconUrl": null,
+                "Id": "d7cc8b0a-346e-4251-a67f-4b386509ca45",
+                "Children": null
+            }, {
+                "Label": "הסיווג האחיד של ענפי הכלכלה",
+                "URL": "/he/publications/Pages/2015/הסיווג-האחיד-של-ענפי-הכלכלה-2011-מהדורה-מעודכנת.aspx",
+                "IconUrl": null,
+                "Id": "9f8434ab-9a83-4f85-b2f5-e5dbff8fbfd8",
+                "Children": null
+            }]
+        }, {
+            "Label": "שיטות",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "d9d19a4b-c0a1-450a-a4e7-6be5fcc25bcd",
+            "Children": [{
+                "Label": "גורמים עונתיים חזויים",
+                "URL": "/he/publications/Pages/2020/הגורמים-העונתיים-וגורמי-ההתאמה-מראש-ל-2020-מגמות-ל-2020-2016-.aspx",
+                "IconUrl": null,
+                "Id": "90bf67c4-d9d7-4790-aa46-dae52015086e",
+                "Children": null
+            }]
+        }, {
+            "Label": "מדיניות",
+            "URL": "",
+            "IconUrl": null,
+            "Id": "e1fa1afa-41a3-4811-bb82-920dbb8ea6ee",
+            "Children": [{
+                "Label": 'כללי האתיקה של הלמ"ס',
+                "URL": "/he/About/Documents/ethics_h.pdf",
+                "IconUrl": null,
+                "Id": "ebfb933b-8471-49e2-a36f-7002e28343f8",
+                "Children": null
+            }, {
+                "Label": "מדיניות עדכון הסטטיסטיקה",
+                "URL": "/he/About/Documents/idkun_h.pdf",
+                "IconUrl": null,
+                "Id": "a21d25b5-591c-4888-aa70-4221bece419e",
+                "Children": null
+            }, {
+                "Label": "מדיניות פרסום ומסירת מידע לציבור",
+                "URL": "/he/About/Documents/mediniyut-pirsum.pdf",
+                "IconUrl": null,
+                "Id": "9099b8fd-c73e-4c13-9a02-f8d28d5fd1f3",
+                "Children": null
+            }, {
+                "Label": "תקנון עבודת הסטטיסטיקה ​",
+                "URL": "/he/About/Documents/cop.pdf",
+                "IconUrl": null,
+                "Id": "77c9c0b6-1ff1-4264-86b7-5149aa02e53c",
+                "Children": null
+            }, {
+                "Label": "פקודת הסטטיסטיקה",
+                "URL": "/he/About/pages/פקודת_הסטטיסטיקה.aspx",
+                "IconUrl": null,
+                "Id": "77c9c0b6-1ff1-4264-86b7-5149aa02e53c",
+                "Children": null
+            }]
+        }]
+    }]
+}];
+
+ALA.LCID = 1037;
+
+ALA.NavigationTaxo = ALA.NavTaxo_HEB;
