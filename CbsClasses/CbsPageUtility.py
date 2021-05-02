@@ -50,7 +50,12 @@ class CbsPageUtility:
     @classmethod
     def create_web_driver(cls, wait_time=10):
         try:
-            driver = webdriver.Chrome(Links.CHROME_DRIVER.value)
+
+            options = webdriver.ChromeOptions()
+            # options.add_argument("headless")
+
+            driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
+
             driver.implicitly_wait(wait_time)
             return driver
         except WebDriverException as e:
@@ -137,26 +142,29 @@ class CbsPageUtility:
 
     @classmethod
     # only for hebrew page
-    def set_MomentOfStatistics_part(cls,page: CbsPage, session: webdriver.Chrome):
+    def set_statistical_part(cls, page: CbsPage, session: webdriver.Chrome):
         # assuming the page loaded already - therefore no need to wait
-        session.implicitly_wait(2)
+        session.implicitly_wait(1)
         # *****************************************************************************************************************
         # check for extra web part - empty statistical (different xPath)
-        try:
-            session.find_element_by_xpath("//div[@id='MSOZoneCell_WebPartWPQ13']")
+        # try:
+        elem = session.find_elements_by_xpath("//div[@id='MSOZoneCell_WebPartWPQ13']")
+        if len(elem) > 0:
             page.stats_part.errors.append('error: statistical - extra web part')
-        except  NoSuchElementException:
-            # empty extra web part is not exist 200
-            pass
+        # except  NoSuchElementException:
+        # empty extra web part is not exist 200
         # *****************************************************************************************************************
-        try:
-            # in case stats is hidden there is nothing to check
-            session.find_element_by_xpath("//div[@id='hebstats']//div[@style='display:none']")
-            page.stats_part.isHidden = True
 
+        # in case stats is hidden there is nothing to check
+        elem = session.find_elements_by_xpath("//div[@id='hebstats']//div[@style='display: none;']")
+        if len(elem) > 0:
+            page.stats_part.isHidden = True
+            # print(page.stats_part.isHidden)
             return
-        except NoSuchElementException:
-            #   in case the web part is showed need to  be check (it displayed)
+        # except NoSuchElementException:
+        #   in case the web part is showed need to  be check (it displayed)
+        elem = session.find_elements_by_xpath("//div[@id='hebstats']")
+        if len(elem) > 0:
             page.stats_part.isHidden = False
             s_pages_images = session.find_elements_by_xpath("//div[@id='hebstats']//ul[@class='cbs-List']//li//img")
             s_pages_links = session.find_elements_by_xpath("//div[@id='hebstats']//ul[@class='cbs-List']//li//a")
@@ -178,14 +186,31 @@ class CbsPageUtility:
                     CbsPageUtility.set_link_status(cur_link)
                     if not cur_link.status_code == 200:
                         page.stats_part.errors.append('link is broken in Statistical')
-        # *****************************************************************************************************************
-        try:
-            all_stats_link = session.find_element_by_xpath(
-                "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
-            cur_link = CbsLink(all_stats_link.get_attribute('href'))
-            page.stats_part.links.append(cur_link)
-            CbsPageUtility.set_link_status(cur_link)
-            if not cur_link.status_code == 200:
-                page.stats_part.errors.append('link to all massages is broken in Statistical')
-        except NoSuchElementException:
-            page.stats_part.errors.append('link to all massages is missing in Statistical')
+            # *****************************************************************************************************************
+            try:
+                all_stats_link = session.find_element_by_xpath(
+                    "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
+                cur_link = CbsLink(all_stats_link.get_attribute('href'))
+                page.stats_part.links.append(cur_link)
+                CbsPageUtility.set_link_status(cur_link)
+                if not cur_link.status_code == 200:
+                    page.stats_part.errors.append('link to all massages is broken in Statistical')
+            except NoSuchElementException:
+                page.stats_part.errors.append('link to all massages is missing in Statistical')
+
+    # @classmethod
+    # def set
+    @classmethod
+    def get_cbs_map_pages(cls):
+        driver = cls.create_web_driver()
+        driver.get(Links.CBS_MAP_SITE_HE.value)
+        raw_urls = driver.find_elements_by_xpath(
+        "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul["
+        "@class='level3']//li//a")
+        print('number of link objects found: ', len(raw_urls))
+        pages = list(
+            map(lambda x: CbsPage(CbsLink(x.get_attribute('href')), x.text), raw_urls))
+        driver.close()
+        return pages
+        # for index, link in enumerate(raw_list):
+        #     link_list[index].name = link.text

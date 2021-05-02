@@ -3,63 +3,44 @@ from selenium import webdriver
 from CbsClasses.CbsPageUtility import CbsPageUtility
 from CbsClasses.CbsLink import CbsLink
 from CbsClasses.CbsPage import CbsPage
+from CbsClasses.TestUtility import TestUtility
 from LinksUtility.usefulLinks import Links
+from multiprocessing import Pool, Queue
 
 
-def getCurrentLinks(driver):
-    driver.get(Links.CBS_MAP_SITE_HE.value)
-    # finding the LinksUtility in the page
-    print('finding all HREF objects...')
-    uList = driver.find_elements_by_xpath(
-        "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul["
-        "@class='level3']//li//a")
-    return uList
 
-
-def test_pages_links(pages: [CbsPage]):
-    for page in pages:
-        CbsPageUtility.set_link_status(page.get_link())
-        print(str(page))
-        for link in page:
-            CbsPageUtility.set_link_status(link)
-
-
-def main():
+def main(shared_data:Queue, progress_status:Queue, end_flag:Queue):
+    shared_data.put('initializing test environment...')
     start_time = time.time()
-    # initial selenium driver
-    driver = CbsPageUtility.create_web_driver(20)
-    raw_list = getCurrentLinks(driver)
-
-    # arranging the LinksUtility in an appropriate list
-    print('number of cbs_link objects found : ', len(raw_list))
-    # for english site '[::-1]' need to be deleted
-
-    link_list = list(
-        map(lambda x: CbsLink(x.get_attribute('href')), raw_list))
-
-    for index, link in enumerate(raw_list):
-        link_list[index].name = link.text
-    # generate pages
-    pages = CbsPageUtility.create_pages(link_list)
-    # checking the Links chronically
-    # test_pages_links(pages)
-    print('before')
-    for page in pages:
-        # CbsPageUtility.set_internal_links(page, driver)
-        driver.get(page.link.url)
-        CbsPageUtility.set_MomentOfStatistics_part(page, driver)
-        if len(page.stats_part.errors) > 0:
-            print(page.name)
-            print(page.stats_part.errors)
-
-        # driver.implicitly_wait(10)
-
-    driver.close()
-    # for page in pages:
-    #     if len(page.stats_part.errors)!=0:
-    #         print(page.link.url + '::' + page.stats_part.errors)
+    result = []
+    session, pages = TestUtility.initial_test_environment()
+    # page1 = CbsPage(CbsLink('https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%A6%D7%91-%D7%9E%D7%A9%D7%A4%D7%97%D7%AA%D7%99.aspx'),'אוכלוסייה לפי מצב משפחתי')
+    # page2 = CbsPage(CbsLink('https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%91%D7%99%D7%99%D7%A9%D7%95%D7%91%D7%99%D7%9D.aspx'),'אוכלוסייה ביישובים' )
+    # pages = [page1, page2]
+    # session = CbsPageUtility.create_web_driver()
+    pages_size = len(pages)
+    shared_data.put('number of pages: '+ str(pages_size))
+    try:
+        for i,page in  enumerate(pages):
+            # CbsPageUtility.set_internal_links(page, driver)
+            if end_flag.qsize() > 0:
+                raise Exception('test canceled')
+                # outside canceled
+            progress_status.put(i/pages_size)
+            session.get(page.link.url)
+            CbsPageUtility.set_statistical_part(page, session)
+            if len(page.stats_part.errors) > 0:
+                print(page.name, page.link.url)
+                print(page.stats_part.errors)
+                shared_data.put(str(page.name)[::-1])
+                shared_data.put(page.stats_part.errors)
+                result.append((page.name, page.link.url, page.stats_part.errors))
+    except Exception as e:
+        end_flag.put(e.args)
+    finally:
+        session.close()
+        end_flag.put('end main process')
     print(str(time.time() - start_time))
-
 
 if __name__ == "__main__":
     main()
