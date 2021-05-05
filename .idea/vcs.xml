@@ -2,7 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/MapPage/HePage/async_test/Supercharged-Web-Scraping-with-Asyncio" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/WebParts/kivy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/temp/HePage/async_test/Supercharged-Web-Scraping-with-Asyncio" vcs="Git" />
   </component>
 </project>

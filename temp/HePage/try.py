@@ -1,16 +1,7 @@
-import requests
-from selenium.webdriver.support import expected_conditions as EC
-
 # from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 
-from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsPageUtility import CbsPageUtility
-from LinksUtility.usefulLinks import Links
 # from seleniumwire import webdriver  # Import from seleniumwire
-from LinksUtility.usefulLinks import Links
+from DataBase import Links
 
 ERRORS = ['Sorry, the page is not found', 'מתנצלים, הדף לא נמצא']
 URL = 'https://www.cbs.gov.il/he/About/Documents/idkun_h.pdf'

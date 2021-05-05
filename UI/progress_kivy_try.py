@@ -9,6 +9,7 @@ from kivy.clock import Clock
 class CircularProgressBar(ProgressBar):
 
     def __init__(self, **kwargs):
+        # Builder.load_file('kivy_try.kv')
         super(CircularProgressBar, self).__init__(**kwargs)
 
         # Set constant for the bar thickness
@@ -90,7 +91,7 @@ class Main(App):
     max: 80''')
 
         # Animate the progress bar
-        Clock.schedule_interval(self.animate, 0.1)
+        Clock.schedule_interval(self.animate, 0.01)
         return container
 
 

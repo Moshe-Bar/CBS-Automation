@@ -7,7 +7,7 @@ DRIVER_PATH = 'C:\chromedriver.exe'
 # options.headless = True
 options = Options()
 options.add_argument('--headless')
-options.add_argument('--disable-gpu') 
+
 driver = webdriver.Chrome(DRIVER_PATH, options=options)
 
 

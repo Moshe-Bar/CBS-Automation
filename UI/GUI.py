@@ -1,33 +1,28 @@
-import select
 import threading
 from functools import partial
 
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color, Rectangle, Ellipse
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
+from kivy.core.text import Label as CoreLabel
 
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.button import Button
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import ObjectProperty
-from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 
-from CbsClasses.CbsPageUtility import CbsPageUtility
-from database import DataBase
+from Testing.CbsPageUtility import CbsPageUtility
+
 from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.uix.progressbar import ProgressBar
-from kivy.uix.recycleview import RecycleView
-from kivy.uix.bubble import Bubble, BubbleButton
 
-from kivy.config import Config
-from MapPage.HePage.NewMainProcess import main
-from multiprocessing import Pool, Queue
+from Testing.TestUtility import TestUtility
+# from UI.NewMainProcess import main
+from multiprocessing import Queue
 from kivy.core.text import LabelBase
 
 
@@ -37,16 +32,15 @@ class PageSelection(DropDown):
 
 class MyMainApp(App):
     def build(self):
-        Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
-        self.title  = r'CBS site test'
+        # Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
+        self.title  = r'CBS Site Test'
         self.icon = r'D:\Current\Selenium\NewAutomationEnv\Images\1200px-LOGO_LAMAS.jpg'
         self.f_layout = FlLayout()
         # Window.bind(on_request_close=self.__del__)
 
         return self.f_layout
 
-    def print_terminal(self, text):
-        self.f_layout.terminal.text = text
 
 
 # class Scroll(RecycleView):
@@ -60,6 +54,7 @@ class FlLayout(FloatLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        Builder.load_file('kivy_try.kv')
         with self.canvas.before:
             Color(0.2,0.2,0.2, 1)  # green; colors range from 0-1 instead of 0-255
             self.rect = Rectangle(size=(Window.width, Window.height),
@@ -85,18 +80,20 @@ class FlLayout(FloatLayout):
 
         self.right_layout = GridLayout(cols=1, spacing=30, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
-        self.right_layout.bind(minimum_height=self.right_layout.setter('height'))
-        for i in range(100):
-            grid = GridLayout(cols=2,spacing=2)
+        # self.right_layout.bind(minimum_height=self.right_layout.setter('height'))
+        # grid = GridLayout(cols=2, spacing=2, rows=None)
+        for i in range(10):
             cb = CheckBox(active=True)
             cb.add_widget(Label(text= '22222'))
-            grid.add_widget(cb)
+            self.right_layout.add_widget(CheckBox(), index=i)
             # grid.add_widget(Label(text=str(i)))
-            self.right_layout.add_widget(grid)
+        # self.right_layout.add_widget(grid)
             # self.right_layout.add_widget(Label(text='Male'))
             # self.active = CheckBox(active=True)
             # self.right_layout.add_widget(self.active)
 
+        self.new_progress = CircularProgressBar()
+        self.add_widget(self.new_progress)
 
 
             # btn = Button(text=str(i), size_hint_y=None, height=40)
@@ -130,19 +127,24 @@ class FlLayout(FloatLayout):
         while True:
             if self.progress.qsize() >0:
                 self.pb.value =  self.progress.get()*1000
+                # self.new_progress.set_value(self.progress.get()*100)
             if shared_data.qsize() >0:
                 self.print_terminal(shared_data.get())
             if end_process.qsize() >0:
                 print('second thread exit')
-                while end_process.qsize() >0:
-                    shared_data.put(end_process.get())
+                temp = end_process.get()
+                shared_data.put(temp)
+                end_process.put(temp)
                 shared_data.put('exiting second process')
                 break
 
-    def main_thread(self, shared_data:Queue, progress:Queue, end_flag:Queue):
+    def main_thread(self, shared_data:Queue, progress:Queue, end_flag:Queue, pages=None):
         try:
-            main(shared_data, progress, end_flag)
+            print('start test')
+            TestUtility.test(shared_data=shared_data, progress_status=progress, end_flag=end_flag,pages=pages)
+            print('after test')
         except Exception:
+            print(Exception)
             end_flag.put('end for exception')
             progress.put(0.99*1000)
             if shared_data.qsize() >0:
@@ -165,9 +167,73 @@ class FlLayout(FloatLayout):
         threading.Thread(target=self.second_thread, args=(data,self.end_flag)).start()
 
     def cancel_button_click(self, instance, value):
-        # print('cancel clicked')
-        self.print_terminal('cancel clicked')
         self.end_flag.put('canceled')
+
+class CircularProgressBar(ProgressBar):
+
+    def __init__(self, **kwargs):
+        # Builder.load_file('kivy_try.kv')
+        super(CircularProgressBar, self).__init__(**kwargs)
+
+        # Set constant for the bar thickness
+        self.thickness = 40
+
+        # Create a direct text representation
+        self.label = CoreLabel(text="0%", font_size=self.thickness)
+
+        # Initialise the texture_size variable
+        self.texture_size = None
+
+        # Refresh the text
+        self.refresh_text()
+
+        # Redraw on innit
+        self.draw()
+
+    def draw(self):
+        with self.canvas:
+            # Empty canvas instructions
+            self.canvas.clear()
+
+            # Draw no-progress circle
+            Color(0.26, 0.26, 0.26)
+            Ellipse(pos=self.pos, size=self.size)
+
+            # Draw progress circle, small hack if there is no progress (angle_end = 0 results in full progress)
+            Color(1, 0, 0)
+            Ellipse(pos=self.pos, size=self.size,
+                    angle_end=(0.001 if self.value_normalized == 0 else self.value_normalized * 360))
+
+            # Draw the inner circle (colour should be equal to the background)
+            Color(0, 0, 0)
+            Ellipse(pos=(self.pos[0] + self.thickness / 2, self.pos[1] + self.thickness / 2),
+                    size=(self.size[0] - self.thickness, self.size[1] - self.thickness))
+
+            # Center and draw the progress text
+            Color(1, 1, 1, 1)
+            # added pos[0]and pos[1] for centralizing label text whenever pos_hint is set
+            Rectangle(texture=self.label.texture, size=self.texture_size,
+                      pos=(self.size[0] / 2 - self.texture_size[0] / 2 + self.pos[0],
+                           self.size[1] / 2 - self.texture_size[1] / 2 + self.pos[1]))
+
+    def refresh_text(self):
+        # Render the label
+        self.label.refresh()
+
+        # Set the texture size each refresh
+        self.texture_size = list(self.label.texture.size)
+
+    def set_value(self, value):
+        # Update the progress bar value
+        self.value = value
+
+        # Update textual value and refresh the texture
+        self.label.text = str(int(self.value_normalized * 100)) + "%"
+        self.refresh_text()
+
+        # Draw all the elements
+        self.draw()
+
 
 if __name__ == "__main__":
     try:

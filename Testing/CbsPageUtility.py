@@ -1,10 +1,10 @@
 import requests
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from CbsClasses.CbsLink import CbsLink
 from CbsClasses.CbsPage import CbsPage
-from LinksUtility.usefulLinks import Links
+from dataBase.DataBase import Links
 
 from CbsClasses.Language import Language
 
@@ -46,20 +46,6 @@ class CbsPageUtility:
         for link in link_list:
             pages.append(CbsPage(link[0], link[1]))
         return pages
-
-    @classmethod
-    def create_web_driver(cls, wait_time=10):
-        try:
-
-            options = webdriver.ChromeOptions()
-            # options.add_argument("headless")
-
-            driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
-
-            driver.implicitly_wait(wait_time)
-            return driver
-        except WebDriverException as e:
-            print('driver error: ' + str(e))
 
     @classmethod
     def set_link_status(cls, link: CbsLink):
@@ -198,19 +184,3 @@ class CbsPageUtility:
             except NoSuchElementException:
                 page.stats_part.errors.append('link to all massages is missing in Statistical')
 
-    # @classmethod
-    # def set
-    @classmethod
-    def get_cbs_map_pages(cls):
-        driver = cls.create_web_driver()
-        driver.get(Links.CBS_MAP_SITE_HE.value)
-        raw_urls = driver.find_elements_by_xpath(
-        "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul["
-        "@class='level3']//li//a")
-        print('number of link objects found: ', len(raw_urls))
-        pages = list(
-            map(lambda x: CbsPage(CbsLink(x.get_attribute('href')), x.text), raw_urls))
-        driver.close()
-        return pages
-        # for index, link in enumerate(raw_list):
-        #     link_list[index].name = link.text

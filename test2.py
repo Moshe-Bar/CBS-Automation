@@ -3,9 +3,6 @@ import time
 from concurrent.futures.thread import ThreadPoolExecutor
 import requests
 from requests import Session
-from selenium import webdriver
-
-from LinksUtility.usefulLinks import Links
 
 u_list = []
 

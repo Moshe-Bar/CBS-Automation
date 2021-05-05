@@ -1,10 +1,7 @@
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
 
-from CbsPageUtility import CbsPageUtility
-from CbsClasses.CbsLink import CbsLink
+from Testing.CbsPageUtility import CbsPageUtility
 from CbsClasses.CbsPage import CbsPage
-from LinksUtility.usefulLinks import Links
 
 kaspersky = 'C:\ProgramData\Kaspersky Lab\AVP21.3\QB'
 
@@ -21,7 +18,7 @@ def test(page: CbsPage, session: webdriver.Chrome):
     print(elem)
 
 
-def
+
 
 
 # driver = webdriver.Chrome(Links.CHROME_DRIVER.value)

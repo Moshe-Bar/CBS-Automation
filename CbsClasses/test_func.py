@@ -1,8 +1,7 @@
 import unittest
 from selenium import webdriver
-import CbsClasses.CbsPageUtility
-import CbsPageUtility
-from LinksUtility.usefulLinks import Links
+from Testing import CbsPageUtility
+from DataBase import Links
 
 
 class MyTestCase(unittest.TestCase):

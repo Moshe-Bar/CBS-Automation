@@ -10,7 +10,7 @@ class CbsSiteTestWindow(QDialog):
     def __init__(self):
         super().__init__()
         self.title = 'Site Test'
-        self.logo_path = '../Images/3773~1.png'
+        self.logo_path = '../dataBase/Images/1200px-LOGO_LAMAS.jpg'
         self.width = 1080
         self.height = 720
         self.left = 400
