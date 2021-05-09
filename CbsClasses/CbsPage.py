@@ -1,5 +1,5 @@
 from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsWebPart import Statisticals
+from CbsClasses.CbsWebPart import Statisticals, SubSubjects
 from CbsClasses.Language import Language
 
 
@@ -13,6 +13,7 @@ class CbsPage:
         self.lang = None
         self.web_parts = []
         self.stats_part = Statisticals()
+        self.sub_subjects = SubSubjects()
         self.inside_links = []
         self.dom = None
 

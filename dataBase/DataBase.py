@@ -25,7 +25,7 @@ class DataBase:
 
     @classmethod
     def get_CBS_pages(cls):
-        links = cls.get_CBS_links() # the links only saved locally
+        links = cls.get_CBS_links()  # the links only saved locally
         pages = [CbsPage(link, link.name) for link in links]
         return pages
 
@@ -40,8 +40,6 @@ class DataBase:
     #     return pages
 
 
-
-
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
     CBS_MAP_SITE_HE = 'https://www.cbs.gov.il/he/pages/sitemap.aspx'
@@ -49,7 +47,6 @@ class Links(Enum):
     ROOT_DIR = sys.path[1]
     CHROME_DRIVER = ROOT_DIR + "\chromedriver.exe"
     MAP_LINKS_XPATH = "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a"
-
-
+    SUB_SUBJECTS_XPATH = "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']"
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')

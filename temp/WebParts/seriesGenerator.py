@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 
-
 # from CBS_Automation.UI.window import MainWindow
 # import tkinter as tk
 
@@ -32,7 +31,8 @@ def getCurrentLinks(driver):
     print('finding all HREF objects...')
     try:
         uList = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='level1 sitemapmenu']//cbs_link[@class='ng-scope']//ul[@class='level2']//cbs_link[@class='ng-scope']//ul[@class='level3']//cbs_link//a")))
+            EC.presence_of_all_elements_located((By.XPATH,
+                                                 "//ul[@class='level1 sitemapmenu']//cbs_link[@class='ng-scope']//ul[@class='level2']//cbs_link[@class='ng-scope']//ul[@class='level3']//cbs_link//a")))
         print("mapsite is ready!")
     except TimeoutException:
         print("Loading mapsite took too much time!")
@@ -63,7 +63,7 @@ def generatorTest(driver, link, name, errors_array):
         return
     generator_link = generator.get_attribute('href')
 
-    if(generator_link == 'javascript:void(0)'):
+    if (generator_link == 'javascript:void(0)'):
         errors_array.append((link, name))
         print('invalid link')
         return
@@ -72,7 +72,7 @@ def generatorTest(driver, link, name, errors_array):
     except Exception as e:
         errors_array.append((link, name))
         return
-    if(not r.status_code == 200):
+    if (not r.status_code == 200):
         errors_array.append((link, name))
         return
     # work well
@@ -86,7 +86,7 @@ def Main():
     options.add_argument('--headless')
     # options.add_argument('--window-size=1920x1080')
     # options.add_argument('--no-sandbox')
-    
+
     driver = webdriver.Chrome(DRIVER_PATH)
 
     link_list = getCurrentLinks(driver)
@@ -120,5 +120,7 @@ def Main():
     # for link in broken_links:
     #     print(link)
     # wrightToFile()
+
+
 if __name__ == "__main__":
     Main()

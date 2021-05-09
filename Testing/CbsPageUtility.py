@@ -184,3 +184,52 @@ class CbsPageUtility:
             except NoSuchElementException:
                 page.stats_part.errors.append('link to all massages is missing in Statistical')
 
+    @classmethod
+    def set_top_box(cls, page: CbsPage, session: webdriver.Chrome):
+        pass
+
+    @classmethod
+    def set_external_links(cls, page: CbsPage, session: webdriver.Chrome):
+        pass
+
+    @classmethod
+    def set_sub_subjects(cls, page: CbsPage, session: webdriver.Chrome):
+        # need to put the level first
+        # cls.setPageLevel(page=page, open_session= session)
+
+        # find the web part
+        try:
+            part = session.find_element_by_xpath(Links.SUB_SUBJECTS_XPATH.value)
+        except NoSuchElementException:
+            page.sub_subjects.errors.append("sub subjects part couldn't be found")
+            return
+
+        # check title
+        try:
+            title = part.find_element_by_xpath("//h2[@class='ms-webpart-titleText']//span").text
+            if not title == 'נושאי משנה':
+                page.sub_subjects.errors.append('title is not correct')
+        except NoSuchElementException:
+            page.sub_subjects.errors.append('title is not correct')
+
+        # find all the links inside
+        raw_links = part.find_elements_by_xpath("//ul[@class='subtopicsList']//li//a")
+        if len(raw_links) == 0:
+            page.sub_subjects.errors.append('no internal links while web part is visible')
+        internal_links = [CbsLink(url=li.get_attribute('href'), page_name=li.text) for li in raw_links]
+        page.sub_subjects.links = internal_links
+        for link in internal_links:
+            CbsPageUtility.set_link_status(link)
+
+
+
+
+
+
+    @classmethod
+    def set_publications(cls, page: CbsPage, session: webdriver.Chrome):
+        pass
+
+    @classmethod
+    def set_tools_and_database(cls, page: CbsPage, session: webdriver.Chrome):
+        pass

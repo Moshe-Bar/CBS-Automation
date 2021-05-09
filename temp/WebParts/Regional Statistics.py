@@ -20,7 +20,7 @@ def generatorTest(driver, link, name, errors_array):
         return
     generator_link = generator.get_attribute('href')
 
-    if(generator_link == 'javascript:void(0)'):
+    if (generator_link == 'javascript:void(0)'):
         errors_array.append((link, name))
         print('invalid link')
         return
@@ -29,7 +29,7 @@ def generatorTest(driver, link, name, errors_array):
     except Exception as e:
         errors_array.append((link, name))
         return
-    if(not r.status_code == 200):
+    if (not r.status_code == 200):
         errors_array.append((link, name))
         return
     # work well

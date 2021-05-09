@@ -1,5 +1,5 @@
 # import tkinter as tk
-import  tkinter as tk
+import tkinter as tk
 
 
 class MainWindow(tk.Frame):
@@ -8,10 +8,9 @@ class MainWindow(tk.Frame):
         self.master = master
         self.pack()
         self.create_widgets()
-       
 
     def create_widgets(self):
-        self.StartTest_button  = tk.Button(self)
+        self.StartTest_button = tk.Button(self)
         self.StartTest_button["text"] = "Start Test"
         self.StartTest_button["command"] = self.MapSiteTest
         self.StartTest_button.pack(side="top")
@@ -22,7 +21,6 @@ class MainWindow(tk.Frame):
 
     def MapSiteTest(self):
         print("test is starting!")
-       
 
 
 root = tk.Tk()

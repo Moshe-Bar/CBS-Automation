@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 
 from selenium import webdriver
 
+
 # from CbsClasses.CbsLink import CbsLink
 # from CbsClasses.CbsPage import CbsPage
 
 
 # class CbsWebPartUtility:
 #     @classmethod
-
 
 
 class CbsWebPart(ABC):
@@ -96,7 +96,7 @@ class Statisticals(CbsWebPart):
         return not self.isHidden
 
     def isWorkingProperly(self):
-        if len(self.errors)==0:
+        if len(self.errors) == 0:
             return True
         return False
 
@@ -109,7 +109,25 @@ class Statisticals(CbsWebPart):
 
 # נושאי משנה
 class SubSubjects(CbsWebPart):
-    pass
+    def __init__(self):
+        self.errors = []
+        self.isHidden = None
+        self.images = []
+        self.links = []
+
+    def isShowed(self):
+        return not self.isHidden
+
+    def isWorkingProperly(self):
+        if len(self.errors) == 0:
+            return True
+        return False
+
+    def getDetails(self):
+        return self.errors
+
+    def xPath(self):
+        pass
 
 
 # הודעות לתקשורת
@@ -120,4 +138,3 @@ class PressReleases(CbsWebPart):
 # לוחות ותרשימים
 class TableMaps(CbsWebPart):
     pass
-

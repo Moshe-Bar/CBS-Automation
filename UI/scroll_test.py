@@ -4,9 +4,12 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
 from kivy.app import App
+
+
 class MyWindow(App):
     def build(self):
         return root
+
 
 app = MyWindow()
 layout = GridLayout(cols=1, spacing=30, size_hint_y=None)
@@ -19,5 +22,3 @@ root = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
 root.add_widget(layout)
 
 app.run()
-
-

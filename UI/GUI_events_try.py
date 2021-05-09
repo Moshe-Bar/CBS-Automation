@@ -35,7 +35,7 @@ class MyMainApp(App):
         # Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
         self.title = r'CBS Site Test'
-        self.icon = r'D:\Current\Selenium\NewAutomationEnv\Images\1200px-LOGO_LAMAS.jpg'
+        self.icon = '../dataBase/Images/1200px-LOGO_LAMAS.jpg'
         self.f_layout = FlLayout()
         # Window.bind(on_request_close=self.__del__)
 
@@ -108,6 +108,8 @@ class FlLayout(FloatLayout):
         # self.selection_box = RecycleView(pos =(450, 150),size_hint =(.5, .6), background_color=(0,0,0, 1))
         # self.add_widget(self.selection_box)
 
+        self.working_event = threading.Event()
+
     def print_terminal(self, text):
         old_text = self.terminal.text + '\n'
         self.terminal.text = old_text + str(text)
@@ -119,31 +121,30 @@ class FlLayout(FloatLayout):
     def get_pages_to_choose(self):
         return TestUtility.get_pages()
 
-    def second_thread(self, shared_data: Queue, end_process: Queue):
+    def second_thread(self, shared_data: Queue, ev: threading.Event()):
         print('second thread enter')
-        while True:
+        while ev.isSet():
             if self.progress.qsize() > 0:
                 self.pb.value = self.progress.get() * 1000
                 # self.new_progress.set_value(self.progress.get()*100)
             if shared_data.qsize() > 0:
                 self.print_terminal(shared_data.get())
-            if end_process.qsize() > 0:
-                print('second thread exit')
-                temp = end_process.get()
-                shared_data.put(temp)
-                end_process.put(temp)
-                shared_data.put('exiting second process')
-                break
+        print('second thread exit')
+        # temp = end_process.get()
+        # shared_data.put(temp)
+        # end_process.put(temp)
+        shared_data.put('exiting second process')
 
-    def main_thread(self, shared_data: Queue, progress: Queue, end_flag: Queue, pages=None):
+    def main_thread(self, shared_data: Queue, progress: Queue, ev: threading.Event(), pages=None):
         try:
             print('start test')
-            TestUtility.test(shared_data=shared_data, progress_status=progress, end_flag=end_flag, pages=pages)
+            TestUtility.test_with_events(working=ev, shared_data=shared_data, progress_status=progress, pages=pages)
             print('after test')
         except Exception:
             print(Exception)
-            end_flag.put('end for exception')
-            progress.put(0.99 * 1000)
+            # end_flag.put('end for exception')
+            if ev.isSet():
+                ev.clear()
             if shared_data.qsize() > 0:
                 data = shared_data.get()
                 self.print_terminal(data)
@@ -158,12 +159,14 @@ class FlLayout(FloatLayout):
         print('start button clicked')
         self.print_terminal('start clicked')
         data = Queue()
-        self.end_flag = Queue()
-        threading.Thread(target=self.main_thread, args=(data, self.progress, self.end_flag)).start()
-        threading.Thread(target=self.second_thread, args=(data, self.end_flag)).start()
+        # self.end_flag = Queue()
+
+        self.working_event.set()
+        threading.Thread(target=self.main_thread, args=(data, self.progress, self.working_event)).start()
+        threading.Thread(target=self.second_thread, args=(data, self.working_event)).start()
 
     def cancel_button_click(self, instance, value):
-        self.end_flag.put('canceled')
+        self.working_event.clear()
 
 
 class CircularProgressBar(ProgressBar):

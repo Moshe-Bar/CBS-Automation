@@ -49,7 +49,6 @@ reqs = []
 i = 0
 
 for url in urls:
-
     reqs.append(grequests.get(url, session=sessions[i % NUM_SESSIONS]))
     i += 1
 print(reqs)
