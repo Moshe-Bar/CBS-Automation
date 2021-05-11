@@ -48,5 +48,8 @@ class Links(Enum):
     CHROME_DRIVER = ROOT_DIR + "\chromedriver.exe"
     MAP_LINKS_XPATH = "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a"
     SUB_SUBJECTS_XPATH = "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']"
+    EXTRA_STATS_XPATH = "//div[@id='MSOZoneCell_WebPartWPQ13']"
+    HIDDEN_HEBREW_STATS = "//div[@id='hebstats']//div[@style='display: none;']"
+    HEBREW_STATS = "//div[@id='hebstats']"
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')

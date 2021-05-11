@@ -138,3 +138,24 @@ class PressReleases(CbsWebPart):
 # לוחות ותרשימים
 class TableMaps(CbsWebPart):
     pass
+
+class MoreLinks(CbsWebPart):
+    def __init__(self):
+        self.errors = []
+        self.isHidden = None
+        self.images = []
+        self.links = []
+
+    def isShowed(self):
+        return not self.isHidden
+
+    def isWorkingProperly(self):
+        if len(self.errors) == 0:
+            return True
+        return False
+
+    def getDetails(self):
+        return self.errors
+
+    def xPath(self):
+        pass

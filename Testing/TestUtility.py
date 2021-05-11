@@ -52,10 +52,12 @@ class TestUtility:
                 options.add_argument("headless")
                 # options.add_argument('--disable-gpu')
                 driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
+
             else:
                 driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
-            # driver.implicitly_wait(wait_time)
+
+            driver.implicitly_wait(wait_time)
             return driver
         except WebDriverException as e:
             print('driver error: ' + str(e))
@@ -63,8 +65,8 @@ class TestUtility:
 
     @classmethod
     def testPage(cls, page: CbsPage, session: webdriver.Chrome):
-        CbsPageUtility.set_statistical_part(page, session)
-
+        CbsPageUtility.set_statistical_part(page=page, session=session)
+        # CbsPageUtility.set_sub_subjects(page=page, session=session)
     #     TODO another web part
     #     TODO another web part
     #     TODO another web part

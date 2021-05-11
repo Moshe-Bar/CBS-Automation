@@ -1,6 +1,9 @@
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from CbsClasses.CbsLink import CbsLink
 from CbsClasses.CbsPage import CbsPage
@@ -130,30 +133,42 @@ class CbsPageUtility:
     # only for hebrew page
     def set_statistical_part(cls, page: CbsPage, session: webdriver.Chrome):
         # assuming the page loaded already - therefore no need to wait
-        session.implicitly_wait(1)
+
+        # session.implicitly_wait(1)
+
         # *****************************************************************************************************************
         # check for extra web part - empty statistical (different xPath)
         # try:
-        elem = session.find_elements_by_xpath("//div[@id='MSOZoneCell_WebPartWPQ13']")
-        if len(elem) > 0:
+        try:
+            element = WebDriverWait(session, 10).until(
+                EC.presence_of_element_located((By.XPATH,
+                                                "//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]"))
+                # This is a dummy element
+            )
+        except TimeoutException:
+            print('element not found')
+        finally:
+            pass
+
+        element = session.find_elements_by_xpath(Links.EXTRA_STATS_XPATH.value)
+        if len(element) > 0:
             page.stats_part.errors.append('error: statistical - extra web part')
         # except  NoSuchElementException:
         # empty extra web part is not exist 200
         # *****************************************************************************************************************
 
         # in case stats is hidden there is nothing to check
-        elem = session.find_elements_by_xpath("//div[@id='hebstats']//div[@style='display: none;']")
-        if len(elem) > 0:
+        element = session.find_elements_by_xpath(Links.HIDDEN_HEBREW_STATS.value)
+        if len(element) > 0:
             page.stats_part.isHidden = True
-            # print(page.stats_part.isHidden)
             return
         # except NoSuchElementException:
         #   in case the web part is showed need to  be check (it displayed)
-        elem = session.find_elements_by_xpath("//div[@id='hebstats']")
-        if len(elem) > 0:
+        element = session.find_element_by_xpath(Links.HEBREW_STATS.value)
+        if True:
             page.stats_part.isHidden = False
-            s_pages_images = session.find_elements_by_xpath("//div[@id='hebstats']//ul[@class='cbs-List']//li//img")
-            s_pages_links = session.find_elements_by_xpath("//div[@id='hebstats']//ul[@class='cbs-List']//li//a")
+            s_pages_images = element.find_elements_by_xpath("//ul[@class='cbs-List']//li//img")
+            s_pages_links = element.find_elements_by_xpath("//ul[@class='cbs-List']//li//a")
             if len(s_pages_images) == 0:
                 page.stats_part.errors.append('images content is missing in Statistical')
             else:
@@ -183,17 +198,39 @@ class CbsPageUtility:
                     page.stats_part.errors.append('link to all massages is broken in Statistical')
             except NoSuchElementException:
                 page.stats_part.errors.append('link to all massages is missing in Statistical')
+        else:
+            page.stats_part.errors.append("couldn't find any statistical web part")
 
+            
     @classmethod
     def set_top_box(cls, page: CbsPage, session: webdriver.Chrome):
         pass
 
     @classmethod
-    def set_external_links(cls, page: CbsPage, session: webdriver.Chrome):
-        pass
+    def set_more_links(cls, page: CbsPage, session: webdriver.Chrome):
+        # this part on test
+        try:
+            elem = WebDriverWait(session, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]"))  # This is a dummy element
+            )
+        except TimeoutException:
+            print('element not found')
+        finally:
+            pass
+        # the end
+
+
+        try:
+            part = session.find_elements_by_xpath("//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]")
+            print('num elements found: ', str(len(part)))
+            print('found')
+        except NoSuchElementException:
+            print("the part hasn't been found")
+            page.more_links.isHidden = True
 
     @classmethod
     def set_sub_subjects(cls, page: CbsPage, session: webdriver.Chrome):
+        # TODO
         # need to put the level first
         # cls.setPageLevel(page=page, open_session= session)
 
@@ -201,7 +238,7 @@ class CbsPageUtility:
         try:
             part = session.find_element_by_xpath(Links.SUB_SUBJECTS_XPATH.value)
         except NoSuchElementException:
-            page.sub_subjects.errors.append("sub subjects part couldn't be found")
+            page.sub_subjects.isHidden = True
             return
 
         # check title
@@ -212,18 +249,17 @@ class CbsPageUtility:
         except NoSuchElementException:
             page.sub_subjects.errors.append('title is not correct')
 
-        # find all the links inside
+        # find all the links inside and set their status
         raw_links = part.find_elements_by_xpath("//ul[@class='subtopicsList']//li//a")
         if len(raw_links) == 0:
             page.sub_subjects.errors.append('no internal links while web part is visible')
         internal_links = [CbsLink(url=li.get_attribute('href'), page_name=li.text) for li in raw_links]
         page.sub_subjects.links = internal_links
         for link in internal_links:
+            # TODO async as must
             CbsPageUtility.set_link_status(link)
-
-
-
-
+            if not link.status_code == 200:
+                page.sub_subjects.errors.append('the link: ' + link.name + 'is broken')
 
 
     @classmethod
