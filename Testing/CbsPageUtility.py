@@ -164,20 +164,24 @@ class CbsPageUtility:
             return
         # except NoSuchElementException:
         #   in case the web part is showed need to  be check (it displayed)
-        element = session.find_element_by_xpath(Links.HEBREW_STATS.value)
-        if True:
-            page.stats_part.isHidden = False
-            s_pages_images = element.find_elements_by_xpath("//ul[@class='cbs-List']//li//img")
-            s_pages_links = element.find_elements_by_xpath("//ul[@class='cbs-List']//li//a")
-            if len(s_pages_images) == 0:
-                page.stats_part.errors.append('images content is missing in Statistical')
-            else:
-                for i, img in enumerate(s_pages_images):
-                    cur_link = CbsLink(img.get_attribute('src'))
-                    CbsPageUtility.set_link_status(cur_link)
-                    page.stats_part.images.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        page.stats_part.errors.append('image is broken in Statistical')
+        try:
+            element = session.find_element_by_xpath(Links.HEBREW_STATS.value)
+        except NoSuchElementException:
+            page.stats_part.errors.append("statistical couldn't be found")
+            return
+
+        page.stats_part.isHidden = False
+        s_pages_images = element.find_elements_by_xpath("//ul[@class='cbs-List']//li//img")
+        s_pages_links = element.find_elements_by_xpath("//ul[@class='cbs-List']//li//a")
+        if len(s_pages_images) == 0:
+            page.stats_part.errors.append('images content is missing in Statistical')
+        else:
+            for i, img in enumerate(s_pages_images):
+                cur_link = CbsLink(img.get_attribute('src'))
+                CbsPageUtility.set_link_status(cur_link)
+                page.stats_part.images.append(cur_link)
+                if not cur_link.status_code == 200:
+                    page.stats_part.errors.append('image is broken in Statistical')
             if len(s_pages_links) == 0:
                 page.stats_part.errors.append('links content is missing in Statistical')
             else:
@@ -198,8 +202,8 @@ class CbsPageUtility:
                     page.stats_part.errors.append('link to all massages is broken in Statistical')
             except NoSuchElementException:
                 page.stats_part.errors.append('link to all massages is missing in Statistical')
-        else:
-            page.stats_part.errors.append("couldn't find any statistical web part")
+            else:
+                page.stats_part.errors.append("couldn't find any statistical web part")
 
             
     @classmethod
