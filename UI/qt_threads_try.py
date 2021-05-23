@@ -1,145 +1,77 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtCore import pyqtSignal
+import time
 
-font_but = QtGui.QFont()
-font_but.setFamily("Segoe UI Symbol")
-font_but.setPointSize(10)
-font_but.setWeight(95)
+# from PyQt5 import QtWidgets, QtGui, QtCore
 
+import traceback, sys
 
-class PushBut1(QtWidgets.QPushButton):
+# from PyQt6.QtCore import pyqtSlot
+from PyQt6 import QtCore
+from PyQt6.QtCore import QRunnable, pyqtSlot, QThreadPool, pyqtSignal, QObject
 
-    def __init__(self, parent=None):
-        super(PushBut1, self).__init__(parent)
-        self.setMouseTracking(True)
-        self.setStyleSheet('''margin: 1px; padding: 7px;
-        background - color: rgba(1, 255, 255, 100);
-        color: rgba(0, 190, 255, 255);
-        border - style: solid;
-        border - radius: 3
-        px;
-        border - width: 0.5
-        px;
-        border - color: rgba(127, 127, 255, 255);
-        ''')
-
-    def enterEvent(self, event):
-        if self.isEnabled() is True:
-            self.setStyleSheet('''margin: 1px; padding: 7px;
-            background - color: \
-                rgba(1, 255, 255, 100);
-            color: rgba(0, 230, 255, 255);
-            border - style: solid;
-            border - radius: 3
-            px;
-            border - width: 0.5
-            px;
-            border - color: rgba(0, 230, 255, 255);
-            ''')
-            if self.isEnabled() is False:
-                self.setStyleSheet('''margin: 1px; padding: 7px;
-            background - color: \
-                rgba(1, 255, 255, 100);
-            color: rgba(0, 190, 255, 255);
-            border - style: solid;
-            border - radius: 3
-            px;
-            border - width: 0.5
-            px;
-            border - color: \
-                rgba(127, 127, 255, 255);
-            ''')
-
-    def leaveEvent(self, event):
-        self.setStyleSheet('''margin: 1px; padding: 7px;
-        background - color: rgba(1, 255, 255, 100);
-        color: rgba(0, 190, 255, 255);
-        border - style: solid;
-        border - radius: 3
-        px;
-        border - width: 0.5
-        px;
-        border - color: rgba(127, 127, 255, 255);
-        ''')
+from PyQt6.QtWidgets import QApplication, QDialog, QPushButton, QProgressBar, QVBoxLayout, QGraphicsObject
 
 
-class QthreadApp(QtWidgets.QWidget):
-    sig = pyqtSignal(str)
+class Worker(QRunnable):
+    class WorkerSignals(QObject):
+        status = QtCore.pyqtSignal(int)
+        finished = QtCore.pyqtSignal()
+        error = QtCore.pyqtSignal(tuple)
+        result = QtCore.pyqtSignal(object)
 
-    def __init__(self, parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.setWindowTitle("QThread Application")
-        self.setWindowIcon(QtGui.QIcon("Path/to/image/file.png"))
-        self.setMinimumWidth(resolution.width() / 3)
-        self.setMinimumHeight(resolution.height() / 1.5)
-        self.setStyleSheet('''QWidget {
-        background - color: rgba(0, 41, 59, 255);}
-        QScrollBar: horizontal
-        {width: 1px;
-        height: 1
-        px;
-        background - color: rgba(0, 41, 59, 255);}
-        QScrollBar: vertical
-        {width: 1px;
-        height: 1
-        px;
-        background - color: rgba(0, 41, 59, 255);}''')
+    def __init__(self, function):
+        super(Worker, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.function = function
+        # self.args = args
+        # self.kwargs = kwargs
+        self.signals = self.WorkerSignals()
 
-        self.linef = QtWidgets.QLineEdit(self)
-        self.linef.setPlaceholderText("Connect to...")
-        self.linef.setStyleSheet('''margin: 1px; padding: 7px;
-        background - color: \
-            rgba(0, 255, 255, 100);
-        color: rgba(0, 190, 255, 255);
-        border - style: solid;
-        border - radius: 3
-        px;
-        border - width: 0.5
-        px;
-        border - color: \
-            rgba(0, 140, 255, 255);
-        ''')
-        self.textf = QtWidgets.QTextEdit(self)
-        self.textf.setPlaceholderText("Results...")
-        self.textf.setStyleSheet('''margin: 1px; padding: 7px;
-        background - color: \
-            rgba(0, 255, 255, 100);
-        color: rgba(0, 190, 255, 255);
-        border - style: solid;
-        border - radius: 3
-        px;
-        border - width: 0.5
-        px;
-        border - color: \
-            rgba(0, 140, 255, 255);
-        ''')
-        self.but1 = PushBut1(self)
-        self.but1.setText("⯈")
-        self.but1.setFixedWidth(72)
-        self.but1.setFont(font_but)
-        self.but2 = PushBut1(self)
-        self.but2.setText("⯀")
-        self.but2.setFixedWidth(72)
-        self.but2.setFont(font_but)
-        self.grid1 = QtWidgets.QGridLayout()
-        self.grid1.addWidget(self.linef, 0, 0, 1, 12)
-        self.grid1.addWidget(self.but1, 0, 12, 1, 1)
-        self.grid1.addWidget(self.but2, 0, 13, 1, 1)
-        self.grid1.addWidget(self.textf, 1, 0, 13, 14)
-        self.grid1.setContentsMargins(7, 7, 7, 7)
-        self.setLayout(self.grid1)
+    @pyqtSlot()
+    def run(self):
+        counter = 0
+        while counter < 100:
+            self.signals.status.emit(counter)
+            counter += 1
+            time.sleep(0.1)
+
+
+class QthreadApp(QDialog):
+    def __init__(self):
+        super(QthreadApp, self).__init__()
+        self.layout = QVBoxLayout()
+        self.button = QPushButton('start process')
+        self.button.clicked.connect(self.start_progress)
+        self.progress = QProgressBar()
+        self.progress.setMaximum(100)
+        self.layout.addWidget(self.button)
+        self.layout.addWidget(self.progress)
+        self.setLayout(self.layout)
+        self.thread_pool = QThreadPool()
+
+    def start_progress(self):
+        # print('clicked')
+        # back_process = MainProcess()
+        # back_process.process_status.connect(self.change_progressbar)
+        # back_process.run()
+        worker = Worker(self.change_status_bar)
+
+        worker.signals.status.connect(self.change_progressbar)
+        self.thread_pool.start(worker)
+
+
+    def change_progressbar(self, data):
+        self.progress.setValue(data)
+
+    def change_status_bar(self):
+        counter =0
+        while counter<100:
+            time.sleep(0.1)
+            counter+=1
+
+
 
 if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    desktop = QtWidgets.QApplication.desktop()
-    resolution = desktop.availableGeometry()
+    app = QApplication(sys.argv)
     myapp = QthreadApp()
-    myapp.setWindowOpacity(0.95)
     myapp.show()
-    myapp.move(resolution.center() - myapp.rect().center())
-    sys.exit(app.exec_())
-else:
-    desktop = QtWidgets.QApplication.desktop()
-    resolution = desktop.availableGeometry()
-
+    sys.exit(app.exec())

@@ -4,31 +4,23 @@ import time
 from multiprocessing import Queue
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.uic.properties import QtCore
-from PyQt6.QtCore import Qt, QVariant, QThread
-from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem
+# from PyQt5.uic.properties import QtCore  after instalation PyQt5-stubs==5.15.2.0
+from PyQt6 import QtGui, QtCore
+from PyQt6.QtCore import Qt, QVariant, QThread, QObject, QRunnable, pyqtSlot, QThreadPool
+from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem, QFont, QTextListFormat
 from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QApplication, QMainWindow, QStackedWidget, QLabel, \
-    QLineEdit, QScrollArea, QWidget, QCheckBox, QListView
+    QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView
 from PyQt6.uic import loadUi
+# from PyQt6.uic.properties import QtGui, QtWidgets
 
 from Testing.TestUtility import TestUtility
 
+font_but = QFont()
+font_but.setFamily("David")
+font_but.setPointSize(10)
+font_but.setWeight(95)
 
-class ThreadTry(QtCore.QThread):
 
-    def __init__(self, parent=None):
-        QtCore.QThread.__init__(self, parent)
-        self.sig1 = pyqtSignal(str)
-        self.running = True
-        self.source_txt = None
-
-    def on_source(self, lineftxt):
-        self.source_txt = lineftxt
-
-    def run(self):
-        while self.running:
-            self.sig1.emit(self.source_txt)
-            time.sleep(1)
 
 
 class LogInScreen(QDialog):
@@ -50,106 +42,86 @@ class TestPropertiesScreen(QDialog):
         super(TestPropertiesScreen, self).__init__()
         loadUi('Qt_ui/TestProperties.ui', self)
         self.pushButton.clicked.connect(self.goto_test_progress)
+        self.list = QListView()
 
         pages = TestUtility.get_pages()
-        model = QStandardItemModel()
-        for i, page in enumerate(pages):
-            item = QStandardItem(page.name)
-            # item.setFlags(Qt.ItemSelectionMode | Qt.ItemSelectionOperation)
-            # item.setData(QVariant(Qt.Checked), Qt.CheckStateRole)
-            model.appendRow(item)
-            # item = QStandardItem(page.name)
-            # item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            # item.setData(QVariant(Qt.Checked), Qt.CheckStateRole)
-            # model.appendRow(item)
+        # model = QStandardItemModel()
 
-        self.listView.setModel(model)
-        self.listView.show()
+        self.h_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+
+        for i, page in enumerate(pages):
+            it = QListWidgetItem(page.name)
+            self.h_pages_list.addItem(it)
+            it.setSelected(True)
 
     def goto_test_progress(self):
         screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
 
 class TestProgressScreen(QDialog):
+
     def __init__(self):
         super(TestProgressScreen, self).__init__()
         loadUi('Qt_ui/TestProgress.ui', self)
-        self.textMonitor.append('hhhhhhh')
-        self.progress_signal = pyqtSignal(str)
-        # print(self.insideWidget.children())
+        # self.progress_signal = pyqtSignal(str)
 
+
+        self.test_button = QPushButton('test')
         self.start_button.clicked.connect(self.start_click)
         self.cancel_button.clicked.connect(self.cancel_click)
+        self.cancel_button.setEnabled(False)
 
-    def start_click(self):
-        self.pushButton.setEnabled(False)
-        self.shared_data = Queue()
-        self.progress = Queue()
-        self.ev = threading.Event()
-        pages = TestUtility.get_pages()
-        self.start_btn.disabled = True
-        print('start button clicked')
-        self.print_terminal('start clicked')
-        data = Queue()
-        # self.end_flag = Queue()
 
-        self.working_event.set()
-        threading.Thread(target=self.main_thread,
-                         args=(self.shared_data, self.progress, self.working_event, pages)).start()
-        threading.Thread(target=self.second_thread, args=(self.shared_data, self.working_event)).start()
+
+        self.signals = WorkerSignals()
+        self.signals.status.connect(self.update_progress_bar)
+        self.signals.finished.connect(self.cancel_click)
+        self.signals.error.connect(self.update_terminal)
+        self.signals.monitor_data.connect(self.update_terminal)
+        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals)
+        self.thread_pool = QThreadPool()
+
+    def update_terminal(self, data):
+        self.textMonitor.append(data)
+
+    def update_progress_bar(self, value):
+        self.progressBar.setValue(value)
 
     def cancel_click(self):
-        pass
-        # self.working_event.clear()
-
-    def second_thread(self, shared_data: Queue, ev: threading.Event()):
-        print('second thread enter')
-        while ev.isSet():
-            if self.progress.qsize() > 0:
-                self.pb.value = self.progress.get() * 1000
-                # self.new_progress.set_value(self.progress.get()*100)
-            if shared_data.qsize() > 0:
-                self.print_terminal(shared_data.get())
-        print('second thread exit')
-        # temp = end_process.get()
-        # shared_data.put(temp)
-        # end_process.put(temp)
-        shared_data.put('exiting second process')
-
-    def main_thread(self, shared_data: Queue, progress: Queue, ev: threading.Event(), pages=None):
-        try:
-            print('start test')
-            TestUtility.test_with_events(working=ev, shared_data=shared_data, progress_status=progress, pages=pages)
-            print('after test')
-        except Exception:
-            print(Exception)
-            # end_flag.put('end for exception')
-            if ev.isSet():
-                ev.clear()
-            if shared_data.qsize() > 0:
-                data = shared_data.get()
-                self.print_terminal(data)
-                print(data)
-            else:
-                print('shared data is empty')
-        finally:
-            self.start_btn.disabled = False
-
-    def start_button_click(self, instance, value):
-        self.start_btn.disabled = True
-        print('start button clicked')
-        self.print_terminal('start clicked')
-        data = Queue()
-        # self.end_flag = Queue()
-
-        self.working_event.set()
-        threading.Thread(target=self.main_thread, args=(data, self.progress, self.working_event)).start()
-        threading.Thread(target=self.second_thread, args=(data, self.working_event)).start()
+        self.start_button.setEnabled(True)
+        self.cancel_button.setEnabled(False)
+        self.update_terminal('finish')
+        self.thread_pool.clear()
 
 
-class MainThread(QThread):
-    def __init__(self):
-        super(MainThread, self).__init__()
+    def start_click(self):
+        self.start_button.setEnabled(False)
+        self.cancel_button.setEnabled(True)
+        self.update_terminal('test started')
+        self.thread_pool.start(self.test_runner)
+
+class WorkerSignals(QObject):
+    status = QtCore.pyqtSignal(int)
+    finished = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal(tuple)
+    result = QtCore.pyqtSignal(object)
+    monitor_data = QtCore.pyqtSignal(str)
+
+class Excecutor(QRunnable):
+
+    def __init__(self, function, *args, **kwargs):
+        super(Excecutor, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
+        # self.signals = self.WorkerSignals()
+
+    @pyqtSlot()
+    def run(self):
+        self.function(*self.args,pages=None)
+
+
 
 
 class ResultsScreen(QDialog):
@@ -159,7 +131,6 @@ class ResultsScreen(QDialog):
 class CBSTestApplication(QApplication):
     def __init__(self, arguments):
         super(CBSTestApplication, self).__init__(arguments)
-        # self.resize(1080, 720)
 
 
 if __name__ == "__main__":
@@ -169,12 +140,12 @@ if __name__ == "__main__":
 
     login = LogInScreen()
     choose = TestPropertiesScreen()
-    test_prog = TestProgressScreen()
+    test_progress = TestProgressScreen()
     result = ResultsScreen()
 
     screen_manager.addWidget(login)
     screen_manager.addWidget(choose)
-    screen_manager.addWidget(test_prog)
+    screen_manager.addWidget(test_progress)
     screen_manager.addWidget(result)
     screen_manager.setFixedWidth(1080)
     screen_manager.setFixedHeight(720)

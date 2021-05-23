@@ -138,7 +138,7 @@ class FlLayout(FloatLayout):
     def main_thread(self, shared_data: Queue, progress: Queue, ev: threading.Event(), pages=None):
         try:
             print('start test')
-            TestUtility.test_with_events(working=ev, shared_data=shared_data, progress_status=progress, pages=pages)
+            TestUtility.test_with_pyqt_slots()
             print('after test')
         except Exception:
             print(Exception)

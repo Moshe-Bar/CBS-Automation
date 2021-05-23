@@ -11,7 +11,7 @@ class DataBase:
     def get_CBS_links(cls):
         links = []
         try:
-            with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\heb_pages_links.txt', 'r') as f:
+            with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\heb_pages_links.txt', 'r', encoding="utf-8") as f:
                 for line in f:
                     li = line.split()
                     cbs_link = CbsLink(li[0])
@@ -19,8 +19,8 @@ class DataBase:
                     links.append(cbs_link)
                 f.close()
         except Exception as e:
+            print(e)
             print('database file did not read', e)
-            return None
         return links
 
     @classmethod
