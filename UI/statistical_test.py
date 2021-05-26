@@ -12,7 +12,7 @@ def main():
     page = CbsPage(CbsLink(url=URL), 'מדד חברתי כלכלי')
     session = TestUtility.create_web_driver(wait_time=10)
     session.get(URL)
-    CbsPageUtility.set_statistical_part(page=page, session=session)
+    CbsPageUtility.set_heb_statistical(page=page, session=session)
     print(page.stats_part.errors)
 
 

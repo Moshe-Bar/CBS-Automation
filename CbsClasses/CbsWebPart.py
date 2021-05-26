@@ -1,15 +1,5 @@
 from abc import ABC, abstractmethod
 
-from selenium import webdriver
-
-
-# from CbsClasses.CbsLink import CbsLink
-# from CbsClasses.CbsPage import CbsPage
-
-
-# class CbsWebPartUtility:
-#     @classmethod
-
 
 class CbsWebPart(ABC):
     @abstractmethod
@@ -107,6 +97,30 @@ class Statisticals(CbsWebPart):
         pass
 
 
+class ExtraStatisticals(CbsWebPart):
+    def __init__(self):
+        self.errors = []
+        self.isHidden = None
+
+    def set_hidden(self,isHidden:bool):
+        self.isHidden = isHidden
+        if not isHidden:
+            self.errors.append('extra stats are showed')
+
+    def isShowed(self):
+        return not self.isHidden
+
+    def isWorkingProperly(self):
+        if len(self.errors) == 0:
+            return True
+        return False
+
+    def getDetails(self):
+        return self.errors
+
+    def xPath(self):
+        pass
+
 # נושאי משנה
 class SubSubjects(CbsWebPart):
     def __init__(self):
@@ -133,7 +147,6 @@ class SubSubjects(CbsWebPart):
 # הודעות לתקשורת
 class PressReleases(CbsWebPart):
     pass
-
 
 # לוחות ותרשימים
 class TableMaps(CbsWebPart):

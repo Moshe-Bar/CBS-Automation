@@ -1,29 +1,37 @@
 import threading
 import time
 from multiprocessing import Queue
+from telnetlib import EC
 
 from PyQt6 import QtCore
 from PyQt6.QtCore import QObject
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchWindowException, \
+    StaleElementReferenceException
 
 # # from CbsClasses.CbsPageUtility import CbsPageUtility
 # import asyncio
 
 # from concurrent.futures import ThreadPoolExecutor
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsClasses.CbsPage import CbsPage
 from Testing.CbsPageUtility import CbsPageUtility
+# from UI.Qt_GUI import WorkerSignals
 from dataBase.DataBase import DataBase, Links
 
+
 class TestProperties():
-    def __init__(self,shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
-             pages=None, session_visible=True):
+    def __init__(self, shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
+                 pages=None, session_visible=True):
         self.session_visible = session_visible
         self.shared_data = shared_data
         self.progress_status = progress_status
         self.end_flag = end_flag
         self.pages = pages
+
 
 class TestUtility:
 
@@ -67,7 +75,6 @@ class TestUtility:
             else:
                 driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
-
             driver.implicitly_wait(wait_time)
             return driver
         except WebDriverException as e:
@@ -75,9 +82,23 @@ class TestUtility:
             return None
 
     @classmethod
-    def testPage(cls, page: CbsPage, session: webdriver.Chrome):
-        CbsPageUtility.set_statistical_part(page=page, session=session)
-        CbsPageUtility.set_sub_subjects(page=page, session=session)
+    def testPage(cls, page: CbsPage, main_element):
+        # CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
+        # CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
+        # CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
+        heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page,main_element))
+        extra_statistical_thread = threading.Thread(target=CbsPageUtility.set_extra_statistical, args=(page,main_element))
+        sub_subjects_thread = threading.Thread(target=CbsPageUtility.set_sub_subjects, args=(page,main_element))
+
+        heb_statistical_thread.start()
+        extra_statistical_thread.start()
+        sub_subjects_thread.start()
+
+        heb_statistical_thread.join()
+        extra_statistical_thread.join()
+        sub_subjects_thread.join()
+
+        # x.join()
     #     TODO another web part
     #     TODO another web part
     #     TODO another web part
@@ -168,7 +189,7 @@ class TestUtility:
                 raise e
         else:
             pages_collection = pages
-        #set up session for test
+        # set up session for test
         try:
             session = cls.get_sessions()  # default as synchronous test - one instance session
         except Exception as e:
@@ -183,8 +204,6 @@ class TestUtility:
         current_time = time.strftime("%H:%M:%S", t)
         shared_data.put('test started on: ' + str(current_time))
         print('test started on: ' + str(current_time))
-
-
 
         error_pages = []
         pages_size = len(pages_collection)
@@ -231,134 +250,109 @@ class TestUtility:
             shared_data.put('test ended on: ' + current_time)
 
     @classmethod
-    def test_with_pyqt_slots(cls,signals=QObject,pages=None):
+    def test_with_pyqt_slots(cls, outer_signals, pages:[CbsPage]=None):
         # set up pages for test
         if pages is None:
             try:
                 pages_collection = cls.get_pages()
-                print('pages found in if')
             except Exception as e:
                 print('error in loading pages, test is closed')
-                signals.status.emit(0)
-                signals.finished.emit()
-                signals.error.emit(('error in loading pages, test is closed', 'nothing was checked'))
+                outer_signals.status.emit(0)
+                outer_signals.finished.emit()
+                outer_signals.error.emit(('error in loading pages, test is closed', 'nothing was checked'))
                 raise e
 
         else:
             pages_collection = pages
-            print('pages found in else')
-        #set up session for test
+        # set up session for test
         try:
             session = cls.get_sessions()  # default as synchronous test - one instance session
-            print('sessions found')
         except Exception as e:
             print('error loading sessions, test is closed')
-            signals.status.emit(0)
-            signals.error.emit(('error loading sessions, test is closed','nothing was checked'))
-            signals.finished.emit()
+            outer_signals.status.emit(0)
+            outer_signals.error.emit(('error loading sessions, test is closed', 'nothing was checked'))
+            outer_signals.finished.emit()
             raise e
         # status flow
-        signals.monitor_data.emit('initializing test environment...')
-        print('initializing test environment...')
+        outer_signals.monitor_data.emit('initializing test environment...')
+        print('initializing test environment..')
         t = time.localtime()
         current_time = time.strftime("%H:%M:%S", t)
-        signals.monitor_data.emit('test started on: ' + str(current_time))
+        outer_signals.monitor_data.emit('test started on: ' + str(current_time))
         print('test started on: ' + str(current_time))
-
-
 
         error_pages = []
         pages_size = len(pages_collection)
         print('num pages', str(len(pages_collection)))
-        signals.monitor_data.emit('num pages: ' + str(pages_size))
+        outer_signals.monitor_data.emit('num pages: ' + str(pages_size))
 
         try:
             for i, page in enumerate(pages_collection):
+                if not outer_signals.end_flag.empty():
+                    outer_signals.monitor_data.emit('test canceled')
+                    return
+
                 # if not working.isSet():
                 #     raise Exception('test canceled')
-                    # outside canceled
-                signals.monitor_data.emit('ניסיון עברית')
-                percents = (i / pages_size)*100
-                signals.status.emit(percents)
+                # outside canceled
+                percents = (i / pages_size) * 100
+                outer_signals.status.emit(percents)
                 print(str("%.1f" % percents) + '%')
 
                 session.get(page.link.url)
-                cls.testPage(page, session)
+                executor_url = session.command_executor._url
+                session_id = session.session_id
+                # load page
+                timeout = 5
+                try:
+                    main_element =WebDriverWait(session, timeout).until(expected_conditions.presence_of_element_located((By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
+                    cls.testPage(page, main_element)
+                except StaleElementReferenceException:
+                    try:
+                        main_element = WebDriverWait(session, timeout).until(
+                            expected_conditions.presence_of_element_located((By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
+                        cls.testPage(page, main_element)
+                    except Exception:
+                        page.stats_part.errors.append('unknown error')
+                        break
+                except TimeoutException:
+                    print("Timed out waiting for page to load")
+                    page.isChecked = False
+                    break
+                except NoSuchWindowException:
+                    page.stats_part.errors.append("couldn't find root element")
+                    page.isChecked = False
+                    break
 
-                if len(page.stats_part.errors) > 0:
+
+
+
+                if len(page.stats_part.errors)>0:
                     print(page.name, page.link.url)
                     print(page.stats_part.errors)
-                    signals.monitor_data.emit(str(page.name))
-                    signals.monitor_data.emit(str(page.stats_part.errors))
+                    outer_signals.page_info.emit(str({'name':page.name, 'url':page.link.url, 'error':True}))
+                    outer_signals.monitor_data.emit(str(page.stats_part.errors))
                     error_pages.append((page.name, page.link.url, page.stats_part.errors))
                 else:
-                    signals.monitor_data.emit(str(page.name))
-                    signals.monitor_data.emit(str(200))
-
+                    outer_signals.page_info.emit(str({'name':page.name, 'url':page.link.url, 'error':False}))
+                    # outer_signals.monitor_data.emit(str(200))
+        except NoSuchWindowException as e:
+            print('Main test stopped due to unexpected  session close')
+            outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close' )
+            outer_signals.finished.emit()
+            raise e
         except Exception as e:
             print('main process stopped due to exception: ' + str(e))
-            signals.monitor_data.emit('main process stopped due to exception: ' + str(e))
-            # end_flag.put('main process stopped due to exception: ' + str(e))
-            signals.finished.emit()
+            outer_signals.monitor_data.emit('main process stopped due to exception: ' + str(e))
+            outer_signals.finished.emit()
+            raise e
         finally:
             session.close()
-            # end_flag.put('end main process')
-            # if working.isSet():
-            #     working.clear()
-            signals.finished.emit()
+            outer_signals.finished.emit()
             t = time.localtime()
             current_time = time.strftime("%H:%M:%S", t)
             # str(time.time() - start_time)
             print('test ended on: ' + current_time)
-            signals.monitor_data.emit('test ended on: ' + current_time)
+            outer_signals.monitor_data.emit('test ended on: ' + current_time)
 
 
-    @classmethod
-    def test_func(cls):
-
-        try:
-            pages = cls.get_pages()
-        except Exception as e:
-            print('error in loading pages, test is closed')
-
-            raise e
-
-        # status flow
-        print('initializing test environment...')
-        t = time.localtime()
-        current_time = time.strftime("%H:%M:%S", t)
-        print('test started on: ' + str(current_time))
-
-        try:
-            session = cls.get_sessions()  # default as synchronous test - one instance session
-        except Exception as e:
-            print('error loading sessions, test is closed')
-            raise e
-
-        error_pages = []
-        pages_size = len(pages)
-        print('num pages', str(len(pages)))
-
-        try:
-            for i, page in enumerate(pages):
-                    # outside canceled
-                percents = i / pages_size
-                print(str("%.1f" % percents) + '%')
-
-                session.get(page.link.url)
-                cls.testPage(page, session)
-
-                if len(page.stats_part.errors) > 0:
-                    print(page.name, page.link.url)
-                    print(page.stats_part.errors)
-                    error_pages.append((page.name, page.link.url, page.stats_part.errors))
-                else:
-                    pass
-        except Exception as e:
-            print('main process stopped due to exception: ' + str(e))
-        finally:
-            session.close()
-            t = time.localtime()
-            current_time = time.strftime("%H:%M:%S", t)
-            # str(time.time() - start_time)
-            print('test ended on: ' + current_time)

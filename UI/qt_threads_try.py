@@ -28,11 +28,8 @@ class Worker(QRunnable):
 
     @pyqtSlot()
     def run(self):
-        counter = 0
-        while counter < 100:
-            self.signals.status.emit(counter)
-            counter += 1
-            time.sleep(0.1)
+        self.function(self.signals)
+
 
 
 class QthreadApp(QDialog):
@@ -53,10 +50,17 @@ class QthreadApp(QDialog):
         # back_process = MainProcess()
         # back_process.process_status.connect(self.change_progressbar)
         # back_process.run()
-        worker = Worker(self.change_status_bar)
+        worker = Worker(self.func)
 
         worker.signals.status.connect(self.change_progressbar)
         self.thread_pool.start(worker)
+
+    def func(self,signals):
+        counter =0
+        while counter < 100:
+            signals.status.emit(counter)
+            counter += 1
+            time.sleep(0.1)
 
 
     def change_progressbar(self, data):
