@@ -44,28 +44,33 @@ class TestPropertiesScreen(QDialog):
         self.pushButton.clicked.connect(self.goto_test_progress)
         self.list = QListView()
 
-        pages = TestUtility.get_pages()
+        self.pages = TestUtility.get_pages()
         # model = QStandardItemModel()
 
         self.h_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
 
-        for i, page in enumerate(pages):
+        for i, page in enumerate(self.pages):
             it = QListWidgetItem(page.name)
             self.h_pages_list.addItem(it)
             it.setSelected(True)
 
     def goto_test_progress(self):
+        self.chosen_pages = []
+        for i in range(self.h_pages_list.count()):
+            if self.h_pages_list.item(i).isSelected():
+                self.chosen_pages.append(self.pages[i])
+        screen_manager.addWidget(TestProgressScreen(chosen_pages=self.chosen_pages))
         screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
 
 class TestProgressScreen(QDialog):
 
-    def __init__(self):
+    def __init__(self,chosen_pages):
         super(TestProgressScreen, self).__init__()
         loadUi('Qt_ui/TestProgress.ui', self)
         # self.progress_signal = pyqtSignal(str)
 
-
+        self.pages = chosen_pages
         self.test_button = QPushButton('test')
         self.start_button.clicked.connect(self.start_click)
         self.cancel_button.clicked.connect(self.cancel_click)
@@ -115,7 +120,7 @@ class TestProgressScreen(QDialog):
     def start_click(self):
         if not self.signals.end_flag.empty():
             self.signals.end_flag.get()
-        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals)
+        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals,self.pages)
         self.start_button.setEnabled(False)
         self.cancel_button.setEnabled(True)
         self.update_terminal('test started')
@@ -144,10 +149,9 @@ class Excecutor(QRunnable):
     @pyqtSlot()
     def run(self):
         try:
-            self.function(*self.args,pages=None)
+            self.function(*self.args)
         except Exception as e:
             print('Exception was raised during test, '+str(e))
-
             return
 
 class ResultsScreen(QDialog):
@@ -164,16 +168,16 @@ if __name__ == "__main__":
 
     login = LogInScreen()
     choose = TestPropertiesScreen()
-    test_progress = TestProgressScreen()
-    result = ResultsScreen()
+    # test_progress = TestProgressScreen()
+    # result = ResultsScreen()
 
     screen_manager.addWidget(login)
     screen_manager.addWidget(choose)
-    screen_manager.addWidget(test_progress)
-    screen_manager.addWidget(result)
+    # screen_manager.addWidget(test_progress)
+    # screen_manager.addWidget(result)
 
-    # screen_manager.setFixedWidth(1080)
-    # screen_manager.setFixedHeight(720)
+    screen_manager.setFixedWidth(630)
+    screen_manager.setFixedHeight(550)
     # screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
     screen_manager.show()
 

@@ -2,9 +2,13 @@ from abc import ABC, abstractmethod
 
 
 class CbsWebPart(ABC):
-    @abstractmethod
-    def __init__(self):
-        pass
+
+    def __int__(self):
+        self.errors = []
+        self.good_condition = True
+        self.isHidden = None
+        self.images = []
+        self.links = []
 
     @abstractmethod
     def isShowed(self):
@@ -12,7 +16,7 @@ class CbsWebPart(ABC):
 
     @abstractmethod
     def isWorkingProperly(self):
-        pass
+        return self.good_condition
 
     @abstractmethod
     def getDetails(self):
@@ -38,7 +42,7 @@ class Summary(CbsWebPart):
         pass
 
     def isWorkingProperly(self):
-        pass
+        return self.condition
 
 
 # רגע של סטטיסטיקה
@@ -78,17 +82,20 @@ class InternationalComparisons(CbsWebPart):
 class Statisticals(CbsWebPart):
     def __init__(self):
         self.errors = []
+        self.good_condition = True
         self.isHidden = None
         self.images = []
         self.links = []
+
+    def set_errors(self, error):
+        self.errors.append(error)
+        self.good_condition = False
 
     def isShowed(self):
         return not self.isHidden
 
     def isWorkingProperly(self):
-        if len(self.errors) == 0:
-            return True
-        return False
+        return self.good_condition
 
     def getDetails(self):
         return self.errors
@@ -100,20 +107,22 @@ class Statisticals(CbsWebPart):
 class ExtraStatisticals(CbsWebPart):
     def __init__(self):
         self.errors = []
+        self.good_condition = True
         self.isHidden = None
+        self.images = []
+        self.links = []
 
     def set_hidden(self,isHidden:bool):
         self.isHidden = isHidden
         if not isHidden:
             self.errors.append('extra stats are showed')
+            self.good_condition = False
 
     def isShowed(self):
         return not self.isHidden
 
     def isWorkingProperly(self):
-        if len(self.errors) == 0:
-            return True
-        return False
+        return self.good_condition
 
     def getDetails(self):
         return self.errors
@@ -125,6 +134,7 @@ class ExtraStatisticals(CbsWebPart):
 class SubSubjects(CbsWebPart):
     def __init__(self):
         self.errors = []
+        self.good_condition = True
         self.isHidden = None
         self.images = []
         self.links = []

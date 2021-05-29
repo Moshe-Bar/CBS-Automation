@@ -292,21 +292,21 @@ class TestUtility:
                     outer_signals.monitor_data.emit('test canceled')
                     return
 
-                # if not working.isSet():
-                #     raise Exception('test canceled')
-                # outside canceled
-                percents = (i / pages_size) * 100
+                percents = (float(i+1) / pages_size) * 50
                 outer_signals.status.emit(percents)
                 print(str("%.1f" % percents) + '%')
 
                 session.get(page.link.url)
-                executor_url = session.command_executor._url
-                session_id = session.session_id
+                # executor_url = session.command_executor._url
+                # session_id = session.session_id
                 # load page
                 timeout = 5
                 try:
                     main_element =WebDriverWait(session, timeout).until(expected_conditions.presence_of_element_located((By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
+
                     cls.testPage(page, main_element)
+                    percents = (float(i + 1) / pages_size) * 100
+                    outer_signals.status.emit(percents)
                 except StaleElementReferenceException:
                     try:
                         main_element = WebDriverWait(session, timeout).until(
