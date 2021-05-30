@@ -1,15 +1,12 @@
 import threading
 import time
 from multiprocessing import Queue
-from telnetlib import EC
 
-from PyQt6 import QtCore
-from PyQt6.QtCore import QObject
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchWindowException, \
     StaleElementReferenceException
 
-# # from CbsClasses.CbsPageUtility import CbsPageUtility
+# # from CbsObjects.CbsPageUtility import CbsPageUtility
 # import asyncio
 
 # from concurrent.futures import ThreadPoolExecutor
@@ -17,7 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-from CbsClasses.CbsPage import CbsPage
+from CbsObjects.Pages.SubjectPage import SubjectPage
 from Testing.CbsPageUtility import CbsPageUtility
 # from UI.Qt_GUI import WorkerSignals
 from dataBase.DataBase import DataBase, Links
@@ -36,7 +33,7 @@ class TestProperties():
 class TestUtility:
 
     @classmethod
-    def test_web_parts(cls, page: CbsPage, open_session: webdriver.chrome, statistical=False):
+    def test_web_parts(cls, page: SubjectPage, open_session: webdriver.chrome, statistical=False):
         pass
 
     @classmethod
@@ -82,7 +79,7 @@ class TestUtility:
             return None
 
     @classmethod
-    def testPage(cls, page: CbsPage, main_element):
+    def testPage(cls, page: SubjectPage, main_element):
         # CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
         # CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
         # CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
@@ -250,7 +247,7 @@ class TestUtility:
             shared_data.put('test ended on: ' + current_time)
 
     @classmethod
-    def test_with_pyqt_slots(cls, outer_signals, pages:[CbsPage]=None):
+    def test_with_pyqt_slots(cls, outer_signals, pages:[SubjectPage]=None):
         # set up pages for test
         if pages is None:
             try:

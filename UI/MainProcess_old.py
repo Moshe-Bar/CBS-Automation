@@ -3,7 +3,7 @@ from selenium import webdriver
 
 import requests
 
-from CbsClasses.CbsPage import CbsPage
+from CbsObjects.Pages.SubjectPage import SubjectPage
 from DataBase import Links
 
 
@@ -41,7 +41,7 @@ def testLinks(link_list, broken_links):
 def create_pages(link_list):
     pages = []
     for link in link_list:
-        pages.append(CbsPage(link[0], link[1]))
+        pages.append(SubjectPage(link[0], link[1]))
     return pages
 
 

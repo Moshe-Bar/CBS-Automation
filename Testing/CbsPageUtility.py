@@ -1,15 +1,12 @@
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsPage import CbsPage
+from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Pages.SubjectPage import SubjectPage
 from dataBase.DataBase import Links
 
-from CbsClasses.Language import Language
+from CbsObjects.Language import Language
 
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
@@ -22,7 +19,7 @@ CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחס
 class CbsPageUtility:
 
     @classmethod
-    def setPageLevel(cls, root_element, page: CbsPage):
+    def setPageLevel(cls, root_element, page: SubjectPage):
         # finding the Level inside the page text
         # print('finding span objects...')
         uList = root_element.find_elements_by_xpath(
@@ -30,7 +27,7 @@ class CbsPageUtility:
         page.level = len(uList) - 2
 
     @classmethod
-    def setPageParent(cls, root_element, page: CbsPage):
+    def setPageParent(cls, root_element, page: SubjectPage):
         if page.level is None:
             cls.setPageLevel(root_element, page)
         if page.level > 1:
@@ -47,7 +44,7 @@ class CbsPageUtility:
     def create_minimal_pages(cls, link_list):
         pages = []
         for link in link_list:
-            pages.append(CbsPage(link[0], link[1]))
+            pages.append(SubjectPage(link[0], link[1]))
         return pages
 
     @classmethod
@@ -67,7 +64,7 @@ class CbsPageUtility:
         link.status_code = r.status_code
 
     @classmethod  # need to be changed according page type
-    def set_internal_links(cls, page: CbsPage, root_element):
+    def set_internal_links(cls, page: SubjectPage, root_element):
         if page.link.status_code is None:
             cls.set_link_status(page.link)
 
@@ -104,7 +101,7 @@ class CbsPageUtility:
 
     @classmethod
     def create_pages(cls, link_list):
-        return [CbsPage(link, link.name) for link in link_list]
+        return [SubjectPage(link, link.name) for link in link_list]
 
     @classmethod
     def check_for_cbs_error_page(cls, content, link: CbsLink):
@@ -118,7 +115,7 @@ class CbsPageUtility:
                 return
 
     @classmethod
-    def set_page_lang(cls, page: CbsPage, root_element):
+    def set_page_lang(cls, page: SubjectPage, root_element):
         try:
             element = root_element.find_element_by_xpath("//a[@id='ctl00_ctl23_lbEnglish']")
         except NoSuchElementException as e:
@@ -130,7 +127,7 @@ class CbsPageUtility:
         page.lang = Language.HEBREW.value
 
     @classmethod
-    def set_extra_statistical(cls, page: CbsPage, root_element):
+    def set_extra_statistical(cls, page: SubjectPage, root_element):
         # check for extra web part - empty statistical (different xPath)
         try:
             extra_stats = root_element.find_element_by_xpath(Links.EXTRA_STATS_XPATH.value)
@@ -143,7 +140,7 @@ class CbsPageUtility:
 
     # only for hebrew page
     @classmethod
-    def set_heb_statistical(cls, page: CbsPage, root_element):
+    def set_heb_statistical(cls, page: SubjectPage, root_element):
         # assuming the page loaded already - therefore no need to wait
 
         # empty extra web part is not exist 200
@@ -215,11 +212,11 @@ class CbsPageUtility:
 
 
     @classmethod
-    def set_top_box(cls, page: CbsPage, session: webdriver.Chrome):
+    def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
         pass
 
     @classmethod
-    def set_more_links(cls, page: CbsPage, root_element):
+    def set_more_links(cls, page: SubjectPage, root_element):
         # this part on test
         try:
             elem = root_element.find_element_by_xpath("//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]")
@@ -239,7 +236,7 @@ class CbsPageUtility:
             page.more_links.isHidden = True
 
     @classmethod
-    def set_sub_subjects(cls, page: CbsPage, root_element):
+    def set_sub_subjects(cls, page: SubjectPage, root_element):
         # TODO
         # need to put the level first
         # cls.setPageLevel(page=page, open_session= session)
@@ -276,9 +273,9 @@ class CbsPageUtility:
                 page.isCorrect = False
 
     @classmethod
-    def set_publications(cls, page: CbsPage, root_element):
+    def set_publications(cls, page: SubjectPage, root_element):
         pass
 
     @classmethod
-    def set_tools_and_database(cls, page: CbsPage, root_element):
+    def set_tools_and_database(cls, page: SubjectPage, root_element):
         pass

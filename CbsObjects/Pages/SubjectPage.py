@@ -1,9 +1,9 @@
-from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsWebPart import Statisticals, SubSubjects, MoreLinks
-from CbsClasses.Language import Language
+from CbsObjects.CbsLink import CbsLink
+from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts
+from CbsObjects.Language import Language
 
 
-class CbsPage:
+class SubjectPage:
     class WebParts:
         def __init__(self):
             self.stats_part = Statisticals()
@@ -17,7 +17,7 @@ class CbsPage:
         self.parent = None
         self.children = []
         self.lang = None
-        self.web_parts = []
+        self.web_parts = SPWebParts()
         self.stats_part = Statisticals()
         self.sub_subjects = SubSubjects()
         self.more_links = MoreLinks()

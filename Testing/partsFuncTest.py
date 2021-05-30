@@ -1,6 +1,6 @@
 # -*- coding: cp1252 -*-
-from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsPage import CbsPage
+from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Pages.SubjectPage import SubjectPage
 from Testing.CbsPageUtility import CbsPageUtility
 from Testing.TestUtility import TestUtility
 
@@ -8,7 +8,7 @@ URL = 'https://www.cbs.gov.il/he/subjects/Pages/%D7%9C%D7%99%D7%93%D7%95%D7%AA-%
 
 sess = TestUtility.create_web_driver(wait_time=10)
 
-page = CbsPage(CbsLink(url=URL), '????? ??')
+page = SubjectPage(CbsLink(url=URL), '????? ??')
 sess.get(URL)
 print('test is started')
 # CbsPageUtility.set_sub_subjects(page=page, session=sess)

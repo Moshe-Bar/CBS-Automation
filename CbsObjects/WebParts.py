@@ -44,6 +44,8 @@ class Summary(CbsWebPart):
     def isWorkingProperly(self):
         return self.condition
 
+    def __str__(self):
+        return 'mmm'
 
 # רגע של סטטיסטיקה
 class MomentOfStatistics(CbsWebPart):
@@ -65,10 +67,10 @@ class MomentOfStatistics(CbsWebPart):
 
 # שלושת המלבנים
 class TopLinksBox(CbsWebPart):
-    pass
+    test = 'test'
 
 
-# נידע לפי אזור גיאוגרפי
+# מידע לפי אזור גיאוגרפי
 class GeographicZone(CbsWebPart):
     pass
 
@@ -182,3 +184,33 @@ class MoreLinks(CbsWebPart):
 
     def xPath(self):
         pass
+
+
+class SPWebParts:
+    def __init__(self):
+        parts = {}
+        self.statistical: Statisticals()
+        self.extra_statisticals = ExtraStatisticals()
+        self.more_links = MoreLinks()
+        self.sub_subjects = SubSubjects()
+        self.summary = Summary()
+        self.mom_of_statistics = MomentOfStatistics()
+        # self.top_links_box = TopLinksBox()
+        # self.geo_zone = GeographicZone()
+        # self.international_comparisons = InternationalComparisons()
+        # self.press_realeses = PressReleases()
+        # self.tables_and_maps = TableMaps()
+
+    def __len__(self):
+        return 11
+
+    def __next__(self):
+        pass
+
+    def __iter__(self):
+        pass
+
+    # def get_summary(self):
+    #     return 10
+a =SPWebParts()
+print(a.summary)

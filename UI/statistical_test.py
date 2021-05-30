@@ -1,6 +1,6 @@
 # coding=utf8
-from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsPage import CbsPage
+from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Pages.SubjectPage import SubjectPage
 from Testing.CbsPageUtility import CbsPageUtility
 from Testing.TestUtility import TestUtility
 
@@ -9,7 +9,7 @@ URL = r'https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%
 
 def main():
     # print('hi')
-    page = CbsPage(CbsLink(url=URL), 'מדד חברתי כלכלי')
+    page = SubjectPage(CbsLink(url=URL), 'מדד חברתי כלכלי')
     session = TestUtility.create_web_driver(wait_time=10)
     session.get(URL)
     CbsPageUtility.set_heb_statistical(page=page, session=session)

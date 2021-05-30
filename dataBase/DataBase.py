@@ -1,5 +1,5 @@
-from CbsClasses.CbsLink import CbsLink
-from CbsClasses.CbsPage import CbsPage
+from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Pages.SubjectPage import SubjectPage
 
 import sys
 
@@ -26,7 +26,7 @@ class DataBase:
     @classmethod
     def get_CBS_pages(cls):
         links = cls.get_CBS_links()  # the links only saved locally
-        pages = [CbsPage(link, link.name) for link in links]
+        pages = [SubjectPage(link, link.name) for link in links]
         return pages
 
     # @classmethod
