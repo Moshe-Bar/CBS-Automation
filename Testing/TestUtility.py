@@ -46,15 +46,20 @@ class TestUtility:
         return sessions
 
     @classmethod
-    def get_pages(cls):
-        pages = DataBase.get_CBS_pages()
+    def get_he_pages(cls):
+        pages = DataBase.get_CBS_he_pages()
+        return pages
+
+    @classmethod
+    def get_en_pages(cls):
+        pages = DataBase.get_CBS_en_pages()
         return pages
 
     @classmethod
     def initial_test_environment_(cls, wait_time=10, async_=False, pages=[]):
         if async_:
             sessions = cls.get_sessions(amount=len(pages), timeout=wait_time)
-            pages = DataBase.get_CBS_pages()
+            pages = DataBase.get_CBS_he_pages()
             # with ThreadPoolExecutor
             for i, session in enumerate(sessions):
                 cls.testPage(pages[i], session)
@@ -108,7 +113,7 @@ class TestUtility:
 
         if pages is None:
             try:
-                pages = cls.get_pages()
+                pages = cls.get_he_pages()
             except Exception as e:
                 print('error in loading pages, test is closed')
                 shared_data.put('error in loading pages, test is closed')
@@ -178,7 +183,7 @@ class TestUtility:
         # set up pages for test
         if pages is None:
             try:
-                pages_collection = cls.get_pages()
+                pages_collection = cls.get_he_pages()
             except Exception as e:
                 print('error in loading pages, test is closed')
                 shared_data.put('error in loading pages, test is closed')
@@ -251,7 +256,7 @@ class TestUtility:
         # set up pages for test
         if pages is None:
             try:
-                pages_collection = cls.get_pages()
+                pages_collection = cls.get_he_pages()
             except Exception as e:
                 print('error in loading pages, test is closed')
                 outer_signals.status.emit(0)

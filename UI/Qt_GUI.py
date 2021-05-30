@@ -1,24 +1,23 @@
 import sys
-import threading
-import time
+
 from multiprocessing import Queue
 from ast import literal_eval
-from PyQt5.QtCore import pyqtSignal
-# from PyQt5.uic.properties import QtCore  after instalation PyQt5-stubs==5.15.2.0
+
+
 from PyQt6 import QtGui, QtCore
 from PyQt6.QtCore import Qt, QVariant, QThread, QObject, QRunnable, pyqtSlot, QThreadPool
 from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem, QFont, QTextListFormat
 from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QApplication, QMainWindow, QStackedWidget, QLabel, \
     QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView, QTextBrowser
 from PyQt6.uic import loadUi
-# from PyQt6.uic.properties import QtGui, QtWidgets
+
 
 from Testing.TestUtility import TestUtility
 
-font_but = QFont()
-font_but.setFamily("David")
-font_but.setPointSize(10)
-font_but.setWeight(95)
+# font_but = QFont()
+# font_but.setFamily("David")
+# font_but.setPointSize(10)
+# font_but.setWeight(95)
 
 
 
@@ -34,7 +33,19 @@ class LogInScreen(QDialog):
 
     def login_clicked(self):
         # TODO verification using the data base
-        screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
+
+        self.login_label.setText('ready')
+        self.login_label.setStyleSheet("QLabel#login_label {color: black}")
+
+        print(self.user_n_input.text())
+        print(self.pass_input.text())
+        if self.user_n_input.text()=='TEST' and self.pass_input.text()=='TEST':
+            screen_manager.setFixedWidth(820)
+            screen_manager.setFixedHeight(660)
+            screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
+        else:
+            self.login_label.setText('wrong details')
+            self.login_label.setStyleSheet("QLabel#login_label {color: red}")
 
 
 class TestPropertiesScreen(QDialog):
@@ -44,21 +55,43 @@ class TestPropertiesScreen(QDialog):
         self.pushButton.clicked.connect(self.goto_test_progress)
         self.list = QListView()
 
-        self.pages = TestUtility.get_pages()
+        self.h_pages = TestUtility.get_he_pages()
+        self.e_pages = TestUtility.get_en_pages()
         # model = QStandardItemModel()
 
         self.h_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
-
-        for i, page in enumerate(self.pages):
+        for i, page in enumerate(self.h_pages):
             it = QListWidgetItem(page.name)
             self.h_pages_list.addItem(it)
             it.setSelected(True)
 
+        self.e_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        for i, page in enumerate(self.e_pages):
+            it = QListWidgetItem(page.name)
+            self.e_pages_list.addItem(it)
+            it.setSelected(True)
+
+        # se = QCheckBox()
+
+        self.check_all_hpages.setCheckState(Qt.CheckState.Checked)
+        self.check_all_hpages.stateChanged.connect(self.select_all_hpages)
+        self.check_all_epages.setCheckState(Qt.CheckState.Checked)
+        self.check_all_epages.stateChanged.connect(self.select_all_epages)
+
+
+    def select_all_hpages(self, state):
+        if state==Qt.CheckState.Checked:
+            pass
+        elif state==Qt.CheckState.Unchecked:
+            pass
+
+    def select_all_epages(self,state):
+        pass
     def goto_test_progress(self):
         self.chosen_pages = []
         for i in range(self.h_pages_list.count()):
             if self.h_pages_list.item(i).isSelected():
-                self.chosen_pages.append(self.pages[i])
+                self.chosen_pages.append(self.h_pages[i])
         screen_manager.addWidget(TestProgressScreen(chosen_pages=self.chosen_pages))
         screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
@@ -178,6 +211,7 @@ if __name__ == "__main__":
 
     screen_manager.setFixedWidth(630)
     screen_manager.setFixedHeight(550)
+
     # screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
     screen_manager.show()
 

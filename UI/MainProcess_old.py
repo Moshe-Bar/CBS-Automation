@@ -4,7 +4,7 @@ from selenium import webdriver
 import requests
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from DataBase import Links
+from dataBase.DataBase import Links
 
 
 def wrightToFile(links):

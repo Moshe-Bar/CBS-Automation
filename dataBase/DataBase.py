@@ -8,7 +8,7 @@ from enum import Enum
 
 class DataBase:
     @classmethod
-    def get_CBS_links(cls):
+    def get_CBS_he_links(cls):
         links = []
         try:
             with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\heb_pages_links.txt', 'r', encoding="utf-8") as f:
@@ -24,11 +24,33 @@ class DataBase:
         return links
 
     @classmethod
-    def get_CBS_pages(cls):
-        links = cls.get_CBS_links()  # the links only saved locally
+    def get_CBS_en_links(cls):
+        links = []
+        try:
+            with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\en_pages_links.txt', 'r', encoding="utf-8") as f:
+                for line in f:
+                    li = line.split()
+                    cbs_link = CbsLink(li[0])
+                    cbs_link.name = ' '.join(li[1:])
+                    print(cbs_link.name)
+                    links.append(cbs_link)
+                f.close()
+        except Exception as e:
+            print(e)
+            print('database file did not read', e)
+        return links
+
+    @classmethod
+    def get_CBS_he_pages(cls):
+        links = cls.get_CBS_he_links()  # the links only saved locally
         pages = [SubjectPage(link, link.name) for link in links]
         return pages
 
+    @classmethod
+    def get_CBS_en_pages(cls):
+        links = cls.get_CBS_en_links()
+        pages = [SubjectPage(link, link.name) for link in links]
+        return pages
     # @classmethod
     # def get_cbs_pages_online(cls):
     #     driver = TestUtility.get_sessions()[0]  # returns a one obj list with defualt driver
@@ -53,3 +75,5 @@ class Links(Enum):
     HEBREW_STATS = "//div[@id='hebstats']"
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
+
+# links = DataBase.get_CBS_en_links()

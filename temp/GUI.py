@@ -117,7 +117,7 @@ class FlLayout(FloatLayout):
         self.terminal.remove_widget(self.bubble)
 
     def get_pages_to_choose(self):
-        return TestUtility.get_pages()
+        return TestUtility.get_he_pages()
 
     def second_thread(self, shared_data: Queue, end_process: Queue):
         print('second thread enter')
