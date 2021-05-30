@@ -3,22 +3,14 @@ import sys
 from multiprocessing import Queue
 from ast import literal_eval
 
-
 from PyQt6 import QtGui, QtCore
 from PyQt6.QtCore import Qt, QVariant, QThread, QObject, QRunnable, pyqtSlot, QThreadPool
 from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem, QFont, QTextListFormat
 from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QApplication, QMainWindow, QStackedWidget, QLabel, \
-    QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView, QTextBrowser
+    QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView, QTextBrowser, QListWidget
 from PyQt6.uic import loadUi
 
-
 from Testing.TestUtility import TestUtility
-
-# font_but = QFont()
-# font_but.setFamily("David")
-# font_but.setPointSize(10)
-# font_but.setWeight(95)
-
 
 
 
@@ -58,16 +50,33 @@ class TestPropertiesScreen(QDialog):
         self.h_pages = TestUtility.get_he_pages()
         self.e_pages = TestUtility.get_en_pages()
         # model = QStandardItemModel()
-
+        # se =QListWidget()
+        # se.setFont(QFont("Times", 5))
+        # se.sizeHint()
         self.h_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.h_pages_list.setFont(QFont("Sans-Serif",15))
+        self.h_pages_list.setStyleSheet("#h_pages_list::Item{\n"
+                                               "height:20px;}\n"
+                                               "#h_pages_list::Item:hover{\n"
+                                               "background-color: rgb(41, 189, 139);\n"
+                                               "}")
         for i, page in enumerate(self.h_pages):
             it = QListWidgetItem(page.name)
+            it.setToolTip(page.name)
             self.h_pages_list.addItem(it)
             it.setSelected(True)
 
+
         self.e_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.e_pages_list.setFont(QFont("Sans-Serif", 15))
+        self.e_pages_list.setStyleSheet("#e_pages_list::Item{\n"
+                                        "height:20px;}\n"
+                                        "#e_pages_list::Item:hover{\n"
+                                        "background-color: rgb(41, 189, 139);\n"
+                                        "}")
         for i, page in enumerate(self.e_pages):
             it = QListWidgetItem(page.name)
+            it.setToolTip(page.name)
             self.e_pages_list.addItem(it)
             it.setSelected(True)
 
@@ -77,22 +86,49 @@ class TestPropertiesScreen(QDialog):
         self.check_all_hpages.stateChanged.connect(self.select_all_hpages)
         self.check_all_epages.setCheckState(Qt.CheckState.Checked)
         self.check_all_epages.stateChanged.connect(self.select_all_epages)
+        #INITIALIZE CHECKED PAGES
+        self.checked_hpages = []
+        for i in range(self.h_pages_list.count()):
+            self.checked_hpages.append(True)
+        self.checked_epages = []
+        for i in range(self.e_pages_list.count()):
+            self.checked_epages.append(True)
 
 
     def select_all_hpages(self, state):
-        if state==Qt.CheckState.Checked:
-            pass
-        elif state==Qt.CheckState.Unchecked:
-            pass
+        if state==Qt.CheckState.Checked.value:
+            #save the old chosen pages before selecting all
+            for i in range(self.h_pages_list.count()):
+                self.checked_hpages.append(self.h_pages_list.item(i).isSelected())
+            #selct all
+            for i in range(self.h_pages_list.count()):
+                self.h_pages_list.item(i).setSelected(True)
+
+        elif state==Qt.CheckState.Unchecked.value:
+            for i in range(self.h_pages_list.count()):
+                self.h_pages_list.item(i).setSelected(self.checked_hpages[i])
 
     def select_all_epages(self,state):
-        pass
+        if state == Qt.CheckState.Checked.value:
+            # save the old chosen pages before selecting all
+            for i in range(self.e_pages_list.count()):
+                self.checked_epages.append(self.e_pages_list.item(i).isSelected())
+            # selct all
+            for i in range(self.e_pages_list.count()):
+                self.e_pages_list.item(i).setSelected(True)
+
+        elif state == Qt.CheckState.Unchecked.value:
+            for i in range(self.e_pages_list.count()):
+                self.e_pages_list.item(i).setSelected(self.checked_epages[i])
+
     def goto_test_progress(self):
         self.chosen_pages = []
         for i in range(self.h_pages_list.count()):
             if self.h_pages_list.item(i).isSelected():
                 self.chosen_pages.append(self.h_pages[i])
         screen_manager.addWidget(TestProgressScreen(chosen_pages=self.chosen_pages))
+        screen_manager.setFixedWidth(630)
+        screen_manager.setFixedHeight(550)
         screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
 
@@ -188,7 +224,9 @@ class Excecutor(QRunnable):
             return
 
 class ResultsScreen(QDialog):
-    pass
+    def __init__(self, chosen_pages):
+        super(ResultsScreen, self).__init__()
+        loadUi('Qt_ui/result.ui', self)
 
 class CBSTestApplication(QApplication):
     def __init__(self, arguments):
