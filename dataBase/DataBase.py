@@ -2,8 +2,9 @@ from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 
 import sys
-
+import io
 from enum import Enum
+####,encoding="utf-8"
 
 
 class DataBase:
@@ -60,6 +61,34 @@ class DataBase:
     #     pages = list(map(lambda x: CbsPage(CbsLink(x.get_attribute('href')), x.text), raw_urls))
     #     driver.close()
     #     return pages
+    @classmethod
+    def save_test_result(cls, test_key, page:SubjectPage):
+        try:
+            path = r'D:\Current\Selenium\NewAutomationEnv\dataBase\logs'
+            file = path + '\\'+ test_key + '.html'
+            with open(file, 'a',encoding='utf-8') as f:
+                style = 'style={"color:red; font-size: large; }'
+                page_link = '<h1 {}><a href="{}" target="_blank" >{}</a></h1><br>'.format(style,page.link.url, page.name)
+                errors = ('<h1 {}>' +str(page.get_errors()) + '</h1>').format(style)
+                f.write(page_link + errors )
+            f.close()
+        except Exception as e:
+            print('exception in db')
+            raise e
+
+    @classmethod
+    def get_test_result(cls, file_key):
+        file_name = file_key
+        try:
+            path = r'D:\Current\Selenium\NewAutomationEnv\dataBase\logs'
+            file = path + '\\' + file_name + '.html'
+            with open(file, 'r',encoding='utf-8') as f:
+                data = f.read()
+            f.close()
+            return data, file
+        except Exception as e:
+            print('exception in db reading file content')
+            raise e
 
 
 class Links(Enum):

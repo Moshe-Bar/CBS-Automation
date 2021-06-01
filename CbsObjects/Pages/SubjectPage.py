@@ -29,8 +29,9 @@ class SubjectPage:
         return len(self.get_errors()) == 0
 
     def get_errors(self):
-        errors = [part.errors for part in self.web_parts]
-        return errors
+        # errors = [str(part.errors) + ('\n') for part in self.web_parts]
+        # return errors
+        return self.stats_part.errors
     
     def __iter__(self):
         return iter(self.inside_links)

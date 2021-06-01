@@ -1,10 +1,12 @@
 import sys
+import os
+import time
 
 from multiprocessing import Queue
 from ast import literal_eval
 
 from PyQt6 import QtGui, QtCore
-from PyQt6.QtCore import Qt, QVariant, QThread, QObject, QRunnable, pyqtSlot, QThreadPool
+from PyQt6.QtCore import Qt, QVariant, QThread, QObject, QRunnable, pyqtSlot, QThreadPool, QCoreApplication
 from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem, QFont, QTextListFormat
 from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QApplication, QMainWindow, QStackedWidget, QLabel, \
     QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView, QTextBrowser, QListWidget
@@ -86,6 +88,7 @@ class TestPropertiesScreen(QDialog):
         self.check_all_hpages.stateChanged.connect(self.select_all_hpages)
         self.check_all_epages.setCheckState(Qt.CheckState.Checked)
         self.check_all_epages.stateChanged.connect(self.select_all_epages)
+
         #INITIALIZE CHECKED PAGES
         self.checked_hpages = []
         for i in range(self.h_pages_list.count()):
@@ -127,8 +130,8 @@ class TestPropertiesScreen(QDialog):
             if self.h_pages_list.item(i).isSelected():
                 self.chosen_pages.append(self.h_pages[i])
         screen_manager.addWidget(TestProgressScreen(chosen_pages=self.chosen_pages))
-        screen_manager.setFixedWidth(630)
-        screen_manager.setFixedHeight(550)
+        # screen_manager.setFixedWidth(630)
+        # screen_manager.setFixedHeight(550)
         screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
 
@@ -138,7 +141,6 @@ class TestProgressScreen(QDialog):
         super(TestProgressScreen, self).__init__()
         loadUi('Qt_ui/TestProgress.ui', self)
         # self.progress_signal = pyqtSignal(str)
-
         self.pages = chosen_pages
         self.test_button = QPushButton('test')
         self.start_button.clicked.connect(self.start_click)
@@ -160,6 +162,23 @@ class TestProgressScreen(QDialog):
         # self.textMonitor.setReadOnly(False)
         self.textMonitor.setOpenExternalLinks(True)
         self.textMonitor.setOpenLinks(True)
+
+        self.result_button.clicked.connect(self.goto_result_screen)
+        self.result_button.setEnabled(False)
+
+        self.test_key = None
+
+        self.back_to_prop_button.setEnabled(True)
+        self.back_to_prop_button.clicked.connect(self.back_to_prop_screen)
+
+    def back_to_prop_screen(self):
+
+        screen_manager.removeWidget(self)
+        self.deleteLater()
+
+    def goto_result_screen(self):
+        screen_manager.addWidget(ResultsScreen(log_key = self.test_key))
+        screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
     def update_terminal(self, data):
         data = '<p>{}</p>'.format(data)
@@ -184,14 +203,18 @@ class TestProgressScreen(QDialog):
     def close_test(self):
         self.start_button.setEnabled(True)
         self.cancel_button.setEnabled(False)
-        self.update_terminal('Test Finished')
+        self.result_button.setEnabled(True)
+        self.back_to_prop_button.setEnabled(True)
+        self.update_terminal('Test Finished ')
 
     def start_click(self):
         if not self.signals.end_flag.empty():
             self.signals.end_flag.get()
-        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals,self.pages)
+        self.test_key = time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())
+        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals,self.pages,self.test_key)
         self.start_button.setEnabled(False)
         self.cancel_button.setEnabled(True)
+        self.back_to_prop_button.setEnabled(False)
         self.update_terminal('test started')
         self.thread_pool.start(self.test_runner)
 
@@ -224,9 +247,19 @@ class Excecutor(QRunnable):
             return
 
 class ResultsScreen(QDialog):
-    def __init__(self, chosen_pages):
+    def __init__(self, log_key):
         super(ResultsScreen, self).__init__()
         loadUi('Qt_ui/result.ui', self)
+        self.data, self.file_path = TestUtility.get_test_result(log_key = log_key)
+        self.result_monitor.append(self.data)
+        self.open_rfile_button.clicked.connect(self.open_result_file)
+        self.exit_button.clicked.connect(self.exit_program)
+
+    def open_result_file(self):
+        os.system("start {}".format(self.file_path))
+
+    def exit_program(self):
+        QCoreApplication.quit()
 
 class CBSTestApplication(QApplication):
     def __init__(self, arguments):
