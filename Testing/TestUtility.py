@@ -1,3 +1,4 @@
+import datetime
 import threading
 import time
 from multiprocessing import Queue
@@ -38,7 +39,7 @@ class TestUtility:
         pass
 
     @classmethod
-    def get_sessions(cls, amount=1, timeout=10, isViseble=True):
+    def get_sessions(cls, amount=1, timeout=2, isViseble=True):
         if amount == 1:
             return cls.create_web_driver(timeout, isViseble)
         sessions = []
@@ -67,7 +68,7 @@ class TestUtility:
         # TODO
 
     @classmethod
-    def create_web_driver(cls, wait_time=10, withUI=True):
+    def create_web_driver(cls, wait_time=5, withUI=True):
         try:
             if not withUI:
                 options = webdriver.ChromeOptions()
@@ -80,22 +81,9 @@ class TestUtility:
 
             driver.implicitly_wait(wait_time)
 
-            # driver.execute_script("$('#values').css('zoom', 5);")
-            # driver.set_context("chrome")
-            # Create a var of the window
             driver.get(r'D:\Current\Selenium\NewAutomationEnv\dataBase\htmlPages\start_test_page.html')
-            # driver.execute_script("document.body.style['-webkit-transform'] = \"scale(0.8)\";")
-            driver.execute_script("document.body.style.zoom = '80%';")
-            # elem = driver.find_element_by_tag_name('body')
-            # elem.send_keys(Keys.LEFT_CONTROL,Keys.SUBTRACT)
-            # driver.find_element_by_tag_name('body').send_keys(Keys.COMMAND + '-')
-            # driver.find_element_by_tag_name('body').send_keys(Keys.COMMAND + '-')
-            # win = driver.find_element_by_tag_name("window")
-            # # Send the key combination to the window itself rather than the web content to zoom out
-            # # (change the "-" to "+" if you want to zoom in)
-            # win.send_keys(Keys.CONTROL + "-")
-            # Set the focus back to content to re-engage with page elements
-            # driver.set_context("content")
+
+
             return driver
         except WebDriverException as e:
             print('driver error: ' + str(e))
@@ -103,21 +91,29 @@ class TestUtility:
 
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):
-        # CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
-        # CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
-        # CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
-        heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page, main_element))
-        extra_statistical_thread = threading.Thread(target=CbsPageUtility.set_extra_statistical,
-                                                    args=(page, main_element))
-        sub_subjects_thread = threading.Thread(target=CbsPageUtility.set_sub_subjects, args=(page, main_element))
+        # s1 = time.time()
+        CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
+        # print('stats time: ' + str(time.time()-s1))
+        # s2 = time.time()
+        CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
+        # print('ex stats time: ' + str(time.time()-s2))
+        # s3 = time.time()
+        CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
 
-        heb_statistical_thread.start()
-        extra_statistical_thread.start()
-        sub_subjects_thread.start()
-
-        heb_statistical_thread.join()
-        extra_statistical_thread.join()
-        sub_subjects_thread.join()
+        CbsPageUtility.set_press_releases(page=page, root_element=main_element)
+        # print('subsubject time: ' + str(time.time()-s3))
+        # heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page, main_element))
+        # extra_statistical_thread = threading.Thread(target=CbsPageUtility.set_extra_statistical,
+        #                                             args=(page, main_element))
+        # sub_subjects_thread = threading.Thread(target=CbsPageUtility.set_sub_subjects, args=(page, main_element))
+        #
+        # heb_statistical_thread.start()
+        # extra_statistical_thread.start()
+        # sub_subjects_thread.start()
+        #
+        # heb_statistical_thread.join()
+        # extra_statistical_thread.join()
+        # sub_subjects_thread.join()
 
         # x.join()
 
@@ -272,7 +268,8 @@ class TestUtility:
             shared_data.put('test ended on: ' + current_time)
 
     @classmethod
-    def test_with_pyqt_slots(cls,outer_signals, pages: [SubjectPage] = None,test_key='test_result'):
+    def test_with_pyqt_slots(cls, outer_signals, pages: [SubjectPage] = None, test_key='test_result'):
+
         # set up pages for test
         if pages is None:
             try:
@@ -307,7 +304,14 @@ class TestUtility:
         pages_size = len(pages_collection)
         print('num pages', str(len(pages_collection)))
         outer_signals.monitor_data.emit('num pages: ' + str(pages_size))
+        # set summary object
 
+        summary = []
+        summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
+        summary.append(str(current_time))  # test start time
+        summary.append(str(pages_size))  # number of chosen pages for test
+        summary.append(0)  # counter for checked pages
+        summary.append(0)  # counter for error pages
         try:
             key = test_key
 
@@ -330,8 +334,9 @@ class TestUtility:
                     main_element = WebDriverWait(session, timeout).until(
                         expected_conditions.presence_of_element_located(
                             (By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
-
+                    # start = time.time()
                     cls.testPage(page, main_element)
+                    # print('average page test time: {}'.format(str(time.time()-start)))
                     percents = (float(i + 1) / pages_size) * 100
                     outer_signals.status.emit(percents)
                 except StaleElementReferenceException:
@@ -340,27 +345,29 @@ class TestUtility:
                             expected_conditions.presence_of_element_located(
                                 (By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
                         cls.testPage(page, main_element)
+
                     except Exception:
                         page.stats_part.errors.append('unknown error')
                         break
                 except TimeoutException:
                     print("Timed out waiting for page to load")
                     page.isChecked = False
-                    DataBase.save_test_result(test_key,page)
+                    DataBase.save_test_result(key, page)
                     continue
                 except NoSuchWindowException:
                     page.stats_part.errors.append("couldn't find root element")
                     page.isChecked = False
-                    DataBase.save_test_result(test_key,page)
+                    DataBase.save_test_result(test_key, page)
                     continue
-
-                if len(page.stats_part.errors) > 0:
+                summary[3] += 1
+                if len(page.get_errors()) > 0:
                     print(page.name, page.link.url)
-                    print(page.stats_part.errors)
+                    print(page.get_errors())
                     outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
-                    outer_signals.monitor_data.emit(str(page.stats_part.errors))
-                    error_pages.append((page.name, page.link.url, page.stats_part.errors))
-                    DataBase.save_test_result(test_key,page)
+                    outer_signals.monitor_data.emit(str(page.get_errors()))
+                    error_pages.append((page.name, page.link.url, page.get_errors()))
+                    DataBase.save_test_result(test_key, page)
+                    summary[4] += 1
                 else:
                     outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
                     # outer_signals.monitor_data.emit(str(200))
@@ -382,9 +389,10 @@ class TestUtility:
             # str(time.time() - start_time)
             print('test ended on: ' + current_time)
             outer_signals.monitor_data.emit('test ended on: ' + current_time)
+            DataBase.save_test_result(test_key, page)
+            DataBase.save_summary_result(test_key,summary)
 
     @classmethod
     def get_test_result(cls, log_key):
         file_key = log_key
-        return DataBase.get_test_result(file_key = file_key)
-
+        return DataBase.get_test_result(file_key=file_key)

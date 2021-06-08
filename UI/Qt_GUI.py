@@ -22,8 +22,6 @@ class LogInScreen(QDialog):
         loadUi('Qt_ui/login.ui', self)
 
         self.login_button.clicked.connect(self.login_clicked)
-        # self.setStyleSheet("background-image: url('../dataBase/Images/LOGO_LAMAS.jpg');  background-repeat:
-        # no-repeat;background-size: auto;")
 
     def login_clicked(self):
         # TODO verification using the data base
@@ -251,6 +249,9 @@ class ResultsScreen(QDialog):
         super(ResultsScreen, self).__init__()
         loadUi('Qt_ui/result.ui', self)
         self.data, self.file_path = TestUtility.get_test_result(log_key = log_key)
+        self.data.replace('target="_blank"', '')
+        self.result_monitor.setOpenExternalLinks(True)
+        self.result_monitor.setOpenLinks(True)
         self.result_monitor.append(self.data)
         self.open_rfile_button.clicked.connect(self.open_result_file)
         self.exit_button.clicked.connect(self.exit_program)

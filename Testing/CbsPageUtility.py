@@ -1,6 +1,11 @@
+import time
+
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
@@ -51,17 +56,23 @@ class CbsPageUtility:
     def set_link_status(cls, link: CbsLink):
         try:
             r = requests.get(link.url)
+            link.status_code = r.status_code
         except TimeoutException:
             link.status_code = 408
             return
+
         except ConnectionError as e:
             print('connection error in ' + link.url)
             link.status_code = 408
             return
+
         # case everything went well - still need to check default error page of CBS
-        if r.status_code == 200 and link.url.endswith('.aspx'):
+        # and link.url.endswith('.aspx')
+        if link.status_code == 200:
+            print('inside if')
             cls.check_for_cbs_error_page(r.content, link)
-        link.status_code = r.status_code
+            return
+
 
     @classmethod  # need to be changed according page type
     def set_internal_links(cls, page: SubjectPage, root_element):
@@ -108,11 +119,12 @@ class CbsPageUtility:
         for error_text in CBS_404_TEXTS:
             if error_text in str(content):
                 link.status_code = 404
-                return
+                return True
         for error_text in CBS_403_TEXTS:
             if error_text in str(content):
                 link.status_code = 403
-                return
+                return True
+        return False
 
     @classmethod
     def set_page_lang(cls, page: SubjectPage, root_element):
@@ -147,18 +159,25 @@ class CbsPageUtility:
         # *****************************************************************************************************************
 
         # in case stats is hidden there is nothing to check
+        t1 = time.time()
         try:
-            hidden_stats = root_element.find_element_by_xpath(Links.HIDDEN_HEBREW_STATS.value)
+            # root_element.implicitly_wait(1)
+            hidden_stats = WebDriverWait(root_element, 0.5).until(
+                expected_conditions.presence_of_element_located(
+                    (By.XPATH, Links.HIDDEN_HEBREW_STATS_XPATH.value)))
+            print('not exception')
+            # hidden_stats = root_element.find_element_by_xpath(Links.HIDDEN_HEBREW_STATS.value)
             page.stats_part.isHidden = True
             return
         except TimeoutException:
-            pass
+            print('timout')
         except NoSuchElementException:
-            pass
+            print('no element')
+
 
         #   in case the web part is showed need to  be check (it displayed)
         try:
-            hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS.value)
+            hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
 
         except TimeoutException:
             page.stats_part.errors.append("statistical couldn't be found")
@@ -173,6 +192,8 @@ class CbsPageUtility:
         page.stats_part.isHidden = False
         s_pages_images = hebrew_stats.find_elements_by_xpath("//ul[@class='cbs-List']//li//img")
         s_pages_links = hebrew_stats.find_elements_by_xpath("//ul[@class='cbs-List']//li//a")
+
+
 
         if len(s_pages_images) == 0 or len(s_pages_links) == 0:
             page.stats_part.errors.append('images or links content is missing in Statistical')
@@ -196,6 +217,7 @@ class CbsPageUtility:
                     if not cur_link.status_code == 200:
                         page.stats_part.errors.append('link is broken in Statistical')
                         page.isCorrect = False
+
             # *****************************************************************************************************************
             try:
                 all_stats_link = root_element.find_element_by_xpath(
@@ -210,6 +232,18 @@ class CbsPageUtility:
                 page.stats_part.errors.append('link to all massages is missing in Statistical')
                 page.isCorrect = False
 
+
+    @classmethod
+    def set_press_releases(cls, page: SubjectPage, root_element):
+        # check for extra web part - empty press releases (different xPath)
+        try:
+            extra_p_releases = root_element.find_element_by_xpath(Links.EXTRA_PREALESES_XPATH.value)
+            page.press_releases.errors.append('extra press_releases is showing up')
+            page.isCorrect = False
+        except TimeoutException:
+            pass
+        except NoSuchElementException:
+            return
 
     @classmethod
     def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):

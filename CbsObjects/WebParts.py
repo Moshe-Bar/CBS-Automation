@@ -158,7 +158,29 @@ class SubSubjects(CbsWebPart):
 
 # הודעות לתקשורת
 class PressReleases(CbsWebPart):
-    pass
+    def __init__(self):
+        self.errors = []
+        self.good_condition = True
+        self.isHidden = None
+
+
+    def set_hidden(self, isHidden: bool):
+        self.isHidden = isHidden
+        if not isHidden:
+            self.errors.append('extra press releases is showed')
+            self.good_condition = False
+
+    def isShowed(self):
+        return not self.isHidden
+
+    def isWorkingProperly(self):
+        return self.good_condition
+
+    def getDetails(self):
+        return self.errors
+
+    def xPath(self):
+        pass
 
 # לוחות ותרשימים
 class TableMaps(CbsWebPart):
@@ -198,7 +220,7 @@ class SPWebParts:
         # self.top_links_box = TopLinksBox()
         # self.geo_zone = GeographicZone()
         # self.international_comparisons = InternationalComparisons()
-        # self.press_realeses = PressReleases()
+        self.press_realeses = PressReleases()
         # self.tables_and_maps = TableMaps()
 
     def __len__(self):
