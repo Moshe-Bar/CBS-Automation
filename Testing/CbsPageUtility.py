@@ -1,4 +1,3 @@
-import time
 
 import requests
 from selenium import webdriver
@@ -69,7 +68,6 @@ class CbsPageUtility:
         # case everything went well - still need to check default error page of CBS
         # and link.url.endswith('.aspx')
         if link.status_code == 200:
-            print('inside if')
             cls.check_for_cbs_error_page(r.content, link)
             return
 
@@ -96,7 +94,7 @@ class CbsPageUtility:
                         cbs_links.append(cur_link)
                 page.set_inside_links(cbs_links)
             except Exception as e:
-                print('exception was occured in page: ' + page.name)
+                print('exception was occurred in page: ' + page.name)
             finally:
                 error = False
                 for link in page:
@@ -159,7 +157,7 @@ class CbsPageUtility:
         # *****************************************************************************************************************
 
         # in case stats is hidden there is nothing to check
-        t1 = time.time()
+
         try:
             # root_element.implicitly_wait(1)
             hidden_stats = WebDriverWait(root_element, 0.5).until(
@@ -311,5 +309,75 @@ class CbsPageUtility:
         pass
 
     @classmethod
-    def set_tools_and_database(cls, page: SubjectPage, root_element):
-        pass
+    def set_extra_parts(cls, page :SubjectPage, root_element):
+        # assuming the page loaded already - therefore no need to wait
+
+        #left side of the page
+        try:
+            left_extra_parts = root_element.find_element_by_xpath(Links.LEFT_EXTRA_PARTS_XPATH.value)
+            page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
+        except TimeoutException:
+            pass
+        except NoSuchElementException:
+            pass
+
+        #right side of the page
+        try:
+            right_extra_parts = root_element.find_element_by_xpath(Links.RIGHT_EXTRA_PARTS_XPATH.value)
+            page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
+        except TimeoutException:
+            pass
+        except NoSuchElementException:
+            pass
+
+        return
+
+    @classmethod
+    def set_tools_and_db(cls, page:SubjectPage, root_element):
+        # left side of the page
+        try:
+            tools_and_db = root_element.find_element_by_xpath(Links.TOOLS_AND_DB_XPATH.value)
+            title = root_element.find_element_by_xpath("//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
+            images = root_element.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//img")
+            links = root_element.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//a")
+
+            # test image
+            if len(images) == 0:
+                page.stats_part.errors.append('image content is missing in tools and DB')
+                page.isCorrect = False
+            else:
+                for i, img in enumerate(images):
+                    cur_link = CbsLink(img.get_attribute('src'))
+                    CbsPageUtility.set_link_status(cur_link)
+                    page.tools_and_db.images.append(cur_link)
+                    if not cur_link.status_code == 200:
+                        page.tools_and_db.errors.append('image is broken in tools and DB')
+                        page.isCorrect = False
+
+            # test links
+            if len(links) == 0:
+                page.stats_part.errors.append('link content is missing in tools and DB')
+                page.isCorrect = False
+            else:
+                for i, sheet in enumerate(links):
+                    cur_link = CbsLink(sheet.get_attribute('href'))
+                    page.tools_and_db.links.append(cur_link)
+                    CbsPageUtility.set_link_status(cur_link)
+                    if not cur_link.status_code == 200:
+                        page.tools_and_db.errors.append('link is broken in tools and DB')
+                        page.isCorrect = False
+
+            # test title
+            if not title == 'כלים ומאגרי נתונים':
+                print(title)
+                page.tools_and_db.errors.append('tools and DB: title i not correct')
+                print('tools and DB: title i not correct')
+
+        except TimeoutException:
+            pass
+        except NoSuchElementException:
+            pass
+        except Exception as e:
+            print('exception in tools and DB')
+            raise e
+        return

@@ -91,16 +91,16 @@ class TestUtility:
 
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):
-        # s1 = time.time()
+
         CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
-        # print('stats time: ' + str(time.time()-s1))
-        # s2 = time.time()
-        CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
-        # print('ex stats time: ' + str(time.time()-s2))
-        # s3 = time.time()
+
+        # CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
+
         CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
 
-        CbsPageUtility.set_press_releases(page=page, root_element=main_element)
+        # CbsPageUtility.set_press_releases(page=page, root_element=main_element)
+
+        CbsPageUtility.set_extra_parts(page=page, root_element=main_element)
         # print('subsubject time: ' + str(time.time()-s3))
         # heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page, main_element))
         # extra_statistical_thread = threading.Thread(target=CbsPageUtility.set_extra_statistical,

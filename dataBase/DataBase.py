@@ -122,7 +122,9 @@ class Links(Enum):
     HIDDEN_HEBREW_STATS_XPATH = "//div[@id='hebstats']//div[@style='display: none;']"
     EXTRA_PREALESES_XPATH ="//div[@id='MSOZoneCell_WebPartWPQ10']"
     HEBREW_STATS_XPATH = "//div[@id='hebstats']"
-    EXTRA_PARTS_XPATH = "//div[@class='ms-webpart-zone ms-fullWidth']"
+    RIGHT_EXTRA_PARTS_XPATH = "//div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']"
+    LEFT_EXTRA_PARTS_XPATH = "//div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']"
+    TOOLS_AND_DB_XPATH = "//div[@ng-if='isToolsAndDatabases']"
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 

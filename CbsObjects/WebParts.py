@@ -207,7 +207,7 @@ class MoreLinks(CbsWebPart):
     def xPath(self):
         pass
 
-
+#collection of web parts
 class SPWebParts:
     def __init__(self):
         parts = {}
@@ -236,3 +236,35 @@ class SPWebParts:
     #     return 10
 a =SPWebParts()
 print(a.summary)
+
+
+class ExParts():
+    def __init__(self):
+        self.errors = []
+        self.good_condition = True
+        self.isHidden = None
+
+
+class ToolsAndDB:
+    def __init__(self):
+        self.errors = []
+        self.good_condition = True
+        self.isHidden = None
+        self.images = []
+        self.links = []
+
+    def set_errors(self, error):
+        self.errors.append(error)
+        self.good_condition = False
+
+    def isShowed(self):
+        return not self.isHidden
+
+    def isWorkingProperly(self):
+        return self.good_condition
+
+    def getDetails(self):
+        return self.errors
+
+    def xPath(self):
+        pass

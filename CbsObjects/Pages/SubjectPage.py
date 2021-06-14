@@ -1,6 +1,10 @@
 from CbsObjects.CbsLink import CbsLink
-from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts, PressReleases
+from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts, PressReleases, ExParts, ToolsAndDB
+
 from CbsObjects.Language import Language
+
+
+
 
 
 class SubjectPage:
@@ -20,8 +24,10 @@ class SubjectPage:
         self.web_parts = SPWebParts()
         self.stats_part = Statisticals()
         self.sub_subjects = SubSubjects()
-        self.press_releases = PressReleases()
+        # self.press_releases = PressReleases()
+        self.tools_and_db = ToolsAndDB()
         self.more_links = MoreLinks()
+        self.extra_error_parts = ExParts()
         self.inside_links = []
         self.dom = None
         self.isChecked = None
@@ -32,7 +38,7 @@ class SubjectPage:
     def get_errors(self):
         # errors = [str(part.errors) + ('\n') for part in self.web_parts]
         # return errors
-        return self.stats_part.errors + self.press_releases.errors
+        return self.stats_part.errors + self.extra_error_parts.errors + self.tools_and_db.errors
     
     def __iter__(self):
         return iter(self.inside_links)
