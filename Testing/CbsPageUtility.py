@@ -164,14 +164,13 @@ class CbsPageUtility:
             hidden_stats = WebDriverWait(root_element, 0.5).until(
                 expected_conditions.presence_of_element_located(
                     (By.XPATH, Links.HIDDEN_HEBREW_STATS_XPATH.value)))
-            print('not exception')
             # hidden_stats = root_element.find_element_by_xpath(Links.HIDDEN_HEBREW_STATS.value)
             page.stats_part.isHidden = True
             return
         except TimeoutException:
-            print('timout')
+            pass
         except NoSuchElementException:
-            print('no element')
+            pass
 
         #   in case the web part is showed need to  be check (it displayed)
         try:
@@ -383,19 +382,18 @@ class CbsPageUtility:
     def set_summary(cls, page: SubjectPage, session: webdriver):
 
         try:
-            summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
-            text = session.find_element_by_xpath(Links.SUMMARY_XPATH.value + "//p").text
+            # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
+            paragraph = session.find_element_by_xpath(Links.SUMMARY_XPATH.value).text
             images = session.find_elements_by_xpath(Links.SUMMARY_XPATH.value + "//img")
             links = session.find_elements_by_xpath(Links.SUMMARY_XPATH.value + "//a")
-
+            print(paragraph)
             # check text is exist
-            if text == '':
+            if paragraph == '':
                 page.summary.errors.append('no text in summary')
 
             # test images
             if len(images) > 0:
                 counter = 0
-                print(str(len(images)) + ' images')
                 for i, img in enumerate(images):
                     print(img.get_attribute('src'))
                     cur_link = CbsLink(img.get_attribute('src'))
@@ -412,7 +410,6 @@ class CbsPageUtility:
             # test links
             if len(links) > 0:
                 counter = 0
-                print(str(len(links)) + ' links')
                 for i, url in enumerate(links):
                     print(url.get_attribute('href'))
                     cur_link = CbsLink(url.get_attribute('href'))
