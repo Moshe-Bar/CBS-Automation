@@ -35,10 +35,6 @@ class TestProperties():
 class TestUtility:
 
     @classmethod
-    def test_web_parts(cls, page: SubjectPage, open_session: webdriver.chrome, statistical=False):
-        pass
-
-    @classmethod
     def get_sessions(cls, amount=1, timeout=2, isViseble=True):
         if amount == 1:
             return cls.create_web_driver(timeout, isViseble)
@@ -101,6 +97,10 @@ class TestUtility:
         # CbsPageUtility.set_press_releases(page=page, root_element=main_element)
 
         CbsPageUtility.set_extra_parts(page=page, root_element=main_element)
+
+
+        CbsPageUtility.set_summary(page=page, session = main_element)
+
         # print('subsubject time: ' + str(time.time()-s3))
         # heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page, main_element))
         # extra_statistical_thread = threading.Thread(target=CbsPageUtility.set_extra_statistical,
@@ -304,7 +304,7 @@ class TestUtility:
         pages_size = len(pages_collection)
         print('num pages', str(len(pages_collection)))
         outer_signals.monitor_data.emit('num pages: ' + str(pages_size))
-        # set summary object
+        # set summery object
 
         summary = []
         summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date

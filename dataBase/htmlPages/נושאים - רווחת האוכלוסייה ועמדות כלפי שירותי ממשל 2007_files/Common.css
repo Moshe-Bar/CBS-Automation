@@ -4012,12 +4012,12 @@ h2.ms-webpart-titleText > nobr > span {
 }
 
 
-/*summary links summarylinks*/
+/*summery links summarylinks*/
 .generalList.subject-summary-links, .generalList.subject-summary-links .dfwp-column, .generalList.subject-summary-links .dfwp-list li {
     padding: 0;
 }
 
-/*.generalList.subject-summary-links */
+/*.generalList.subject-summery-links */
 div.link-item a:before {
     right: 0px;
     content: initial;
@@ -4044,7 +4044,7 @@ div.link-item.reverse-link-item a:before {
     font-size: 16px;
 }
 
-/*summary links summarylinks*/
+/*summery links summarylinks*/
 
 
 /*MomentOfStats*/

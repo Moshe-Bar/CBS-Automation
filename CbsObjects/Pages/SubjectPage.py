@@ -1,18 +1,8 @@
 from CbsObjects.CbsLink import CbsLink
-from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts, PressReleases, ExParts, ToolsAndDB
-
-from CbsObjects.Language import Language
-
-
-
+from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts, ExParts, ToolsAndDB, Summary
 
 
 class SubjectPage:
-    class WebParts:
-        def __init__(self):
-            self.stats_part = Statisticals()
-            self.sub_subjects = SubSubjects()
-            self.more_links = MoreLinks()
 
     def __init__(self, pageLink: CbsLink, pageName):
         self.link = pageLink
@@ -24,10 +14,10 @@ class SubjectPage:
         self.web_parts = SPWebParts()
         self.stats_part = Statisticals()
         self.sub_subjects = SubSubjects()
-        # self.press_releases = PressReleases()
         self.tools_and_db = ToolsAndDB()
         self.more_links = MoreLinks()
         self.extra_error_parts = ExParts()
+        self.summary = Summary()
         self.inside_links = []
         self.dom = None
         self.isChecked = None
@@ -36,9 +26,7 @@ class SubjectPage:
         return len(self.get_errors()) == 0
 
     def get_errors(self):
-        # errors = [str(part.errors) + ('\n') for part in self.web_parts]
-        # return errors
-        return self.stats_part.errors + self.extra_error_parts.errors + self.tools_and_db.errors
+        return self.stats_part.errors + self.extra_error_parts.errors + self.tools_and_db.errors + self.summary.errors
     
     def __iter__(self):
         return iter(self.inside_links)

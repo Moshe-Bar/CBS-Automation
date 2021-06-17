@@ -1,5 +1,5 @@
-
 import requests
+from requests.exceptions import InvalidSchema
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -59,7 +59,9 @@ class CbsPageUtility:
         except TimeoutException:
             link.status_code = 408
             return
-
+        except InvalidSchema:
+            link.status_code = 400
+            return
         except ConnectionError as e:
             print('connection error in ' + link.url)
             link.status_code = 408
@@ -70,7 +72,6 @@ class CbsPageUtility:
         if link.status_code == 200:
             cls.check_for_cbs_error_page(r.content, link)
             return
-
 
     @classmethod  # need to be changed according page type
     def set_internal_links(cls, page: SubjectPage, root_element):
@@ -172,7 +173,6 @@ class CbsPageUtility:
         except NoSuchElementException:
             print('no element')
 
-
         #   in case the web part is showed need to  be check (it displayed)
         try:
             hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
@@ -186,12 +186,9 @@ class CbsPageUtility:
             page.isCorrect = False
             return
 
-
         page.stats_part.isHidden = False
         s_pages_images = hebrew_stats.find_elements_by_xpath("//ul[@class='cbs-List']//li//img")
         s_pages_links = hebrew_stats.find_elements_by_xpath("//ul[@class='cbs-List']//li//a")
-
-
 
         if len(s_pages_images) == 0 or len(s_pages_links) == 0:
             page.stats_part.errors.append('images or links content is missing in Statistical')
@@ -230,7 +227,6 @@ class CbsPageUtility:
                 page.stats_part.errors.append('link to all massages is missing in Statistical')
                 page.isCorrect = False
 
-
     @classmethod
     def set_press_releases(cls, page: SubjectPage, root_element):
         # check for extra web part - empty press releases (different xPath)
@@ -251,7 +247,8 @@ class CbsPageUtility:
     def set_more_links(cls, page: SubjectPage, root_element):
         # this part on test
         try:
-            elem = root_element.find_element_by_xpath("//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]")
+            elem = root_element.find_element_by_xpath(
+                "//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]")
         except TimeoutException:
             print('element not found')
         finally:
@@ -309,10 +306,10 @@ class CbsPageUtility:
         pass
 
     @classmethod
-    def set_extra_parts(cls, page :SubjectPage, root_element):
+    def set_extra_parts(cls, page: SubjectPage, root_element):
         # assuming the page loaded already - therefore no need to wait
 
-        #left side of the page
+        # left side of the page
         try:
             left_extra_parts = root_element.find_element_by_xpath(Links.LEFT_EXTRA_PARTS_XPATH.value)
             page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
@@ -321,7 +318,7 @@ class CbsPageUtility:
         except NoSuchElementException:
             pass
 
-        #right side of the page
+        # right side of the page
         try:
             right_extra_parts = root_element.find_element_by_xpath(Links.RIGHT_EXTRA_PARTS_XPATH.value)
             page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
@@ -333,7 +330,7 @@ class CbsPageUtility:
         return
 
     @classmethod
-    def set_tools_and_db(cls, page:SubjectPage, root_element):
+    def set_tools_and_db(cls, page: SubjectPage, root_element):
         # left side of the page
         try:
             tools_and_db = root_element.find_element_by_xpath(Links.TOOLS_AND_DB_XPATH.value)
@@ -379,5 +376,62 @@ class CbsPageUtility:
             pass
         except Exception as e:
             print('exception in tools and DB')
+            raise e
+        return
+
+    @classmethod
+    def set_summary(cls, page: SubjectPage, session: webdriver):
+
+        try:
+            summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
+            text = session.find_element_by_xpath(Links.SUMMARY_XPATH.value + "//p").text
+            images = session.find_elements_by_xpath(Links.SUMMARY_XPATH.value + "//img")
+            links = session.find_elements_by_xpath(Links.SUMMARY_XPATH.value + "//a")
+
+            # check text is exist
+            if text == '':
+                page.summary.errors.append('no text in summary')
+
+            # test images
+            if len(images) > 0:
+                counter = 0
+                print(str(len(images)) + ' images')
+                for i, img in enumerate(images):
+                    print(img.get_attribute('src'))
+                    cur_link = CbsLink(img.get_attribute('src'))
+                    CbsPageUtility.set_link_status(cur_link)
+                    page.summary.images.append(cur_link)
+                    if not cur_link.status_code == 200:
+                        counter += 1
+
+                if counter > 1:
+                    page.summary.errors.append('{} images are broken in summary'.format(counter))
+                elif counter == 1:
+                    page.summary.errors.append('{} image is broken in summary'.format(counter))
+
+            # test links
+            if len(links) > 0:
+                counter = 0
+                print(str(len(links)) + ' links')
+                for i, url in enumerate(links):
+                    print(url.get_attribute('href'))
+                    cur_link = CbsLink(url.get_attribute('href'))
+                    page.summary.links.append(cur_link)
+                    CbsPageUtility.set_link_status(cur_link)
+                    if not cur_link.status_code == 200:
+                        counter += 1
+
+                if counter > 1:
+                    page.summary.errors.append('{} links is broken in summary'.format(counter))
+                elif counter == 1:
+                    page.summary.errors.append('{} link is broken in summary'.format(counter))
+
+        except TimeoutException:
+            pass
+        except NoSuchElementException:
+            print("summary couldn't be found")
+            return
+        except Exception as e:
+            print('exception in summary test')
             raise e
         return

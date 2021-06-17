@@ -106,7 +106,7 @@ class DataBase:
                 f.write(sum + '<br>' + content)
             f.close()
         except Exception as e:
-            print('exception in db writing summary')
+            print('exception in db writing summery')
             raise e
 
 
@@ -125,10 +125,11 @@ class Links(Enum):
     RIGHT_EXTRA_PARTS_XPATH = "//div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']"
     LEFT_EXTRA_PARTS_XPATH = "//div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']"
     TOOLS_AND_DB_XPATH = "//div[@ng-if='isToolsAndDatabases']"
+    SUMMARY_XPATH = "//div[@class='rightColumn']//div[@id='ctl00_PlaceHolderMain_ctl00_wrapper']"
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 
 # links = DataBase.get_CBS_en_links()
 # summ = [1,2,3,4,5]
 # path = '02_Jun_2021_10.48.50'
-# DataBase.save_summary_result(file_key=path,summary=summ)
+# DataBase.save_summary_result(file_key=path,summery=summ)
