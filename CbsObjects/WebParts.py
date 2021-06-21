@@ -42,15 +42,11 @@ class MomentOfStatistics(CbsWebPart):
 
 
 # שלושת המלבנים
-class TopLinksBox(CbsWebPart):
+class TopBox(CbsWebPart):
     def __init__(self):
         self.errors = []
-        self.images = []
         self.links = []
 
-    @classmethod
-    def getXPATH(cls):
-        return None
 
 # מידע לפי אזור גיאוגרפי
 class GeographicZone(CbsWebPart):
@@ -87,81 +83,18 @@ class Statisticals(CbsWebPart):
         # return Links.HEBREW_STATS_XPATH.value
 
 
-# class ExtraStatisticals(CbsWebPart):
-#     def __init__(self):
-#         self.errors = []
-#         self.good_condition = True
-#         self.isHidden = None
-#         self.images = []
-#         self.links = []
-#
-#     def set_hidden(self, isHidden: bool):
-#         self.isHidden = isHidden
-#         if not isHidden:
-#             self.errors.append('extra stats are showed')
-#             self.good_condition = False
-#
-#     def isShowed(self):
-#         return not self.isHidden
-#
-#     def isWorkingProperly(self):
-#         return self.good_condition
-#
-#     def getDetails(self):
-#         return self.errors
-#
-#     def xPath(self):
-#         pass
-
 
 # נושאי משנה
 class SubSubjects(CbsWebPart):
     def __init__(self):
         self.errors = []
-        self.good_condition = True
-        self.isHidden = None
-        self.images = []
         self.links = []
-
-    def isShowed(self):
-        return not self.isHidden
-
-    def isWorkingProperly(self):
-        if len(self.errors) == 0:
-            return True
-        return False
-
-    def getDetails(self):
-        return self.errors
-
-    def xPath(self):
-        pass
-
 
 # הודעות לתקשורת
 class PressReleases(CbsWebPart):
     def __init__(self):
         self.errors = []
-        self.good_condition = True
-        self.isHidden = None
-
-    def set_hidden(self, isHidden: bool):
-        self.isHidden = isHidden
-        if not isHidden:
-            self.errors.append('extra press releases is showed')
-            self.good_condition = False
-
-    def isShowed(self):
-        return not self.isHidden
-
-    def isWorkingProperly(self):
-        return self.good_condition
-
-    def getDetails(self):
-        return self.errors
-
-    def xPath(self):
-        pass
+        self.links = []
 
 
 # לוחות ותרשימים
@@ -200,7 +133,7 @@ class SPWebParts:
         self.sub_subjects = SubSubjects()
         self.summery = Summary()
         self.mom_of_statistics = MomentOfStatistics()
-        self.top_links_box = TopLinksBox()
+        self.top_links_box = TopBox()
         self.geo_zone = GeographicZone()
         self.international_comparisons = InternationalComparisons()
         self.press_releases = PressReleases()

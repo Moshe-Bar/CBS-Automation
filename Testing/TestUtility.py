@@ -43,6 +43,7 @@ class TestUtility:
             sessions.append(cls.create_web_driver(timeout, isViseble))
         return sessions
 
+
     @classmethod
     def get_he_pages(cls):
         pages = DataBase.get_CBS_he_pages()
@@ -92,7 +93,7 @@ class TestUtility:
 
         # CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
 
-        CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
+        # CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
 
         # CbsPageUtility.set_press_releases(page=page, root_element=main_element)
 
@@ -100,6 +101,10 @@ class TestUtility:
 
 
         CbsPageUtility.set_summary(page=page, session = main_element)
+
+        CbsPageUtility.set_top_box(page=page, session = main_element)
+
+        CbsPageUtility.set_sub_subjects(page=page, session = main_element)
 
         # print('subsubject time: ' + str(time.time()-s3))
         # heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page, main_element))

@@ -186,8 +186,8 @@ class CbsPageUtility:
             return
 
         page.stats_part.isHidden = False
-        s_pages_images = hebrew_stats.find_elements_by_xpath("//ul[@class='cbs-List']//li//img")
-        s_pages_links = hebrew_stats.find_elements_by_xpath("//ul[@class='cbs-List']//li//a")
+        s_pages_images = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//img")
+        s_pages_links = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//a")
 
         if len(s_pages_images) == 0 or len(s_pages_links) == 0:
             page.stats_part.errors.append('images or links content is missing in Statistical')
@@ -227,20 +227,46 @@ class CbsPageUtility:
                 page.isCorrect = False
 
     @classmethod
-    def set_press_releases(cls, page: SubjectPage, root_element):
-        # check for extra web part - empty press releases (different xPath)
+    def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
+
+        # when this web part is not displayed the style is "display: none;" and -> text "הודעות לתקשורת"
+        # is not exist thus the element wouldn't be found and the function will return
         try:
-            extra_p_releases = root_element.find_element_by_xpath(Links.EXTRA_PREALESES_XPATH.value)
-            page.press_releases.errors.append('extra press_releases is showing up')
-            page.isCorrect = False
+            main_element = session.find_element_by_xpath(Links.PRESS_RELEASES_XPATH.value)
+
+
         except TimeoutException:
-            pass
+            return
         except NoSuchElementException:
             return
 
     @classmethod
     def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
-        pass
+        try:
+            main_element = session.find_element_by_xpath(Links.TOP_BOX_XPATH.value)
+            # in case the container is displayed
+            if not main_element.get_attribute('style') == 'display: none;':
+                elements = main_element.find_elements_by_xpath(".//div[@class='categoryBox']")
+                elements = list(filter(lambda x: not x.get_attribute('style') == 'display: none;', elements))
+
+                if len(elements) == 0:  # inside elements are not displayed
+                    page.top_box.errors.append('top box is displayed without any data')
+                    return
+                else:
+                    for i, box in enumerate(elements):
+                        url = box.find_element_by_xpath(".//a").get_attribute('href')
+                        link = CbsLink(url)
+                        CbsPageUtility.set_link_status(link)
+                        page.top_box.links.append(link)
+                        if not link.status_code == 200:
+                            page.top_box.errors.append(str(i + 1) + ' link is broken in top box')
+
+        except TimeoutException as e:
+            print('TimeoutException in set_top_box ' + e.msg)
+            raise e
+        except NoSuchElementException as e:
+            print('NoSuchElementException in set_top_box ' + e.msg)
+            raise e
 
     @classmethod
     def set_more_links(cls, page: SubjectPage, root_element):
@@ -264,41 +290,37 @@ class CbsPageUtility:
             page.more_links.isHidden = True
 
     @classmethod
-    def set_sub_subjects(cls, page: SubjectPage, root_element):
-        # TODO
-        # need to put the level first
-        # cls.setPageLevel(page=page, open_session= session)
-
+    def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
         # find the web part
         try:
-            part = root_element.find_element_by_xpath(Links.SUB_SUBJECTS_XPATH.value)
+            main_element = session.find_element_by_xpath(Links.SUB_SUBJECTS_XPATH.value)
         except NoSuchElementException:
-            page.sub_subjects.isHidden = True
+            return
+        except TimeoutException:
             return
 
         # check title
         try:
-            title = part.find_element_by_xpath("//h2[@class='ms-webpart-titleText']//span").text
+            title = main_element.find_element_by_xpath("//h2[@class='ms-webpart-titleText']//span").text
             if not title == 'נושאי משנה':
                 page.sub_subjects.errors.append('title is not correct')
-                page.isCorrect = False
         except NoSuchElementException:
-            page.sub_subjects.errors.append('title is not correct')
-            page.isCorrect = False
+            page.sub_subjects.errors.append('title is not correct in sub subjects')
+        except TimeoutException:
+            page.sub_subjects.errors.append('title is not correct in sub subjects')
 
         # find all the links inside and set their status
-        raw_links = part.find_elements_by_xpath("//ul[@class='subtopicsList']//li//a")
+        raw_links = main_element.find_elements_by_xpath(".//ul[@class='subtopicsList']//li//a")
         if len(raw_links) == 0:
-            page.sub_subjects.errors.append('no internal links while web part is visible')
-            page.isCorrect = False
-        internal_links = [CbsLink(url=li.get_attribute('href'), page_name=li.text) for li in raw_links]
-        page.sub_subjects.links = internal_links
+            page.sub_subjects.errors.append('no internal links in sub subjects')
+            return
+        internal_links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), raw_links))
+
         for link in internal_links:
-            # TODO async as must
             CbsPageUtility.set_link_status(link)
+            page.sub_subjects.links.append(link)
             if not link.status_code == 200:
-                page.sub_subjects.errors.append('the link: ' + link.name + 'is broken')
-                page.isCorrect = False
+                page.sub_subjects.errors.append('the link: ' + link.name + 'is broken in sub subjects')
 
     @classmethod
     def set_publications(cls, page: SubjectPage, root_element):
