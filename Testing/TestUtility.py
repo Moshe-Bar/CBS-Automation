@@ -91,14 +91,7 @@ class TestUtility:
 
         CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
 
-        # CbsPageUtility.set_extra_statistical(page=page, root_element=main_element)
-
-        # CbsPageUtility.set_sub_subjects(page=page, root_element=main_element)
-
-        # CbsPageUtility.set_press_releases(page=page, root_element=main_element)
-
         CbsPageUtility.set_extra_parts(page=page, root_element=main_element)
-
 
         CbsPageUtility.set_summary(page=page, session = main_element)
 
@@ -106,25 +99,10 @@ class TestUtility:
 
         CbsPageUtility.set_sub_subjects(page=page, session = main_element)
 
-        # print('subsubject time: ' + str(time.time()-s3))
-        # heb_statistical_thread = threading.Thread(target=CbsPageUtility.set_heb_statistical, args=(page, main_element))
-        # extra_statistical_thread = threading.Thread(target=CbsPageUtility.set_extra_statistical,
-        #                                             args=(page, main_element))
-        # sub_subjects_thread = threading.Thread(target=CbsPageUtility.set_sub_subjects, args=(page, main_element))
-        #
-        # heb_statistical_thread.start()
-        # extra_statistical_thread.start()
-        # sub_subjects_thread.start()
-        #
-        # heb_statistical_thread.join()
-        # extra_statistical_thread.join()
-        # sub_subjects_thread.join()
+        CbsPageUtility.set_press_releases(page=page, session = main_element)
 
-        # x.join()
+        CbsPageUtility.set_tables_and_charts(page=page, session = main_element)
 
-    #     TODO another web part
-    #     TODO another web part
-    #     TODO another web part
     #     TODO another web part
 
     # visible func

@@ -1,0 +1,16 @@
+{
+  "XPath": [
+    {
+      "MAP_LINKS_XPATH": "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a",
+      "HIDDEN_HEBREW_STATS_XPATH": "//div[@id='hebstats']//div[@style='display: none;']",
+      "HEBREW_STATS_XPATH": "//div[@id='hebstats']",
+      "RIGHT_EXTRA_PARTS_XPATH": "//div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
+      "LEFT_EXTRA_PARTS_XPATH": "//div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
+      "TOOLS_AND_DB_XPATH": "//div[@ng-if='isToolsAndDatabases']",
+      "SUMMARY_XPATH": "//div[@class='rightColumn']//div[@id='ctl00_PlaceHolderMain_ctl00_wrapper']",
+      "TOP_BOX_XPATH": "//div[@class='generalBox top-links']",
+      "SUB_SUBJECTS_XPATH": "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']",
+      "PRESS_RELEASES_XPATH": "//div//span[contains(text(), 'הודעות לתקשורת')]"
+    }
+  ]
+}

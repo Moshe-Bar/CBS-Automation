@@ -3,6 +3,7 @@ from requests.exceptions import InvalidSchema
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -154,77 +155,56 @@ class CbsPageUtility:
     def set_heb_statistical(cls, page: SubjectPage, root_element):
         # assuming the page loaded already - therefore no need to wait
 
-        # empty extra web part is not exist 200
-        # *****************************************************************************************************************
-
-        # in case stats is hidden there is nothing to check
-
-        try:
-            # root_element.implicitly_wait(1)
-            hidden_stats = WebDriverWait(root_element, 0.5).until(
-                expected_conditions.presence_of_element_located(
-                    (By.XPATH, Links.HIDDEN_HEBREW_STATS_XPATH.value)))
-            # hidden_stats = root_element.find_element_by_xpath(Links.HIDDEN_HEBREW_STATS.value)
-            page.stats_part.isHidden = True
+        #   in case the web part is not displayed
+        displayed, empty_element = cls.is_element_exist(session=root_element,
+                                                        path=Links.HIDDEN_HEBREW_STATS_XPATH.value)
+        if displayed:
             return
-        except TimeoutException:
-            pass
-        except NoSuchElementException:
-            pass
 
-        #   in case the web part is showed need to  be check (it displayed)
         try:
             hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
 
         except TimeoutException:
             page.stats_part.errors.append("statistical couldn't be found")
-            page.isCorrect = False
+
             return
         except NoSuchElementException:
             page.stats_part.errors.append("statistical couldn't be found")
-            page.isCorrect = False
+
             return
 
-        page.stats_part.isHidden = False
-        s_pages_images = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//img")
-        s_pages_links = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//a")
+        images = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//img")
+        links = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//a")
 
-        if len(s_pages_images) == 0 or len(s_pages_links) == 0:
+        if len(images) == 0 or len(links) == 0:
             page.stats_part.errors.append('images or links content is missing in Statistical')
-            page.isCorrect = False
         else:
-            for i, img in enumerate(s_pages_images):
-                cur_link = CbsLink(img.get_attribute('src'))
-                CbsPageUtility.set_link_status(cur_link)
-                page.stats_part.images.append(cur_link)
-                if not cur_link.status_code == 200:
-                    page.stats_part.errors.append('image is broken in Statistical')
-                    page.isCorrect = False
-            if len(s_pages_links) == 0:
-                page.stats_part.errors.append('links content is missing in Statistical')
-                page.isCorrect = False
-            else:
-                for i, sheet in enumerate(s_pages_links):
-                    cur_link = CbsLink(sheet.get_attribute('href'))
-                    page.stats_part.images.append(cur_link)
-                    CbsPageUtility.set_link_status(cur_link)
-                    if not cur_link.status_code == 200:
-                        page.stats_part.errors.append('link is broken in Statistical')
-                        page.isCorrect = False
+            images, errors = cls.set_url_links(images, attrib='src')
+            errors = [error + ' in Statistical image' for error in errors]
+            page.stats_part.errors.extend(errors)
+            page.stats_part.images.extend(links)
+
+        if len(links) == 0:
+            page.stats_part.errors.append('links content is missing in Statistical')
+        else:
+            links, errors = cls.set_url_links(links)
+            errors = [error + ' in Statistical' for error in errors]
+            page.stats_part.errors.extend(errors)
+            page.stats_part.links.extend(links)
 
             # *****************************************************************************************************************
-            try:
-                all_stats_link = root_element.find_element_by_xpath(
-                    "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
-                cur_link = CbsLink(all_stats_link.get_attribute('href'))
-                page.stats_part.links.append(cur_link)
-                CbsPageUtility.set_link_status(cur_link)
-                if not cur_link.status_code == 200:
-                    page.stats_part.errors.append('link to all massages is broken in Statistical')
-                    page.isCorrect = False
-            except NoSuchElementException:
-                page.stats_part.errors.append('link to all massages is missing in Statistical')
+        try:
+            all_stats_link = root_element.find_element_by_xpath(
+                "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
+            cur_link = CbsLink(all_stats_link.get_attribute('href'))
+            page.stats_part.links.append(cur_link)
+            CbsPageUtility.set_link_status(cur_link)
+            if not cur_link.status_code == 200:
+                page.stats_part.errors.append('link to all massages is broken in Statistical')
                 page.isCorrect = False
+        except NoSuchElementException:
+            page.stats_part.errors.append('link to all massages is missing in Statistical')
+            page.isCorrect = False
 
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
@@ -232,7 +212,32 @@ class CbsPageUtility:
         # when this web part is not displayed the style is "display: none;" and -> text "הודעות לתקשורת"
         # is not exist thus the element wouldn't be found and the function will return
         try:
-            main_element = session.find_element_by_xpath(Links.PRESS_RELEASES_XPATH.value)
+            element_exist = session.find_element_by_xpath(Links.PRESS_RELEASES_XPATH.value)
+            main_element = element_exist.find_element_by_xpath('..')
+
+        except TimeoutException:
+            return
+        except NoSuchElementException:
+            return
+        try:
+            # title check - not real test because the existent of the web parts is depends on it
+            if not main_element.text == 'הודעות לתקשורת':
+                page.press_releases.errors.append('title is not correct')
+
+            # inside links check
+            dates = main_element.find_elements_by_xpath(".//..//li//div//div[@class= 'pageItemDate']")
+            dates = [date.text for date in dates]
+            # TODO dates check
+
+            links = main_element.find_elements_by_xpath(".//..//li//div//div[@class= 'pageAll pageItemTitle']//a")
+            to_all_massages = main_element.find_element_by_xpath(".//..//a[@class='MadadPressReleasesToAll']")
+            if len(links) == 0:
+                page.press_releases.errors.append('no content in press releases')
+                return
+            links.append(to_all_massages)
+            links,errors = cls.set_url_links(links)
+            page.press_releases.links.extend(links)
+            page.press_releases.errors.extend(errors)
 
 
         except TimeoutException:
@@ -240,33 +245,66 @@ class CbsPageUtility:
         except NoSuchElementException:
             return
 
+
+    @classmethod
+    def is_element_exist(cls, session: webdriver.chrome, path):
+        try:
+            element = session.find_element_by_xpath(path)
+            if not cls.is_element_displayed(element):
+                raise NoSuchElementException
+            return (True, element)
+        except TimeoutException as e:
+            return (False, e.msg)
+        except NoSuchElementException as e:
+            return (False, e.msg)
+
+    @classmethod
+    def is_element_displayed(cls, element):
+        if element.get_attribute('style') == 'display: none;':  # display: none;
+            return False
+        else:
+            return True
+
+    # gets <a> web elements and checks for errors
+    # returns tuple of list of CBS links from input and list of errors -
+    # each error describes the index of the error link
+    @classmethod
+    def set_url_links(cls, links:[WebElement], attrib='href'):
+        link_list = []
+        errors = []
+        for i, element in enumerate(links):
+            url = element.get_attribute(attrib)
+            link = CbsLink(url)
+            CbsPageUtility.set_link_status(link)
+            link_list.append(link)
+            if not link.status_code == 200:
+                print(str(link.status_code) + str(link.url))
+                errors.append(str(i + 1) + 'th link is broken')
+        return link_list, errors
+
     @classmethod
     def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
-        try:
-            main_element = session.find_element_by_xpath(Links.TOP_BOX_XPATH.value)
-            # in case the container is displayed
-            if not main_element.get_attribute('style') == 'display: none;':
-                elements = main_element.find_elements_by_xpath(".//div[@class='categoryBox']")
-                elements = list(filter(lambda x: not x.get_attribute('style') == 'display: none;', elements))
+        is_exist, main_element = cls.is_element_exist(session, Links.TOP_BOX_XPATH.value)
+        # in case the container is displayed
+        if is_exist:
+            elements = main_element.find_elements_by_xpath(".//div[@class='categoryBox']")
+            elements = list(
+                map(lambda e: e.find_element_by_xpath(".//a"), filter(lambda x: cls.is_element_displayed(x), elements)))
+            # elements = [element.find_element_by_xpath(".//a") for element in elements]
 
-                if len(elements) == 0:  # inside elements are not displayed
-                    page.top_box.errors.append('top box is displayed without any data')
-                    return
-                else:
-                    for i, box in enumerate(elements):
-                        url = box.find_element_by_xpath(".//a").get_attribute('href')
-                        link = CbsLink(url)
-                        CbsPageUtility.set_link_status(link)
-                        page.top_box.links.append(link)
-                        if not link.status_code == 200:
-                            page.top_box.errors.append(str(i + 1) + ' link is broken in top box')
+            if len(elements) == 0:  # inside elements are not displayed
+                page.top_box.errors.append('top box is displayed without any data')
+                return
 
-        except TimeoutException as e:
-            print('TimeoutException in set_top_box ' + e.msg)
-            raise e
-        except NoSuchElementException as e:
-            print('NoSuchElementException in set_top_box ' + e.msg)
-            raise e
+            else:
+                links, errors = cls.set_url_links(elements)
+                page.top_box.links.extend(links)
+                errors = [error + ' in top box' for error in errors]
+                # errors = list(map(lambda x:x+' in top box',errors))
+                page.top_box.errors.extend(errors)
+        # element does not found
+        else:
+            print(main_element + ' in top box')
 
     @classmethod
     def set_more_links(cls, page: SubjectPage, root_element):
@@ -402,7 +440,6 @@ class CbsPageUtility:
 
     @classmethod
     def set_summary(cls, page: SubjectPage, session: webdriver):
-
         try:
             # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
             paragraph = session.find_element_by_xpath(Links.SUMMARY_XPATH.value).text
@@ -454,3 +491,7 @@ class CbsPageUtility:
             print('exception in summary test')
             raise e
         return
+
+    @classmethod
+    def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
+        pass

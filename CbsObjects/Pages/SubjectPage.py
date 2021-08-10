@@ -1,6 +1,7 @@
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts, ExParts, ToolsAndDB, Summary, TopBox, \
     PressReleases
+import pickle
 
 
 class SubjectPage:

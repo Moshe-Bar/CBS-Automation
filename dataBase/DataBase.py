@@ -2,7 +2,7 @@ from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 
 import sys
-import io
+import json
 from enum import Enum
 ####,encoding="utf-8"
 
@@ -109,6 +109,14 @@ class DataBase:
             print('exception in db writing summery')
             raise e
 
+    @classmethod
+    def load_xpath(cls, key):
+        with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\xpath.json', 'rb') as f:
+            data = json.load(f)
+            f.close()
+        return data['XPath'][0][key]
+
+
 
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
@@ -116,16 +124,20 @@ class Links(Enum):
     CBS_MAP_SITE_EN = 'https://www.cbs.gov.il/en/Pages/sitemap.aspx'
     ROOT_DIR = sys.path[1]
     CHROME_DRIVER = ROOT_DIR + "/Web drivers/92.0.4515.43/chromedriver_win32.exe"
-    MAP_LINKS_XPATH = "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a"
-    HIDDEN_HEBREW_STATS_XPATH = "//div[@id='hebstats']//div[@style='display: none;']"
-    HEBREW_STATS_XPATH = "//div[@id='hebstats']"
-    RIGHT_EXTRA_PARTS_XPATH = "//div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']"
-    LEFT_EXTRA_PARTS_XPATH = "//div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']"
-    TOOLS_AND_DB_XPATH = "//div[@ng-if='isToolsAndDatabases']"
-    SUMMARY_XPATH = "//div[@class='rightColumn']//div[@id='ctl00_PlaceHolderMain_ctl00_wrapper']"
-    TOP_BOX_XPATH = "//div[@class='generalBox top-links']"
-    SUB_SUBJECTS_XPATH = "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']"
-    PRESS_RELEASES_XPATH = "//div//span[contains(text(), 'הודעות לתקשורת')]"
+    MAP_LINKS_XPATH = DataBase.load_xpath('MAP_LINKS_XPATH')
+    HIDDEN_HEBREW_STATS_XPATH = DataBase.load_xpath('HIDDEN_HEBREW_STATS_XPATH')
+    HEBREW_STATS_XPATH = DataBase.load_xpath('HEBREW_STATS_XPATH')
+    RIGHT_EXTRA_PARTS_XPATH = DataBase.load_xpath('RIGHT_EXTRA_PARTS_XPATH')
+    LEFT_EXTRA_PARTS_XPATH = DataBase.load_xpath('LEFT_EXTRA_PARTS_XPATH')
+    TOOLS_AND_DB_XPATH = DataBase.load_xpath('TOOLS_AND_DB_XPATH')
+    SUMMARY_XPATH = DataBase.load_xpath('SUMMARY_XPATH')
+    TOP_BOX_XPATH = DataBase.load_xpath('TOP_BOX_XPATH')
+    SUB_SUBJECTS_XPATH = DataBase.load_xpath('SUB_SUBJECTS_XPATH')
+    PRESS_RELEASES_XPATH = DataBase.load_xpath('PRESS_RELEASES_XPATH')
+
+
+
+
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 
