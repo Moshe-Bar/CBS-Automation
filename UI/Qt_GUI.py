@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QApplication, QMa
     QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView, QTextBrowser, QListWidget
 from PyQt6.uic import loadUi
 
-from Testing.TestUtility import TestUtility
+from Utility.TestUtility import TestUtility
 
 
 
@@ -269,7 +269,7 @@ class CBSTestApplication(QApplication):
 if __name__ == "__main__":
     app = CBSTestApplication(sys.argv)
     screen_manager = QStackedWidget()
-    screen_manager.setWindowIcon(QIcon('../dataBase/Images/1200px-LOGO_LAMAS.jpg'))
+    screen_manager.setWindowIcon(QIcon('../DataBase/Images/1200px-LOGO_LAMAS.jpg'))
 
     login = LogInScreen()
     choose = TestPropertiesScreen()

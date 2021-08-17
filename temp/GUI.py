@@ -14,13 +14,13 @@ from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 
-from Testing.CbsPageUtility import CbsPageUtility
+from Utility.CbsPageUtility import CbsPageUtility
 
 from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.uix.progressbar import ProgressBar
 
-from Testing.TestUtility import TestUtility
+from Utility.TestUtility import TestUtility
 # from UI.NewMainProcess import main
 from multiprocessing import Queue
 from kivy.core.text import LabelBase

@@ -1,6 +1,6 @@
 from selenium import webdriver
 
-from Testing.CbsPageUtility import CbsPageUtility
+from Utility.CbsPageUtility import CbsPageUtility
 from CbsObjects.Pages.SubjectPage import SubjectPage
 
 kaspersky = 'C:\ProgramData\Kaspersky Lab\AVP21.3\QB'

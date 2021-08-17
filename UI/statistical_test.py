@@ -1,8 +1,8 @@
 # coding=utf8
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Testing.CbsPageUtility import CbsPageUtility
-from Testing.TestUtility import TestUtility
+from Utility.CbsPageUtility import CbsPageUtility
+from Utility.TestUtility import TestUtility
 
 URL = r'https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%99%D7%9F.aspx'
 

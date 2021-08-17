@@ -14,13 +14,13 @@ from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 
-from Testing.CbsPageUtility import CbsPageUtility
+from Utility.CbsPageUtility import CbsPageUtility
 
 from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.uix.progressbar import ProgressBar
 
-from Testing.TestUtility import TestUtility
+from Utility.TestUtility import TestUtility
 # from UI.NewMainProcess import main
 from multiprocessing import Queue
 from kivy.core.text import LabelBase
@@ -35,7 +35,7 @@ class MyMainApp(App):
         # Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
         self.title = r'CBS Site Test'
-        self.icon = '../dataBase/Images/1200px-LOGO_LAMAS.jpg'
+        self.icon = '../DataBase/Images/1200px-LOGO_LAMAS.jpg'
         self.f_layout = FlLayout()
         # Window.bind(on_request_close=self.__del__)
 

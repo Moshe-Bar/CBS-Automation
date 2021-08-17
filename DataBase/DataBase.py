@@ -12,7 +12,7 @@ class DataBase:
     def get_CBS_he_links(cls):
         links = []
         try:
-            with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\heb_pages_links.txt', 'r', encoding="utf-8") as f:
+            with open(r'/DataBase\heb_pages_links.txt', 'r', encoding="utf-8") as f:
                 for line in f:
                     li = line.split()
                     cbs_link = CbsLink(li[0])
@@ -28,7 +28,7 @@ class DataBase:
     def get_CBS_en_links(cls):
         links = []
         try:
-            with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\en_pages_links.txt', 'r', encoding="utf-8") as f:
+            with open(r'/DataBase\en_pages_links.txt', 'r', encoding="utf-8") as f:
                 for line in f:
                     li = line.split()
                     cbs_link = CbsLink(li[0])
@@ -63,7 +63,7 @@ class DataBase:
     @classmethod
     def save_test_result(cls, test_key, page:SubjectPage):
         try:
-            path = r'D:\Current\Selenium\NewAutomationEnv\dataBase\logs'
+            path = r'/DataBase\logs'
             file = path + '\\'+ test_key + '.html'
             with open(file, 'a',encoding='utf-8') as f:
                 style = 'style={color:red; font-size: large; }'
@@ -79,7 +79,7 @@ class DataBase:
     def get_test_result(cls, file_key):
         file_name = file_key
         try:
-            path = r'D:\Current\Selenium\NewAutomationEnv\dataBase\logs'
+            path = r'/DataBase\logs'
             file = path + '\\' + file_name + '.html'
             with open(file, 'r',encoding='utf-8') as f:
                 data = f.read()
@@ -97,7 +97,7 @@ class DataBase:
         sum+= 'Total error pages: ' + str(summary[4]) +'</h1>'
         file_name = file_key
         try:
-            path = r'D:\Current\Selenium\NewAutomationEnv\dataBase\logs'
+            path = r'/DataBase\logs'
             file = path + '\\' + file_name + '.html'
             with open(file, 'r', encoding='utf-8') as f:
                 content = f.read()
@@ -111,7 +111,7 @@ class DataBase:
 
     @classmethod
     def load_xpath(cls, key):
-        with open(r'D:\Current\Selenium\NewAutomationEnv\dataBase\xpath.json', 'rb') as f:
+        with open(r'/Configuration/xpath.json', 'rb') as f:
             data = json.load(f)
             f.close()
         return data['XPath'][0][key]
@@ -123,7 +123,7 @@ class Links(Enum):
     CBS_MAP_SITE_HE = 'https://www.cbs.gov.il/he/pages/sitemap.aspx'
     CBS_MAP_SITE_EN = 'https://www.cbs.gov.il/en/Pages/sitemap.aspx'
     ROOT_DIR = sys.path[1]
-    CHROME_DRIVER = ROOT_DIR + "/Web drivers/92.0.4515.43/chromedriver_win32.exe"
+    CHROME_DRIVER = ROOT_DIR + "/WebDrivers/92.0.4515.43/chromedriver_win32.exe"
     MAP_LINKS_XPATH = DataBase.load_xpath('MAP_LINKS_XPATH')
     HIDDEN_HEBREW_STATS_XPATH = DataBase.load_xpath('HIDDEN_HEBREW_STATS_XPATH')
     HEBREW_STATS_XPATH = DataBase.load_xpath('HEBREW_STATS_XPATH')
@@ -134,6 +134,7 @@ class Links(Enum):
     TOP_BOX_XPATH = DataBase.load_xpath('TOP_BOX_XPATH')
     SUB_SUBJECTS_XPATH = DataBase.load_xpath('SUB_SUBJECTS_XPATH')
     PRESS_RELEASES_XPATH = DataBase.load_xpath('PRESS_RELEASES_XPATH')
+    TABLES_AND_CHARTS_XPATH = DataBase.load_xpath('TABLES_AND_CHARTS_XPATH')
 
 
 

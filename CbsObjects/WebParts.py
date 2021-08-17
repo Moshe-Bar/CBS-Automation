@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-# from dataBase.DataBase import Links
+# from DataBase.DataBase import Links
 
 
 class CbsWebPart(ABC):
@@ -98,8 +98,11 @@ class PressReleases(CbsWebPart):
 
 
 # לוחות ותרשימים
-class TableMaps(CbsWebPart):
-    pass
+class TablesAndMaps(CbsWebPart):
+    def __init__(self):
+        self.errors = []
+        self.links = []
+        self.images = []
 
 
 class MoreLinks(CbsWebPart):
@@ -137,7 +140,7 @@ class SPWebParts:
         self.geo_zone = GeographicZone()
         self.international_comparisons = InternationalComparisons()
         self.press_releases = PressReleases()
-        self.tables_and_maps = TableMaps()
+        self.tables_and_maps = TablesAndMaps()
 
 
     def __len__(self):

@@ -17,9 +17,9 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Testing.CbsPageUtility import CbsPageUtility
+from Utility.CbsPageUtility import CbsPageUtility
 # from UI.Qt_GUI import WorkerSignals
-from dataBase.DataBase import DataBase, Links
+from DataBase.DataBase import DataBase, Links
 
 
 class TestProperties():

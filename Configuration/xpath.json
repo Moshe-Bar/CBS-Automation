@@ -10,7 +10,8 @@
       "SUMMARY_XPATH": "//div[@class='rightColumn']//div[@id='ctl00_PlaceHolderMain_ctl00_wrapper']",
       "TOP_BOX_XPATH": "//div[@class='generalBox top-links']",
       "SUB_SUBJECTS_XPATH": "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']",
-      "PRESS_RELEASES_XPATH": "//div//span[contains(text(), 'הודעות לתקשורת')]"
+      "PRESS_RELEASES_XPATH": "//div//span[contains(text(), 'הודעות לתקשורת')]",
+      "TABLES_AND_CHARTS_XPATH": "//div//h2[@id='wpTitleTableMaps']"
     }
   ]
 }

@@ -3,9 +3,9 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Testing.CbsPageUtility import CbsPageUtility
-from Testing.TestUtility import TestUtility
-from dataBase.DataBase import Links
+from Utility.CbsPageUtility import CbsPageUtility
+from Utility.TestUtility import TestUtility
+from DataBase.DataBase import Links
 
 URL1 = r'https://www.cbs.gov.il/he/subjects/Pages/%D7%91%D7%A8%D7%99%D7%90%D7%95%D7%AA.aspx'
 

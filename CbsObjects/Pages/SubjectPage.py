@@ -1,6 +1,6 @@
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, SPWebParts, ExParts, ToolsAndDB, Summary, TopBox, \
-    PressReleases
+    PressReleases, TablesAndMaps
 import pickle
 
 
@@ -23,6 +23,7 @@ class SubjectPage:
         self.top_box = TopBox()
         self.sub_subjects = SubSubjects()
         self.press_releases = PressReleases()
+        self.tables_and_charts = TablesAndMaps()
         self.inside_links = []
         self.dom = None
         self.isChecked = None
