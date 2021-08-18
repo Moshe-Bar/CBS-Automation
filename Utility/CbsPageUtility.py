@@ -23,7 +23,8 @@ CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחס
 
 
 def check_lines(web_part_lines:[WebPartLine]):
-    for line in web_part_lines:
+    # for line in web_part_lines:
+    pass
 
 
 
@@ -501,7 +502,8 @@ class CbsPageUtility:
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
         try:
-            element = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
+            element:WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
+            # element.screenshot('img.png')
 
         except NoSuchElementException as e:
             return
@@ -510,25 +512,30 @@ class CbsPageUtility:
         except TypeError as e:
             print('exception, xpath is not recognized')
             return
-        except Exception:
-            print('exception in tables and charts')
-            return
-        # title check
-        title = element.find_element_by_xpath(".//span").text
-        if not title == 'לוחות ותרשימים':
-            page.tables_and_charts.errors.append('title is not correct')
+        # except Exception:
+        #     print('exception in tables and charts')
+        #     return
 
-        # links check
-        li_elements = element.find_elements_by_xpath(".//..//div//ul//li")
-        web_part_lines = []
-        for li in li_elements:
-            div = li.find_elements_by_xpath(".//div//div")
-            pic_url = div[0].find_element_by_xpath(".//a//img").get_attribute('src')
-            link_url = div[0].find_element_by_xpath(".//a").get_attribute('href')
-            date = div[1].text
-            web_part_lines.append(WebPartLine(link_url,pic_url,date))
+        try:
+            # title check
+            title = element.find_element_by_xpath(".//..//span").text
+            if not title == 'לוחות ותרשימים':
+                page.tables_and_charts.errors.append('title is not correct')
+                print(title)
 
-        check_lines(web_part_lines)   
+            # links check
+            li_elements = element.find_elements_by_xpath(".//..//div//ul//li")
+            web_part_lines = []
+            for li in li_elements:
+                div = li.find_elements_by_xpath(".//div//div")
+                pic_url = div[0].find_element_by_xpath(".//a//img").get_attribute('src')
+                link_url = div[0].find_element_by_xpath(".//a").get_attribute('href')
+                date = div[1].text
+                web_part_lines.append(WebPartLine(link_url,pic_url,date))
+
+            # check_lines(web_part_lines)
+        except Exception as e:
+            print('exception in set_tables_and_charts: {}'.format(e))
 
 
 
