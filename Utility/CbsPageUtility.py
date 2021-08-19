@@ -2,10 +2,8 @@ import requests
 from requests.exceptions import InvalidSchema
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
+
 
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
@@ -17,15 +15,6 @@ from CbsObjects.Language import Language
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
 CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחסמה בשל פעולה לא מורשית', 'Block ID: 5578236093159424155']
-
-
-# GUIDE = 'https://www.guru99.com/xpath-selenium.htmls'
-
-
-def check_lines(web_part_lines:[WebPartLine]):
-    # for line in web_part_lines:
-    pass
-
 
 
 class CbsPageUtility:
@@ -205,7 +194,7 @@ class CbsPageUtility:
                 "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
             cur_link = CbsLink(all_stats_link.get_attribute('href'))
             page.stats_part.links.append(cur_link)
-            CbsPageUtility.set_link_status(cur_link)
+            cls.set_link_status(cur_link)
             if not cur_link.status_code == 200:
                 page.stats_part.errors.append('link to all massages is broken in Statistical')
                 page.isCorrect = False
@@ -272,7 +261,7 @@ class CbsPageUtility:
         else:
             return True
 
-    # gets <a> web elements and checks for errors
+    # gets <a> or <img> web elements and check them for errors
     # returns tuple of list of CBS links from input and list of errors -
     # each error describes the index of the error link
     @classmethod
@@ -282,7 +271,7 @@ class CbsPageUtility:
         for i, element in enumerate(links):
             url = element.get_attribute(attrib)
             link = CbsLink(url)
-            CbsPageUtility.set_link_status(link)
+            cls.set_link_status(link)
             link_list.append(link)
             if not link.status_code == 200:
                 print(str(link.status_code) + str(link.url))
@@ -362,7 +351,7 @@ class CbsPageUtility:
         internal_links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), raw_links))
 
         for link in internal_links:
-            CbsPageUtility.set_link_status(link)
+            cls.set_link_status(link)
             page.sub_subjects.links.append(link)
             if not link.status_code == 200:
                 page.sub_subjects.errors.append('the link: ' + link.name + 'is broken in sub subjects')
@@ -411,7 +400,7 @@ class CbsPageUtility:
             else:
                 for i, img in enumerate(images):
                     cur_link = CbsLink(img.get_attribute('src'))
-                    CbsPageUtility.set_link_status(cur_link)
+                    cls.set_link_status(cur_link)
                     page.tools_and_db.images.append(cur_link)
                     if not cur_link.status_code == 200:
                         page.tools_and_db.errors.append('image is broken in tools and DB')
@@ -425,7 +414,7 @@ class CbsPageUtility:
                 for i, sheet in enumerate(links):
                     cur_link = CbsLink(sheet.get_attribute('href'))
                     page.tools_and_db.links.append(cur_link)
-                    CbsPageUtility.set_link_status(cur_link)
+                    cls.set_link_status(cur_link)
                     if not cur_link.status_code == 200:
                         page.tools_and_db.errors.append('link is broken in tools and DB')
                         page.isCorrect = False
@@ -463,7 +452,7 @@ class CbsPageUtility:
                 for i, img in enumerate(images):
                     print(img.get_attribute('src'))
                     cur_link = CbsLink(img.get_attribute('src'))
-                    CbsPageUtility.set_link_status(cur_link)
+                    cls.set_link_status(cur_link)
                     page.summary.images.append(cur_link)
                     if not cur_link.status_code == 200:
                         counter += 1
@@ -479,8 +468,8 @@ class CbsPageUtility:
                 for i, url in enumerate(links):
                     print(url.get_attribute('href'))
                     cur_link = CbsLink(url.get_attribute('href'))
+                    cls.set_link_status(cur_link)
                     page.summary.links.append(cur_link)
-                    CbsPageUtility.set_link_status(cur_link)
                     if not cur_link.status_code == 200:
                         counter += 1
 
@@ -503,7 +492,7 @@ class CbsPageUtility:
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
         try:
             element:WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
-            # element.screenshot('img.png')
+
 
         except NoSuchElementException as e:
             return
@@ -518,26 +507,50 @@ class CbsPageUtility:
 
         try:
             # title check
-            title = element.find_element_by_xpath(".//..//span").text
+            title = element.find_element_by_xpath(".//h2//span").text
             if not title == 'לוחות ותרשימים':
                 page.tables_and_charts.errors.append('title is not correct')
                 print(title)
 
             # links check
-            li_elements = element.find_elements_by_xpath(".//..//div//ul//li")
+            li_elements = element.find_elements_by_xpath(".//div//ul//li")
+            print('number li: ', len(li_elements))
             web_part_lines = []
             for li in li_elements:
                 div = li.find_elements_by_xpath(".//div//div")
-                pic_url = div[0].find_element_by_xpath(".//a//img").get_attribute('src')
-                link_url = div[0].find_element_by_xpath(".//a").get_attribute('href')
+                pic_url = CbsLink(div[0].find_element_by_xpath(".//a//img").get_attribute('src'))
+                link_url = CbsLink(div[0].find_element_by_xpath(".//a").get_attribute('href'))
+                name = div[0].text
                 date = div[1].text
-                web_part_lines.append(WebPartLine(link_url,pic_url,date))
+                web_part_lines.append(WebPartLine(link_url,pic_url,date,name))
 
-            # check_lines(web_part_lines)
+            cls.check_lines(web_part_lines,page)
+
+        except Exception as e:
+            print('exception in set_tables_and_charts: {}'.format(e))
+
+        # last link check
+        try:
+            to_all_maps = element.find_element_by_xpath(".//div//a[@class='MadadTableMapsToAll']")
+            to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
+            cls.set_link_status(to_all_maps)
+            print(to_all_maps)
+            if not to_all_maps.status_code == 200:
+                page.tables_and_charts.errors.append('to all charts link is broken')
         except Exception as e:
             print('exception in set_tables_and_charts: {}'.format(e))
 
 
-
+    @classmethod
+    def check_lines(cls,web_part_lines: [WebPartLine], errors: [str]):
+        for web_part_line in web_part_lines:
+            link_url = web_part_line.url
+            pic_url = web_part_line.pic
+            cls.set_link_status(link_url)
+            cls.set_link_status(pic_url)
+            if not link_url.status_code == 200:
+                errors.append('url link is broken')
+            if not pic_url.status_code == 200:
+                errors.append('image url link is broken')
 
 
