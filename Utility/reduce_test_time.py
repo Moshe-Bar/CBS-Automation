@@ -3,7 +3,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Utility.CbsPageUtility import CbsPageUtility
+from Utility.WebPartUtility import WebPartUtility
 from Utility.TestUtility import TestUtility
 from DataBase.DataBase import Links
 

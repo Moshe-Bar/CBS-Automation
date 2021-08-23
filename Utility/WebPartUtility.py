@@ -4,76 +4,27 @@ from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
-
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from CbsObjects.WebPartLine import WebPartLine
 from DataBase.DataBase import Links
 
-from CbsObjects.Language import Language
+from temp.Language import Language
 
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
 CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחסמה בשל פעולה לא מורשית', 'Block ID: 5578236093159424155']
 
 
-class CbsPageUtility:
 
+class WebPartUtility:
     @classmethod
-    def setPageLevel(cls, root_element, page: SubjectPage):
-        # finding the Level inside the page text
-        # print('finding span objects...')
-        uList = root_element.find_elements_by_xpath(
-            "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']")
-        page.level = len(uList) - 2
-
-    @classmethod
-    def setPageParent(cls, root_element, page: SubjectPage):
-        if page.level is None:
-            cls.setPageLevel(root_element, page)
-        if page.level > 1:
-            uList = root_element.find_elements_by_xpath(
-                "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']//a[@href]")
-            page.link = uList[len(uList) - 1].get_attribute('href')
-            page.name = uList[len(uList) - 1].text
-        # else the parent page is the home page
-        else:
-            page.link = Links.CBS_HOME_PAGE_HE.value
-            page.name = CBS_HOME_PAGE_NAME
-
-    @classmethod
-    def create_minimal_pages(cls, link_list):
-        pages = []
-        for link in link_list:
-            pages.append(SubjectPage(link[0], link[1]))
-        return pages
-
-    @classmethod
-    def set_link_status(cls, link: CbsLink):
-        try:
-            r = requests.get(link.url)
-            link.status_code = r.status_code
-        except TimeoutException:
-            link.status_code = 408
-            return
-        except InvalidSchema:
-            link.status_code = 400
-            return
-        except ConnectionError as e:
-            print('connection error in ' + link.url)
-            link.status_code = 408
-            return
-
-        # case everything went well - still need to check default error page of CBS
-        # and link.url.endswith('.aspx')
-        if link.status_code == 200:
-            cls.check_for_cbs_error_page(r.content, link)
-            return
-
-    @classmethod  # need to be changed according page type
+    def get_web_part(cls,code, session):
+        pass
+    @classmethod  # need to be changed according page file_type
     def set_internal_links(cls, page: SubjectPage, root_element):
         if page.link.status_code is None:
-            cls.set_link_status(page.link)
+            PageUtility.set_link_status(page.link)
 
         if page.link.status_code == 200:
             # inside links check
@@ -105,34 +56,6 @@ class CbsPageUtility:
                 # def wrightToFile(links):
             else:
                 print(page.name + '::' + '200 OK for links inside')
-
-    @classmethod
-    def create_pages(cls, link_list):
-        return [SubjectPage(link, link.name) for link in link_list]
-
-    @classmethod
-    def check_for_cbs_error_page(cls, content, link: CbsLink):
-        for error_text in CBS_404_TEXTS:
-            if error_text in str(content):
-                link.status_code = 404
-                return True
-        for error_text in CBS_403_TEXTS:
-            if error_text in str(content):
-                link.status_code = 403
-                return True
-        return False
-
-    @classmethod
-    def set_page_lang(cls, page: SubjectPage, root_element):
-        try:
-            element = root_element.find_element_by_xpath("//a[@id='ctl00_ctl23_lbEnglish']")
-        except NoSuchElementException as e:
-            print('not a subject page')
-            return
-        if element.text.upper() == 'ENGLISH':
-            page.lang = Language.ENGLISH.value
-            return
-        page.lang = Language.HEBREW.value
 
     @classmethod
     def set_extra_statistical(cls, page: SubjectPage, root_element):
@@ -175,7 +98,7 @@ class CbsPageUtility:
         if len(images) == 0 or len(links) == 0:
             page.stats_part.errors.append('images or links content is missing in Statistical')
         else:
-            images, errors = cls.set_url_links(images, attrib='src')
+            images, errors = PageUtility.set_url_links(images, attrib='src')
             errors = [error + ' in Statistical image' for error in errors]
             page.stats_part.errors.extend(errors)
             page.stats_part.images.extend(links)
@@ -183,7 +106,7 @@ class CbsPageUtility:
         if len(links) == 0:
             page.stats_part.errors.append('links content is missing in Statistical')
         else:
-            links, errors = cls.set_url_links(links)
+            links, errors = PageUtility.set_url_links(links)
             errors = [error + ' in Statistical' for error in errors]
             page.stats_part.errors.extend(errors)
             page.stats_part.links.extend(links)
@@ -194,7 +117,7 @@ class CbsPageUtility:
                 "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
             cur_link = CbsLink(all_stats_link.get_attribute('href'))
             page.stats_part.links.append(cur_link)
-            cls.set_link_status(cur_link)
+            PageUtility.set_link_status(cur_link)
             if not cur_link.status_code == 200:
                 page.stats_part.errors.append('link to all massages is broken in Statistical')
                 page.isCorrect = False
@@ -231,7 +154,7 @@ class CbsPageUtility:
                 page.press_releases.errors.append('no content in press releases')
                 return
             links.append(to_all_massages)
-            links,errors = cls.set_url_links(links)
+            links,errors = PageUtility.set_url_links(links)
             page.press_releases.links.extend(links)
             page.press_releases.errors.extend(errors)
 
@@ -240,7 +163,6 @@ class CbsPageUtility:
             return
         except NoSuchElementException:
             return
-
 
     @classmethod
     def is_element_exist(cls, session: webdriver.chrome, path):
@@ -261,23 +183,6 @@ class CbsPageUtility:
         else:
             return True
 
-    # gets <a> or <img> web elements and check them for errors
-    # returns tuple of list of CBS links from input and list of errors -
-    # each error describes the index of the error link
-    @classmethod
-    def set_url_links(cls, links:[WebElement], attrib='href'):
-        link_list = []
-        errors = []
-        for i, element in enumerate(links):
-            url = element.get_attribute(attrib)
-            link = CbsLink(url)
-            cls.set_link_status(link)
-            link_list.append(link)
-            if not link.status_code == 200:
-                print(str(link.status_code) + str(link.url))
-                errors.append(str(i + 1) + 'th link is broken')
-        return link_list, errors
-
     @classmethod
     def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
         is_exist, main_element = cls.is_element_exist(session, Links.TOP_BOX_XPATH.value)
@@ -293,7 +198,7 @@ class CbsPageUtility:
                 return
 
             else:
-                links, errors = cls.set_url_links(elements)
+                links, errors = PageUtility.set_url_links(elements)
                 page.top_box.links.extend(links)
                 errors = [error + ' in top box' for error in errors]
                 # errors = list(map(lambda x:x+' in top box',errors))
@@ -351,7 +256,7 @@ class CbsPageUtility:
         internal_links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), raw_links))
 
         for link in internal_links:
-            cls.set_link_status(link)
+            PageUtility.set_link_status(link)
             page.sub_subjects.links.append(link)
             if not link.status_code == 200:
                 page.sub_subjects.errors.append('the link: ' + link.name + 'is broken in sub subjects')
@@ -385,13 +290,13 @@ class CbsPageUtility:
         return
 
     @classmethod
-    def set_tools_and_db(cls, page: SubjectPage, root_element):
+    def set_tools_and_db(cls, page: SubjectPage, session):
         # left side of the page
         try:
-            tools_and_db = root_element.find_element_by_xpath(Links.TOOLS_AND_DB_XPATH.value)
-            title = root_element.find_element_by_xpath("//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
-            images = root_element.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//img")
-            links = root_element.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//a")
+            tools_and_db = session.find_element_by_xpath(Links.TOOLS_AND_DB_XPATH.value)
+            title = session.find_element_by_xpath("//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
+            images = session.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//img")
+            links = session.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//a")
 
             # test image
             if len(images) == 0:
@@ -400,7 +305,7 @@ class CbsPageUtility:
             else:
                 for i, img in enumerate(images):
                     cur_link = CbsLink(img.get_attribute('src'))
-                    cls.set_link_status(cur_link)
+                    PageUtility.set_link_status(cur_link)
                     page.tools_and_db.images.append(cur_link)
                     if not cur_link.status_code == 200:
                         page.tools_and_db.errors.append('image is broken in tools and DB')
@@ -414,7 +319,7 @@ class CbsPageUtility:
                 for i, sheet in enumerate(links):
                     cur_link = CbsLink(sheet.get_attribute('href'))
                     page.tools_and_db.links.append(cur_link)
-                    cls.set_link_status(cur_link)
+                    PageUtility.set_link_status(cur_link)
                     if not cur_link.status_code == 200:
                         page.tools_and_db.errors.append('link is broken in tools and DB')
                         page.isCorrect = False
@@ -452,7 +357,7 @@ class CbsPageUtility:
                 for i, img in enumerate(images):
                     print(img.get_attribute('src'))
                     cur_link = CbsLink(img.get_attribute('src'))
-                    cls.set_link_status(cur_link)
+                    PageUtility.set_link_status(cur_link)
                     page.summary.images.append(cur_link)
                     if not cur_link.status_code == 200:
                         counter += 1
@@ -468,7 +373,7 @@ class CbsPageUtility:
                 for i, url in enumerate(links):
                     print(url.get_attribute('href'))
                     cur_link = CbsLink(url.get_attribute('href'))
-                    cls.set_link_status(cur_link)
+                    PageUtility.set_link_status(cur_link)
                     page.summary.links.append(cur_link)
                     if not cur_link.status_code == 200:
                         counter += 1
@@ -490,9 +395,27 @@ class CbsPageUtility:
 
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
+
         try:
             element:WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
+        except NoSuchElementException as e:
+            return
+        except TimeoutException as e:
+            return
+        except TypeError as e:
+            print('exception, xpath is not recognized')
+            return
+        except Exception:
+            print('not recognized exception in tables and charts')
+            return
 
+        # title check
+        try:
+
+            title = element.find_element_by_xpath(".//h2//span").text
+            if not title == 'לוחות ותרשימים':
+                page.tables_and_charts.errors.append('title is not correct')
+                print(title)
 
         except NoSuchElementException as e:
             return
@@ -501,21 +424,19 @@ class CbsPageUtility:
         except TypeError as e:
             print('exception, xpath is not recognized')
             return
-        # except Exception:
-        #     print('exception in tables and charts')
-        #     return
+        except Exception:
+            print('not recognized exception in tables and charts')
+            return
 
+        # links check
         try:
-            # title check
-            title = element.find_element_by_xpath(".//h2//span").text
-            if not title == 'לוחות ותרשימים':
-                page.tables_and_charts.errors.append('title is not correct')
-                print(title)
 
-            # links check
             li_elements = element.find_elements_by_xpath(".//div//ul//li")
             print('number li: ', len(li_elements))
             web_part_lines = []
+            if len(li_elements) == 0:
+                raise NoSuchElementException(msg='elements not found')
+
             for li in li_elements:
                 div = li.find_elements_by_xpath(".//div//div")
                 pic_url = CbsLink(div[0].find_element_by_xpath(".//a//img").get_attribute('src'))
@@ -524,33 +445,147 @@ class CbsPageUtility:
                 date = div[1].text
                 web_part_lines.append(WebPartLine(link_url,pic_url,date,name))
 
-            cls.check_lines(web_part_lines,page)
+            cls.check_lines(web_part_lines,page.tables_and_charts.errors)
 
+        except NoSuchElementException as e:
+            page.tables_and_charts.errors.append('not found any links')
+        except TimeoutException as e:
+            page.tables_and_charts.errors.append('not found any links')
+        except TypeError as e:
+            print('exception, xpath is not recognized')
         except Exception as e:
-            print('exception in set_tables_and_charts: {}'.format(e))
+            print('not recognized exception in tables and charts: {}'.format(e))
+
+
 
         # last link check
         try:
             to_all_maps = element.find_element_by_xpath(".//div//a[@class='MadadTableMapsToAll']")
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
-            cls.set_link_status(to_all_maps)
+            PageUtility.set_link_status(to_all_maps)
             print(to_all_maps)
             if not to_all_maps.status_code == 200:
-                page.tables_and_charts.errors.append('to all charts link is broken')
-        except Exception as e:
-            print('exception in set_tables_and_charts: {}'.format(e))
+                raise Exception('last link is broken')
 
+        except Exception as e:
+            page.tables_and_charts.errors.append('to all charts link is broken')
+            print('exception in set_tables_and_charts: {}'.format(e))
 
     @classmethod
     def check_lines(cls,web_part_lines: [WebPartLine], errors: [str]):
         for web_part_line in web_part_lines:
             link_url = web_part_line.url
             pic_url = web_part_line.pic
-            cls.set_link_status(link_url)
-            cls.set_link_status(pic_url)
+            PageUtility.set_link_status(link_url)
+            PageUtility.set_link_status(pic_url)
             if not link_url.status_code == 200:
                 errors.append('url link is broken')
             if not pic_url.status_code == 200:
                 errors.append('image url link is broken')
 
+class PageUtility:
 
+    @classmethod
+    def setPageLevel(cls, root_element, page: SubjectPage):
+        # finding the Level inside the page text
+        # print('finding span objects...')
+        uList = root_element.find_elements_by_xpath(
+            "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']")
+        page.level = len(uList) - 2
+
+    @classmethod
+    def setPageParent(cls, root_element, page: SubjectPage):
+        if page.level is None:
+            cls.setPageLevel(root_element, page)
+        if page.level > 1:
+            uList = root_element.find_elements_by_xpath(
+                "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']//a[@href]")
+            page.link = uList[len(uList) - 1].get_attribute('href')
+            page.name = uList[len(uList) - 1].text
+        # else the parent page is the home page
+        else:
+            page.link = Links.CBS_HOME_PAGE_HE.value
+            page.name = CBS_HOME_PAGE_NAME
+
+    @classmethod
+    def create_pages(cls, link_list):
+        return [SubjectPage(link, link.name) for link in link_list]
+
+
+    @classmethod
+    def create_minimal_pages(cls, link_list):
+        pages = []
+        for link in link_list:
+            pages.append(SubjectPage(link[0], link[1]))
+        return pages
+
+    @classmethod
+    def set_link_status(cls, link: CbsLink):
+        try:
+            r = requests.get(link.url)
+            link.status_code = r.status_code
+
+        except TimeoutException:
+            link.status_code = 408
+            return
+        except InvalidSchema:
+            link.status_code = 400
+            return
+
+        except ConnectionError as e:
+            print('connection error in ' + link.url, e)
+            link.status_code = 408
+            return
+
+
+        except Exception as e:
+            print('set link status func unknown exception', e)
+            link.status_code = 408
+            return
+
+        # case everything went well - still need to check default error page of CBS
+        # and link.url.endswith('.aspx')
+        if link.status_code == 200:
+            cls.check_for_cbs_error_page(r.content, link)
+            return
+
+    # gets <a> or <img> web elements and check them for errors
+    # returns tuple of list of CBS links from input and list of errors -
+    # each error describes the index of the error link
+    @classmethod
+    def set_url_links(cls, links: [WebElement], attrib='href'):
+        link_list = []
+        errors = []
+        for i, element in enumerate(links):
+            url = element.get_attribute(attrib)
+            link = CbsLink(url)
+            PageUtility.set_link_status(link)
+            link_list.append(link)
+            if not link.status_code == 200:
+                print(str(link.status_code) + str(link.url))
+                errors.append(str(i + 1) + 'th link is broken')
+        return link_list, errors
+
+    @classmethod
+    def check_for_cbs_error_page(cls, content, link: CbsLink):
+        for error_text in CBS_404_TEXTS:
+            if error_text in str(content):
+                link.status_code = 404
+                return True
+        for error_text in CBS_403_TEXTS:
+            if error_text in str(content):
+                link.status_code = 403
+                return True
+        return False
+
+    @classmethod
+    def set_page_lang(cls, page: SubjectPage, root_element):
+        try:
+            element = root_element.find_element_by_xpath("//a[@id='ctl00_ctl23_lbEnglish']")
+        except NoSuchElementException as e:
+            print('not a subject page')
+            return
+        if element.text.upper() == 'ENGLISH':
+            page.lang = Language.ENGLISH.value
+            return
+        page.lang = Language.HEBREW.value

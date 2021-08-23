@@ -1,192 +1,122 @@
 from abc import ABC, abstractmethod
 
+
 # from DataBase.DataBase import Links
 
 
-class CbsWebPart(ABC):
-    pass
-    # @abstractmethod
-    # @classmethod
-    # def getXPATH(cls):
-    #     pass
+class WebPart():
+    def __init__(self):
+        self.errors = []
+        self.images = []
+        self.links = []
+
+    def get_errors(self):
+        return self.errors
+
+    def error_to_str(self):
+        return ', '.join(self.errors)
 
 
 # תקציר בראש הדף
-class Summary(CbsWebPart):
-    def __init__(self):
-        self.errors = []
-        self.images = []
-        self.links = []
-
-    @classmethod
-    def getXPATH(cls):
-        pass
-        # return Links.SUMMERY_XPATHS.value
-
-# רגע של סטטיסטיקה
-class MomentOfStatistics(CbsWebPart):
-    def xPath(self):
-        pass
-
-    def getDetails(self):
-        pass
-
+class Summary(WebPart):
     def __init__(self):
         super().__init__()
 
-    def isShowed(self):
-        pass
+    def error_to_str(self):
+        return 'Summary: ' + super().error_to_str()
 
-    def isWorkingProperly(self):
-        pass
+
+# רגע של סטטיסטיקה
+class MomentOfStatistics(WebPart):
+    def __init__(self):
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Moment Of Statistics: ' + super().error_to_str()
 
 
 # שלושת המלבנים
-class TopBox(CbsWebPart):
+class TopBox(WebPart):
     def __init__(self):
-        self.errors = []
-        self.links = []
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Top Box: ' + super().error_to_str()
 
 
 # מידע לפי אזור גיאוגרפי
-class GeographicZone(CbsWebPart):
-    pass
+class GeographicZone(WebPart):
+    def __init__(self):
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Geographic Zone: ' + super().error_to_str()
 
 
 # השוואות בינ"ל
-class InternationalComparisons(CbsWebPart):
-    pass
+class InternationalComparisons(WebPart):
+    def __init__(self):
+        super().__init__()
+
+    def error_to_str(self):
+        return 'International Comparisons: ' + super().error_to_str()
 
 
 # עלוני סטטיסטיקל
-class Statisticals(CbsWebPart):
+class Statisticals(WebPart):
     def __init__(self):
-        self.errors = []
-        self.good_condition = True
-        self.isHidden = None
-        self.images = []
-        self.links = []
+        super().__init__()
 
-
-    def isShowed(self):
-        return not self.isHidden
-
-    def isWorkingProperly(self):
-        return self.good_condition
-
-    def getDetails(self):
-        return self.errors
-
-    @classmethod
-    def getXPATH(cls):
-        pass
-        # return Links.HEBREW_STATS_XPATH.value
-
+    def error_to_str(self):
+        return 'Statisticals: ' + super().error_to_str()
 
 
 # נושאי משנה
-class SubSubjects(CbsWebPart):
+class SubSubjects(WebPart):
     def __init__(self):
-        self.errors = []
-        self.links = []
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Sub Subjects: ' + super().error_to_str()
+
 
 # הודעות לתקשורת
-class PressReleases(CbsWebPart):
+class PressReleases(WebPart):
     def __init__(self):
-        self.errors = []
-        self.links = []
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Press Releases: ' + super().error_to_str()
 
 
 # לוחות ותרשימים
-class TablesAndMaps(CbsWebPart):
+class TablesAndMaps(WebPart):
     def __init__(self):
-        self.errors = []
-        self.links = []
-        self.images = []
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Tables And Maps: ' + super().error_to_str()
 
 
-class MoreLinks(CbsWebPart):
+class MoreLinks(WebPart):
     def __init__(self):
-        self.errors = []
-        self.isHidden = None
-        self.images = []
-        self.links = []
+        super().__init__()
 
-    def isShowed(self):
-        return not self.isHidden
-
-    def isWorkingProperly(self):
-        if len(self.errors) == 0:
-            return True
-        return False
-
-    def getDetails(self):
-        return self.errors
-
-    def xPath(self):
-        pass
+    def error_to_str(self):
+        return 'More Links: ' + super().error_to_str()
 
 
-# collection of web parts
-class SPWebParts:
+class ExParts(WebPart):
     def __init__(self):
-        parts = []
-        self.statistical: Statisticals()
-        self.more_links = MoreLinks()
-        self.sub_subjects = SubSubjects()
-        self.summery = Summary()
-        self.mom_of_statistics = MomentOfStatistics()
-        self.top_links_box = TopBox()
-        self.geo_zone = GeographicZone()
-        self.international_comparisons = InternationalComparisons()
-        self.press_releases = PressReleases()
-        self.tables_and_maps = TablesAndMaps()
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Extra Error Parts: ' + super().error_to_str()
 
 
-    def __len__(self):
-        return 11
-
-    def __next__(self):
-        pass
-
-    def __iter__(self):
-        pass
-
-    # def get_summary(self):
-    #     return 10
-
-
-# a = SPWebParts()
-# print(a.summery)
-
-
-class ExParts():
+class ToolsAndDB(WebPart):
     def __init__(self):
-        self.errors = []
-        self.good_condition = True
-        self.isHidden = None
+        super().__init__()
 
-
-class ToolsAndDB:
-    def __init__(self):
-        self.errors = []
-        self.good_condition = True
-        self.isHidden = None
-        self.images = []
-        self.links = []
-
-    def set_errors(self, error):
-        self.errors.append(error)
-        self.good_condition = False
-
-    def isShowed(self):
-        return not self.isHidden
-
-    def isWorkingProperly(self):
-        return self.good_condition
-
-    def getDetails(self):
-        return self.errors
-
-    def xPath(self):
-        pass
+    def error_to_str(self):
+        return 'Tools And DataBase: ' + super().error_to_str()

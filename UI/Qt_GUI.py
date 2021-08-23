@@ -5,11 +5,10 @@ import time
 from multiprocessing import Queue
 from ast import literal_eval
 
-from PyQt6 import QtGui, QtCore
-from PyQt6.QtCore import Qt, QVariant, QThread, QObject, QRunnable, pyqtSlot, QThreadPool, QCoreApplication
-from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem, QFont, QTextListFormat
-from PyQt6.QtWidgets import QDialog, QPushButton, QVBoxLayout, QApplication, QMainWindow, QStackedWidget, QLabel, \
-    QLineEdit, QScrollArea, QWidget, QCheckBox, QListView, QListWidgetItem, QAbstractItemView, QTextBrowser, QListWidget
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt,QObject, QRunnable, pyqtSlot, QThreadPool, QCoreApplication
+from PyQt6.QtGui import QIcon,QFont
+from PyQt6.QtWidgets import QDialog, QPushButton,QApplication,QStackedWidget, QListView, QListWidgetItem, QAbstractItemView
 from PyQt6.uic import loadUi
 
 from Utility.TestUtility import TestUtility
@@ -114,7 +113,7 @@ class TestPropertiesScreen(QDialog):
             # save the old chosen pages before selecting all
             for i in range(self.e_pages_list.count()):
                 self.checked_epages.append(self.e_pages_list.item(i).isSelected())
-            # selct all
+            # select all
             for i in range(self.e_pages_list.count()):
                 self.e_pages_list.item(i).setSelected(True)
 

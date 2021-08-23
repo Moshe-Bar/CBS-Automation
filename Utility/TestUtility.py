@@ -17,7 +17,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Utility.CbsPageUtility import CbsPageUtility
+from Utility.WebPartUtility import WebPartUtility
 # from UI.Qt_GUI import WorkerSignals
 from DataBase.DataBase import DataBase, Links
 
@@ -89,19 +89,21 @@ class TestUtility:
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):
 
-        CbsPageUtility.set_heb_statistical(page=page, root_element=main_element)
+        WebPartUtility.set_heb_statistical(page=page, root_element=main_element)
 
-        CbsPageUtility.set_extra_parts(page=page, root_element=main_element)
+        WebPartUtility.set_extra_parts(page=page, root_element=main_element)
 
-        CbsPageUtility.set_summary(page=page, session = main_element)
+        WebPartUtility.set_summary(page=page, session = main_element)
 
-        CbsPageUtility.set_top_box(page=page, session = main_element)
+        WebPartUtility.set_top_box(page=page, session = main_element)
 
-        CbsPageUtility.set_sub_subjects(page=page, session = main_element)
+        WebPartUtility.set_sub_subjects(page=page, session = main_element)
 
-        CbsPageUtility.set_press_releases(page=page, session = main_element)
+        WebPartUtility.set_press_releases(page=page, session = main_element)
 
-        CbsPageUtility.set_tables_and_charts(page=page, session = main_element)
+        WebPartUtility.set_tables_and_charts(page=page, session = main_element)
+
+        WebPartUtility.set_tools_and_db(page=page, session = main_element)
 
     #     TODO another web part
 

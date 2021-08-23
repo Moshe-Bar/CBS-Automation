@@ -1,10 +1,10 @@
 from CbsObjects import CbsLink
+from CbsObjects.WebParts import WebPart
 
 
 class WebPartLine:
 
-    def __init__(self, url, pic, parent, index, date=None, name=None):
-        self.__parent = parent
+    def __init__(self, url, pic, index, date=None, name=None):
         self.__index = index
         self.__url: CbsLink = url
         self.__pic_url: CbsLink = pic
@@ -31,5 +31,5 @@ class WebPartLine:
         return 'Line {}: {}'.format(self.__index, self.__name)
 
 
-a = WebPartLine('www.klum.com','www.klum.com.klum.png','tables and charts',1,name='לינק ראשון')
-print(a)
+# a = WebPartLine('www.klum.com','www.klum.com.klum.png','tables and charts',1,name='link')
+# print(a)

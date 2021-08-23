@@ -182,7 +182,7 @@ label.error {
     border: solid 1px #f24d40 !important;
 }
 
-/*input[type="submit"],*/
+/*input[file_type="submit"],*/
 input[type="button"], button {
     padding: 0;
     margin: 0;
@@ -2291,7 +2291,7 @@ a:visited {
 }
 
 /*Taim SP - and on the other side, sometimes we must override SP's stupid behaviors*/
-input[type=button], input[type=reset], /*input[type=submit],*/
+input[type=button], input[type=reset], /*input[file_type=submit],*/
 button {
     min-width: inherit;
 }
