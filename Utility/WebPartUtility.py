@@ -62,7 +62,7 @@ class WebPartUtility:
         # check for extra web part - empty statistical (different xPath)
         try:
             extra_stats = root_element.find_element_by_xpath(Links.EXTRA_STATS_XPATH.value)
-            page.stats_part.errors.append('error: statistical - extra web part is showed')
+            page.stats_part.errors.append('extra web part is showed')
             page.isCorrect = False
         except TimeoutException:
             pass
@@ -96,7 +96,7 @@ class WebPartUtility:
         links = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//a")
 
         if len(images) == 0 or len(links) == 0:
-            page.stats_part.errors.append('images or links content is missing in Statistical')
+            page.stats_part.errors.append('images or links content is missing')
         else:
             images, errors = PageUtility.set_url_links(images, attrib='src')
             errors = [error + ' in Statistical image' for error in errors]
@@ -104,10 +104,10 @@ class WebPartUtility:
             page.stats_part.images.extend(links)
 
         if len(links) == 0:
-            page.stats_part.errors.append('links content is missing in Statistical')
+            page.stats_part.errors.append('links content is missing')
         else:
             links, errors = PageUtility.set_url_links(links)
-            errors = [error + ' in Statistical' for error in errors]
+            errors = [error + ' ' for error in errors]
             page.stats_part.errors.extend(errors)
             page.stats_part.links.extend(links)
 
@@ -119,10 +119,10 @@ class WebPartUtility:
             page.stats_part.links.append(cur_link)
             PageUtility.set_link_status(cur_link)
             if not cur_link.status_code == 200:
-                page.stats_part.errors.append('link to all massages is broken in Statistical')
+                page.stats_part.errors.append('link to all massages is broken')
                 page.isCorrect = False
         except NoSuchElementException:
-            page.stats_part.errors.append('link to all massages is missing in Statistical')
+            page.stats_part.errors.append('link to all massages is missing')
             page.isCorrect = False
 
     @classmethod
@@ -151,7 +151,7 @@ class WebPartUtility:
             links = main_element.find_elements_by_xpath(".//..//li//div//div[@class= 'pageAll pageItemTitle']//a")
             to_all_massages = main_element.find_element_by_xpath(".//..//a[@class='MadadPressReleasesToAll']")
             if len(links) == 0:
-                page.press_releases.errors.append('no content in press releases')
+                page.press_releases.errors.append('no content in')
                 return
             links.append(to_all_massages)
             links,errors = PageUtility.set_url_links(links)
@@ -200,12 +200,12 @@ class WebPartUtility:
             else:
                 links, errors = PageUtility.set_url_links(elements)
                 page.top_box.links.extend(links)
-                errors = [error + ' in top box' for error in errors]
+                errors = [error + ' ' for error in errors]
                 # errors = list(map(lambda x:x+' in top box',errors))
                 page.top_box.errors.extend(errors)
         # element does not found
         else:
-            print(main_element + ' in top box')
+            print(main_element + ' ')
 
     @classmethod
     def set_more_links(cls, page: SubjectPage, root_element):
@@ -244,14 +244,14 @@ class WebPartUtility:
             if not title == 'נושאי משנה':
                 page.sub_subjects.errors.append('title is not correct')
         except NoSuchElementException:
-            page.sub_subjects.errors.append('title is not correct in sub subjects')
+            page.sub_subjects.errors.append('title is not correct')
         except TimeoutException:
-            page.sub_subjects.errors.append('title is not correct in sub subjects')
+            page.sub_subjects.errors.append('title is not correct')
 
         # find all the links inside and set their status
         raw_links = main_element.find_elements_by_xpath(".//ul[@class='subtopicsList']//li//a")
         if len(raw_links) == 0:
-            page.sub_subjects.errors.append('no internal links in sub subjects')
+            page.sub_subjects.errors.append('no internal links')
             return
         internal_links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), raw_links))
 
@@ -259,7 +259,7 @@ class WebPartUtility:
             PageUtility.set_link_status(link)
             page.sub_subjects.links.append(link)
             if not link.status_code == 200:
-                page.sub_subjects.errors.append('the link: ' + link.name + 'is broken in sub subjects')
+                page.sub_subjects.errors.append('the link: ' + link.name + 'is broken')
 
     @classmethod
     def set_publications(cls, page: SubjectPage, root_element):
@@ -300,7 +300,7 @@ class WebPartUtility:
 
             # test image
             if len(images) == 0:
-                page.stats_part.errors.append('image content is missing in tools and DB')
+                page.stats_part.errors.append('image content is missing')
                 page.isCorrect = False
             else:
                 for i, img in enumerate(images):
@@ -308,12 +308,12 @@ class WebPartUtility:
                     PageUtility.set_link_status(cur_link)
                     page.tools_and_db.images.append(cur_link)
                     if not cur_link.status_code == 200:
-                        page.tools_and_db.errors.append('image is broken in tools and DB')
+                        page.tools_and_db.errors.append('image is broken')
                         page.isCorrect = False
 
             # test links
             if len(links) == 0:
-                page.stats_part.errors.append('link content is missing in tools and DB')
+                page.stats_part.errors.append('link content is missing')
                 page.isCorrect = False
             else:
                 for i, sheet in enumerate(links):
@@ -321,14 +321,14 @@ class WebPartUtility:
                     page.tools_and_db.links.append(cur_link)
                     PageUtility.set_link_status(cur_link)
                     if not cur_link.status_code == 200:
-                        page.tools_and_db.errors.append('link is broken in tools and DB')
+                        page.tools_and_db.errors.append('link is broken')
                         page.isCorrect = False
 
             # test title
             if not title == 'כלים ומאגרי נתונים':
                 print(title)
-                page.tools_and_db.errors.append('tools and DB: title i not correct')
-                print('tools and DB: title i not correct')
+                page.tools_and_db.errors.append('title i not correct')
+                print('title is not correct')
 
         except TimeoutException:
             pass
@@ -349,7 +349,7 @@ class WebPartUtility:
             print(paragraph)
             # check text is exist
             if paragraph == '':
-                page.summary.errors.append('no text in summary')
+                page.summary.errors.append('no text')
 
             # test images
             if len(images) > 0:
@@ -363,9 +363,9 @@ class WebPartUtility:
                         counter += 1
 
                 if counter > 1:
-                    page.summary.errors.append('{} images are broken in summary'.format(counter))
+                    page.summary.errors.append('{} images are broken'.format(counter))
                 elif counter == 1:
-                    page.summary.errors.append('{} image is broken in summary'.format(counter))
+                    page.summary.errors.append('{} image is broken'.format(counter))
 
             # test links
             if len(links) > 0:
@@ -379,9 +379,9 @@ class WebPartUtility:
                         counter += 1
 
                 if counter > 1:
-                    page.summary.errors.append('{} links is broken in summary'.format(counter))
+                    page.summary.errors.append('{} links is broken'.format(counter))
                 elif counter == 1:
-                    page.summary.errors.append('{} link is broken in summary'.format(counter))
+                    page.summary.errors.append('{} link is broken'.format(counter))
 
         except TimeoutException:
             pass

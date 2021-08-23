@@ -346,11 +346,11 @@ class TestUtility:
                     continue
                 summary[3] += 1
                 if len(page.get_errors()) > 0:
-                    print(page.name, page.link.url)
-                    print(page.get_errors())
+                    # print(page.name, page.link.url)
+                    print(page.error_to_str())
                     outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
-                    outer_signals.monitor_data.emit(str(page.get_errors()))
-                    error_pages.append((page.name, page.link.url, page.get_errors()))
+                    outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
+                    error_pages.append((page.name, page.link.url, page.error_to_str()))
                     DataBase.save_test_result(test_key, page)
                     summary[4] += 1
                 else:

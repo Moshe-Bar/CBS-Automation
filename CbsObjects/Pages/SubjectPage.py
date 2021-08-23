@@ -71,10 +71,22 @@ class SubjectPage:
         return len(self.get_errors()) == 0
 
     def get_errors(self):
-        return [web_part.get_errors() for web_part in self.__web_parts.values()]
+        errors = []
+        for web_part in self.__web_parts.values():
+            err = web_part.get_errors()
+            if len(err) > 0:
+                errors.append(err)
+        return errors
+        # return [web_part.get_errors() for web_part in self.__web_parts.values()]
 
     def error_to_str(self):
-        return self.name + ': \n' + '\n'.join([web_part.error_to_str() for web_part in self.__web_parts.values()])
+        errors = []
+        for web_part in self.__web_parts.values():
+            err = web_part.get_errors()
+            if len(err) > 0:
+                errors.append(web_part.error_to_str())
+        return '\n'.join(errors)
+        # return '\n'.join([web_part.error_to_str() for web_part in self.__web_parts.values()])
 
     def __iter__(self):
         return iter(self.inside_links)
@@ -97,24 +109,24 @@ class SubjectPage:
     def __str__(self):
         return self.name
 
-
-web_parts = {'stats_part': Statisticals(),
-             'sub_subjects': SubSubjects(),
-             'tools_and_db': ToolsAndDB(),
-             'more_links': MoreLinks(),
-             'summary': Summary(),
-             'top_box': TopBox(),
-             'press_releases': PressReleases(),
-             'tables_and_charts': TablesAndMaps(),
-             'extra_error_parts': ExParts()
-             }
-web_parts['stats_part'].errors.append('stats_part')
-web_parts['sub_subjects'].errors.append('sub_subjects')
-web_parts['tools_and_db'].errors.append('tools_and_db')
-web_parts['more_links'].errors.append('more_links')
-web_parts['summary'].errors.append('summary')
-web_parts['top_box'].errors.append('top_box')
-web_parts['press_releases'].errors.append('press_releases')
-web_parts['tables_and_charts'].errors.append('tables_and_charts')
-web_parts['extra_error_parts'].errors.append('extra_error_parts')
-print('\n'.join(str(web_part.get_errors()) for web_part in web_parts.values()))
+#
+# web_parts = {'stats_part': Statisticals(),
+#              'sub_subjects': SubSubjects(),
+#              'tools_and_db': ToolsAndDB(),
+#              'more_links': MoreLinks(),
+#              'summary': Summary(),
+#              'top_box': TopBox(),
+#              'press_releases': PressReleases(),
+#              'tables_and_charts': TablesAndMaps(),
+#              'extra_error_parts': ExParts()
+#              }
+# web_parts['stats_part'].errors.append('stats_part')
+# web_parts['sub_subjects'].errors.append('sub_subjects')
+# web_parts['tools_and_db'].errors.append('tools_and_db')
+# web_parts['more_links'].errors.append('more_links')
+# web_parts['summary'].errors.append('summary')
+# web_parts['top_box'].errors.append('top_box')
+# web_parts['press_releases'].errors.append('press_releases')
+# web_parts['tables_and_charts'].errors.append('tables_and_charts')
+# web_parts['extra_error_parts'].errors.append('extra_error_parts')
+# print('\n'.join(str(web_part.get_errors()) for web_part in web_parts.values()))
