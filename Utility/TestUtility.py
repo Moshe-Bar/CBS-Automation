@@ -105,6 +105,8 @@ class TestUtility:
 
         WebPartUtility.set_tools_and_db(page=page, session = main_element)
 
+        WebPartUtility.set_publications(page=page, session = main_element)
+
     #     TODO another web part
 
     # visible func

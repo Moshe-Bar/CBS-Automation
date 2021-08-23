@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
-
-# from DataBase.DataBase import Links
+from CbsObjects.WebPartLine import WebPartLine
 
 
 class WebPart():
@@ -9,6 +8,7 @@ class WebPart():
         self.errors = []
         self.images = []
         self.links = []
+        self.lines = [WebPartLine]
 
     def get_errors(self):
         return self.errors
@@ -120,3 +120,10 @@ class ToolsAndDB(WebPart):
 
     def error_to_str(self):
         return 'Tools And DataBase: ' + super().error_to_str()
+
+class Publications(WebPart):
+    def __init__(self):
+        super().__init__()
+
+    def error_to_str(self):
+        return 'Publications: ' + super().error_to_str()

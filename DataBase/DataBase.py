@@ -135,6 +135,7 @@ class Links(Enum):
     SUB_SUBJECTS_XPATH = DataBase.load_xpath('SUB_SUBJECTS_XPATH')
     PRESS_RELEASES_XPATH = DataBase.load_xpath('PRESS_RELEASES_XPATH')
     TABLES_AND_CHARTS_XPATH = DataBase.load_xpath('TABLES_AND_CHARTS_XPATH')
+    PUBLICATIONS_XPATH = DataBase.load_xpath('PUBLICATIONS_XPATH')
 
 
 

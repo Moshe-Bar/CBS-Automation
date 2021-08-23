@@ -262,8 +262,45 @@ class WebPartUtility:
                 page.sub_subjects.errors.append('the link: ' + link.name + 'is broken')
 
     @classmethod
-    def set_publications(cls, page: SubjectPage, root_element):
-        pass
+    def set_publications(cls, page: SubjectPage, session:webdriver.Chrome):
+
+        # check if web part is exist
+        try:
+            main_element = session.find_element_by_xpath(Links.PUBLICATIONS_XPATH.value)
+
+        except NoSuchElementException:
+            return
+        except TimeoutException:
+            return
+
+        # check title
+        try:
+            title = main_element.find_element_by_xpath('.//h2//span').text
+            if not title == 'פרסומים':
+                page.publications.errors.append('title is not correct')
+
+        except NoSuchElementException:
+            page.publications.errors.append('title is not correct')
+        except TimeoutException:
+            page.publications.errors.append('title is not correct')
+
+        # check links inside
+        try:
+            data_lines = main_element.find_elements_by_xpath('.//div//ul//li')
+            part_lines =[]
+            for line in data_lines:
+                divs = line.find_elements_by_xpath('.//div//div') # two divs
+                date = divs[1].text
+                a = divs[0].find_element_by_xpath('.//a')
+                text = a.text
+                url = a.get_attribute('href')
+
+
+
+        except NoSuchElementException:
+            page.publications.errors.append('title is not correct')
+        except TimeoutException:
+            page.publications.errors.append('title is not correct')
 
     @classmethod
     def set_extra_parts(cls, page: SubjectPage, root_element):
@@ -301,7 +338,6 @@ class WebPartUtility:
             # test image
             if len(images) == 0:
                 page.stats_part.errors.append('image content is missing')
-                page.isCorrect = False
             else:
                 for i, img in enumerate(images):
                     cur_link = CbsLink(img.get_attribute('src'))

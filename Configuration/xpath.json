@@ -11,7 +11,8 @@
       "TOP_BOX_XPATH": "//div[@class='generalBox top-links']",
       "SUB_SUBJECTS_XPATH": "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']",
       "PRESS_RELEASES_XPATH": "//div//span[contains(text(), 'הודעות לתקשורת')]",
-      "TABLES_AND_CHARTS_XPATH": "//div[contains(@ng-show , 'isTableMaps') and not (contains(@style, 'display: none;'))]"
+      "TABLES_AND_CHARTS_XPATH": "//div[contains(@ng-show , 'isTableMaps') and not (contains(@style, 'display: none;'))]",
+      "PUBLICATIONS_XPATH": "//div[h2[@id='wpTitleMadadResearchPublications']]"
 
 
     }
