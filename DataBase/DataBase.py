@@ -125,7 +125,6 @@ class Links(Enum):
     ROOT_DIR = sys.path[1]
     CHROME_DRIVER = ROOT_DIR + "/WebDrivers/92.0.4515.43/chromedriver_win32.exe"
     MAP_LINKS_XPATH = DataBase.load_xpath('MAP_LINKS_XPATH')
-    HIDDEN_HEBREW_STATS_XPATH = DataBase.load_xpath('HIDDEN_HEBREW_STATS_XPATH')
     HEBREW_STATS_XPATH = DataBase.load_xpath('HEBREW_STATS_XPATH')
     RIGHT_EXTRA_PARTS_XPATH = DataBase.load_xpath('RIGHT_EXTRA_PARTS_XPATH')
     LEFT_EXTRA_PARTS_XPATH = DataBase.load_xpath('LEFT_EXTRA_PARTS_XPATH')

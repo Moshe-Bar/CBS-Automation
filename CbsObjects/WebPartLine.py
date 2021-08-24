@@ -1,5 +1,5 @@
 from CbsObjects import CbsLink
-from CbsObjects.WebParts import WebPart
+
 
 
 class WebPartLine:

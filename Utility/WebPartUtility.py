@@ -75,21 +75,19 @@ class WebPartUtility:
         # assuming the page loaded already - therefore no need to wait
 
         #   in case the web part is not displayed
-        displayed, empty_element = cls.is_element_exist(session=root_element,
-                                                        path=Links.HIDDEN_HEBREW_STATS_XPATH.value)
-        if displayed:
-            return
+        # displayed, empty_element = cls.is_element_exist(session=root_element,
+        #                                                 path=Links.HIDDEN_HEBREW_STATS_XPATH.value)
+        # if displayed:
+        #     return
 
         try:
             hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
 
         except TimeoutException:
-            page.stats_part.errors.append("statistical couldn't be found")
-
+            print('heb stats is not displayed')
             return
         except NoSuchElementException:
-            page.stats_part.errors.append("statistical couldn't be found")
-
+            print('heb stats is not displayed')
             return
 
         images = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//img")
