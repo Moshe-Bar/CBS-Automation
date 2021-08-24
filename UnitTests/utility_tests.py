@@ -7,10 +7,10 @@ from Utility.WebPartUtility import WebPartUtility
 
 SESSION = TestUtility.create_web_driver(wait_time=10)
 
+
 class MyTestCase(unittest.TestCase):
 
     def test_heb_statistical(self):
-
         print('unit test is started')
         # page with errors
         url_0 = 'https://www.cbs.gov.il/he/subjects/Pages/-%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%95%D7%A6%D7%90.aspx'
@@ -20,14 +20,14 @@ class MyTestCase(unittest.TestCase):
         page = SubjectPage(CbsLink(url=url_0), '????? ??')
         SESSION.get(url_0)
         WebPartUtility.set_heb_statistical(page=page, root_element=SESSION)
-        print('Error page: ',page.error_to_str())
-        self.assertEqual(False, len(page.stats_part.get_errors())==0)
+        print('Error page: ', page.error_to_str())
+        self.assertEqual(False, len(page.stats_part.get_errors()) == 0)
 
         page = SubjectPage(CbsLink(url=url_1), '????? ??')
         SESSION.get(url_1)
         WebPartUtility.set_heb_statistical(page=page, root_element=SESSION)
-        print('Correct page: ',page.error_to_str())
-        self.assertEqual(True, len(page.stats_part.get_errors())==0)  # add assertion here
+        print('Correct page: ', page.error_to_str())
+        self.assertEqual(True, len(page.stats_part.get_errors()) == 0)  # add assertion here
 
     def test_extra_parts(self):
         url_0 = ''
@@ -79,7 +79,6 @@ class MyTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-
     print('unit test is started')
     unittest.main()
     print('unit test ended')

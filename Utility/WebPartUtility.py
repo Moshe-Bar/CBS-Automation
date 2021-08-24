@@ -129,8 +129,7 @@ class WebPartUtility:
         # when this web part is not displayed the style is "display: none;" and -> text "הודעות לתקשורת"
         # is not exist thus the element wouldn't be found and the function will return
         try:
-            element_exist = session.find_element_by_xpath(Links.PRESS_RELEASES_XPATH.value)
-            main_element = element_exist.find_element_by_xpath('..')
+            main_element = session.find_element_by_xpath(Links.PRESS_RELEASES_XPATH.value)
 
         except TimeoutException:
             return
@@ -138,7 +137,8 @@ class WebPartUtility:
             return
         try:
             # title check - not real test because the existent of the web parts is depends on it
-            if not main_element.text == 'הודעות לתקשורת':
+            title = main_element.find_element_by_xpath('.//h2//span').text
+            if not title == 'הודעות לתקשורת':
                 page.press_releases.errors.append('title is not correct')
 
             # inside links check
@@ -433,14 +433,16 @@ class WebPartUtility:
         try:
             element:WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
         except NoSuchElementException as e:
+            print('no tables and charts',e)
             return
         except TimeoutException as e:
+            print('no tables and charts',e)
             return
         except TypeError as e:
-            print('exception, xpath is not recognized')
+            print('exception, xpath is not recognized',e)
             return
-        except Exception:
-            print('not recognized exception in tables and charts')
+        except Exception as e:
+            print('not recognized exception in tables and charts',e)
             return
 
         # title check
@@ -452,8 +454,12 @@ class WebPartUtility:
                 print(title)
 
         except NoSuchElementException as e:
+            print('no title in tables and charts')
+            page.tables_and_charts.errors.append('no title')
             return
         except TimeoutException as e:
+            print('no title in tables and charts')
+            page.tables_and_charts.errors.append('no title')
             return
         except TypeError as e:
             print('exception, xpath is not recognized')
