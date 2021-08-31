@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 
+from CbsObjects import Component
 from CbsObjects.WebPartLine import WebPartLine
 
 
 class WebPart():
     def __init__(self):
+        self.title = None
+        self.components = [Component]
         self.errors = []
         self.images = []
         self.links = []

@@ -7,7 +7,7 @@ from Utility.WebPartUtility import WebPartUtility
 from Utility.TestUtility import TestUtility
 from DataBase.DataBase import Links
 
-URL1 = r'https://www.cbs.gov.il/he/subjects/Pages/%D7%91%D7%A8%D7%99%D7%90%D7%95%D7%AA.aspx'
+URL1 = r"D:\Current\Selenium\NewAutomationEnv\DataBase\local\נושאים - אוכלוסייה.mhtml"'
 
 
 

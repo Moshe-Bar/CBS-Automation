@@ -1,7 +1,7 @@
 from selenium import webdriver
 
 from DataBase.DataBase import Links
-from UI.MainProcess_old import getCurrentLinks
+from temp.MainProcess_old import getCurrentLinks
 
 #
 driver = webdriver.Chrome(Links.CHROME_DRIVER.value)

@@ -104,6 +104,9 @@
      <height>40</height>
     </rect>
    </property>
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
    <property name="text">
     <string>הקודם (שינוי דפים לבדיקה)</string>
    </property>

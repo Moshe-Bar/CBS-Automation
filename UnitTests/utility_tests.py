@@ -69,7 +69,7 @@ class MyTestCase(unittest.TestCase):
         WebPartUtility.set_press_releases(page=page, session=SESSION)
         self.assertEqual(True, False)  # add assertion here
 
-    def test_ables_and_charts(self):
+    def test_tables_and_charts(self):
         url_0 = ''
         url_1 = ''
         page = SubjectPage(CbsLink(url=url_1), '????? ??')
@@ -77,6 +77,24 @@ class MyTestCase(unittest.TestCase):
         WebPartUtility.set_tables_and_charts(page=page, session=SESSION)
         self.assertEqual(True, False)  # add assertion here
 
+    def test_publications(self):
+        error_page_url = r'D:\Current\Selenium\NewAutomationEnv\DataBase\local\נושאים - אוכלוסייה תקול.html'
+        correct_page_url = r'D:\Current\Selenium\NewAutomationEnv\DataBase\local\נושאים - אוכלוסייה.html'
+
+        page = SubjectPage(CbsLink(url=error_page_url), 'אוכלוסיה תקול')
+        SESSION.get(error_page_url)
+        WebPartUtility.set_publications(page=page, session=SESSION)
+        print('Error page: ', page.error_to_str())
+        print('Error page: ', str(page.get_errors()))
+        # self.assertEqual(True, len(page.get_errors()) > 0)
+
+        page = SubjectPage(CbsLink(url=correct_page_url), 'אוכלוסיה')
+        SESSION.get(correct_page_url)
+        WebPartUtility.set_heb_statistical(page=page, root_element=SESSION)
+        print('Correct page: ', page.error_to_str())
+        print('Correct page: ', str(page.get_errors()))
+        # self.assertEqual(True, len(page.stats_part.get_errors()) == 0)  # add assertion here
+        # SESSION.close()
 
 if __name__ == '__main__':
     print('unit test is started')

@@ -4,6 +4,8 @@ from CbsObjects.Pages.SubjectPage import SubjectPage
 import sys
 import json
 from enum import Enum
+
+
 ####,encoding="utf-8"
 
 
@@ -51,6 +53,7 @@ class DataBase:
         links = cls.get_CBS_en_links()
         pages = [SubjectPage(link, link.name) for link in links]
         return pages
+
     # @classmethod
     # def get_cbs_pages_online(cls):
     #     driver = TestUtility.get_sessions()[0]  # returns a one obj list with defualt driver
@@ -61,15 +64,17 @@ class DataBase:
     #     driver.close()
     #     return pages
     @classmethod
-    def save_test_result(cls, test_key, page:SubjectPage):
+    def save_test_result(cls, test_key, page: SubjectPage):
         try:
             path = r'../TestData/logs'
-            file = path + '\\'+ test_key + '.html'
-            with open(file, 'a',encoding='utf-8') as f:
+            file = path + '\\' + test_key + '.html'
+            with open(file, 'a', encoding='utf-8') as f:
                 style = 'style={color:red; font-size: large; }'
-                page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,page.link.url, page.name)
-                errors = ('<h1 {}>' +str(page.get_errors()) + '</h1><br>').format(style)
-                f.write(page_link + errors )
+                page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,
+                                                                                                            page.link.url,
+                                                                                                            page.name)
+                errors = ('<h1 {}>' + str(page.get_errors()) + '</h1><br>').format(style)
+                f.write(page_link + errors)
             f.close()
         except Exception as e:
             print('exception in db')
@@ -81,7 +86,7 @@ class DataBase:
         try:
             path = r'../TestData/logs'
             file = path + '\\' + file_name + '.html'
-            with open(file, 'r',encoding='utf-8') as f:
+            with open(file, 'r', encoding='utf-8') as f:
                 data = f.read()
             f.close()
             return data, file
@@ -91,10 +96,11 @@ class DataBase:
 
     @classmethod
     def save_summary_result(cls, file_key, summary):
-        sum = '<h1 style="color:black" style={color:red; font-size: large; }>Test started on: '+str(summary[0])+' ' +str(summary[1])  + '<br>'
+        sum = '<h1 style="color:black" style={color:red; font-size: large; }>Test started on: ' + str(
+            summary[0]) + ' ' + str(summary[1]) + '<br>'
         sum += 'Total pages: ' + str(summary[2]) + '<br>'
-        sum+= 'Tested: ' + str(summary[3]) + '<br>'
-        sum+= 'Total error pages: ' + str(summary[4]) +'</h1>'
+        sum += 'Tested: ' + str(summary[3]) + '<br>'
+        sum += 'Total error pages: ' + str(summary[4]) + '</h1>'
         file_name = file_key
         try:
             path = r'../TestData/logs'
@@ -115,7 +121,6 @@ class DataBase:
             data = json.load(f)
             f.close()
         return data['XPath'][0][key]
-
 
 
 class Links(Enum):

@@ -14,13 +14,39 @@ from temp.Language import Language
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
 CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחסמה בשל פעולה לא מורשית', 'Block ID: 5578236093159424155']
-
+XPATH = {
+    "HEBREW_STATS_XPATH": Links.HEBREW_STATS_XPATH.value,
+    "RIGHT_EXTRA_PARTS_XPATH": Links.RIGHT_EXTRA_PARTS_XPATH.value,
+    "LEFT_EXTRA_PARTS_XPATH": Links.LEFT_EXTRA_PARTS_XPATH.value,
+    "TOOLS_AND_DB_XPATH": Links.TOOLS_AND_DB_XPATH.value,
+    "SUMMARY_XPATH": Links.SUMMARY_XPATH.value,
+    "TOP_BOX_XPATH": Links.TOP_BOX_XPATH.value,
+    "SUB_SUBJECTS_XPATH": Links.SUB_SUBJECTS_XPATH.value,
+    "PRESS_RELEASES_XPATH": Links.PRESS_RELEASES_XPATH.value,
+    "TABLES_AND_CHARTS_XPATH": Links.TABLES_AND_CHARTS_XPATH.value,
+    "PUBLICATIONS_XPATH": Links.PUBLICATIONS_XPATH.value}
 
 
 class WebPartUtility:
+    # returns the element from web page which contains the web-part component
     @classmethod
-    def get_web_part(cls,code, session):
-        pass
+    def get_main_element(cls, type, session: webdriver.Chrome):
+        try:
+            xpath = XPATH[type]
+        except Exception as e:
+            print('exception while trying to get xpath from dict: ', e)
+            return None
+        try:
+            main_element = session.find_element_by_xpath(xpath)
+        except TimeoutException:
+            return None
+        except NoSuchElementException:
+            return None
+        except Exception as e:
+            print('unknown exception while trying to get xpath for: ', str(type), ' exception: ', e)
+            return None
+        return main_element
+
     @classmethod  # need to be changed according page file_type
     def set_internal_links(cls, page: SubjectPage, root_element):
         if page.link.status_code is None:
@@ -74,20 +100,17 @@ class WebPartUtility:
     def set_heb_statistical(cls, page: SubjectPage, root_element):
         # assuming the page loaded already - therefore no need to wait
 
-        #   in case the web part is not displayed
-        # displayed, empty_element = cls.is_element_exist(session=root_element,
-        #                                                 path=Links.HIDDEN_HEBREW_STATS_XPATH.value)
-        # if displayed:
+        # try:
+        #     hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
+        #
+        # except TimeoutException:
+        #     print('heb stats is not displayed')
         #     return
-
-        try:
-            hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
-
-        except TimeoutException:
-            print('heb stats is not displayed')
-            return
-        except NoSuchElementException:
-            print('heb stats is not displayed')
+        # except NoSuchElementException:
+        #     print('heb stats is not displayed')
+        #     return
+        hebrew_stats = cls.get_main_element('HEBREW_STATS_XPATH', root_element)
+        if hebrew_stats is None:
             return
 
         images = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//img")
@@ -152,7 +175,7 @@ class WebPartUtility:
                 page.press_releases.errors.append('no content in')
                 return
             links.append(to_all_massages)
-            links,errors = PageUtility.set_url_links(links)
+            links, errors = PageUtility.set_url_links(links)
             page.press_releases.links.extend(links)
             page.press_releases.errors.extend(errors)
 
@@ -260,7 +283,7 @@ class WebPartUtility:
                 page.sub_subjects.errors.append('the link: ' + link.name + 'is broken')
 
     @classmethod
-    def set_publications(cls, page: SubjectPage, session:webdriver.Chrome):
+    def set_publications(cls, page: SubjectPage, session: webdriver.Chrome):
 
         # check if web part is exist
         try:
@@ -285,9 +308,9 @@ class WebPartUtility:
         # check links inside
         try:
             data_lines = main_element.find_elements_by_xpath('.//div//ul//li')
-            part_lines =[]
+            part_lines = []
             for line in data_lines:
-                divs = line.find_elements_by_xpath('.//div//div') # two divs
+                divs = line.find_elements_by_xpath('.//div//div')  # two divs
                 date = divs[1].text
                 a = divs[0].find_element_by_xpath('.//a')
                 text = a.text
@@ -431,18 +454,18 @@ class WebPartUtility:
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
 
         try:
-            element:WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
+            element: WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
         except NoSuchElementException as e:
-            print('no tables and charts',e)
+            print('no tables and charts', e)
             return
         except TimeoutException as e:
-            print('no tables and charts',e)
+            print('no tables and charts', e)
             return
         except TypeError as e:
-            print('exception, xpath is not recognized',e)
+            print('exception, xpath is not recognized', e)
             return
         except Exception as e:
-            print('not recognized exception in tables and charts',e)
+            print('not recognized exception in tables and charts', e)
             return
 
         # title check
@@ -483,9 +506,9 @@ class WebPartUtility:
                 link_url = CbsLink(div[0].find_element_by_xpath(".//a").get_attribute('href'))
                 name = div[0].text
                 date = div[1].text
-                web_part_lines.append(WebPartLine(link_url,pic_url,date,name))
+                web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
 
-            cls.check_lines(web_part_lines,page.tables_and_charts.errors)
+            cls.check_lines(web_part_lines, page.tables_and_charts.errors)
 
         except NoSuchElementException as e:
             page.tables_and_charts.errors.append('not found any links')
@@ -495,8 +518,6 @@ class WebPartUtility:
             print('exception, xpath is not recognized')
         except Exception as e:
             print('not recognized exception in tables and charts: {}'.format(e))
-
-
 
         # last link check
         try:
@@ -512,7 +533,7 @@ class WebPartUtility:
             print('exception in set_tables_and_charts: {}'.format(e))
 
     @classmethod
-    def check_lines(cls,web_part_lines: [WebPartLine], errors: [str]):
+    def check_lines(cls, web_part_lines: [WebPartLine], errors: [str]):
         for web_part_line in web_part_lines:
             link_url = web_part_line.url
             pic_url = web_part_line.pic
@@ -522,6 +543,7 @@ class WebPartUtility:
                 errors.append('url link is broken')
             if not pic_url.status_code == 200:
                 errors.append('image url link is broken')
+
 
 class PageUtility:
 
@@ -551,7 +573,6 @@ class PageUtility:
     def create_pages(cls, link_list):
         return [SubjectPage(link, link.name) for link in link_list]
 
-
     @classmethod
     def create_minimal_pages(cls, link_list):
         pages = []
@@ -572,8 +593,8 @@ class PageUtility:
             link.status_code = 400
             return
 
-        except ConnectionError as e:
-            print('connection error in ' + link.url, e)
+        except requests.exceptions.ConnectionError as e:
+            print('connection error in ' + link.url)
             link.status_code = 408
             return
 
