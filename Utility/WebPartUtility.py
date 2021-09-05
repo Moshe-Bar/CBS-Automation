@@ -7,7 +7,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from CbsObjects.WebPartLine import WebPartLine
-from DataBase.DataBase import Links
+from DL.DataBase import Links
 
 from temp.Language import Language
 

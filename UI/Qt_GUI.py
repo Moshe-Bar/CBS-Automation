@@ -268,7 +268,7 @@ class CBSTestApplication(QApplication):
 if __name__ == "__main__":
     app = CBSTestApplication(sys.argv)
     screen_manager = QStackedWidget()
-    screen_manager.setWindowIcon(QIcon('../DataBase/Images/1200px-LOGO_LAMAS.jpg'))
+    screen_manager.setWindowIcon(QIcon('../usable/Images/1200px-LOGO_LAMAS.jpg'))
 
     login = LogInScreen()
     choose = TestPropertiesScreen()

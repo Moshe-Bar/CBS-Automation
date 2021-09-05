@@ -1,7 +1,7 @@
 # from selenium import webdriver
 
 # from seleniumwire import webdriver  # Import from seleniumwire
-from DataBase import Links
+from DL import Links
 
 ERRORS = ['Sorry, the page is not found', 'מתנצלים, הדף לא נמצא']
 URL = 'https://www.cbs.gov.il/he/About/Documents/idkun_h.pdf'

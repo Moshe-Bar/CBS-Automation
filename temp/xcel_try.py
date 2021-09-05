@@ -14,5 +14,5 @@ import xlsxwriter
 # print(time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime()))
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from DataBase.DataBase import DataBase
+from DL.DataBase import DataBase
 # local_page = SubjectPage(CbsLink(r'D:\Current\Selenium\NewAutomationEnv\DataBase\local\נושאים - רווחת האוכלוסייה ועמדות כלפי שירותי ממשל 2007.html'),'local page')

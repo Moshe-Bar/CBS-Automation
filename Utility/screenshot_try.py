@@ -2,7 +2,7 @@ from selenium import webdriver
 from PIL import Image
 
 # take screenshot
-from DataBase.DataBase import Links
+from DL.DataBase import Links
 
 driver = webdriver.Chrome(Links.CHROME_DRIVER.value)
 driver.get('https://www.cbs.gov.il/he/subjects/Pages/%D7%A8%D7%95%D7%95%D7%97%D7%94.aspx')

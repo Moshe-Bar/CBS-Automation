@@ -19,7 +19,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from Utility.WebPartUtility import WebPartUtility
 # from UI.Qt_GUI import WorkerSignals
-from DataBase.DataBase import DataBase, Links
+from DL.DataBase import DataBase, Links
 
 
 class TestProperties():

@@ -6,7 +6,6 @@
         <entryData>
           <resourceRoots>
             <path value="file://$PROJECT_DIR$/WebDrivers" />
-            <path value="file://$PROJECT_DIR$/DataBase" />
           </resourceRoots>
         </entryData>
       </entry>

@@ -1,6 +1,6 @@
 from selenium import webdriver
 
-from DataBase.DataBase import Links
+from DL.DataBase import Links
 from temp.MainProcess_old import getCurrentLinks
 
 #
