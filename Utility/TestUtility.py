@@ -19,7 +19,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from Utility.WebPartUtility import WebPartUtility
 # from UI.Qt_GUI import WorkerSignals
-from DL.DataBase import DataBase, Links
+from DataBase.DataBase import DataBase, Links
 
 
 class TestProperties():
@@ -42,7 +42,6 @@ class TestUtility:
         for i in range(amount):
             sessions.append(cls.create_web_driver(timeout, isViseble))
         return sessions
-
 
     @classmethod
     def get_he_pages(cls):
@@ -80,7 +79,6 @@ class TestUtility:
 
             driver.get(r'D:\Current\Selenium\NewAutomationEnv\dataBase\htmlPages\start_test_page.html')
 
-
             return driver
         except WebDriverException as e:
             print('driver error: ' + str(e))
@@ -93,19 +91,19 @@ class TestUtility:
 
         WebPartUtility.set_extra_parts(page=page, root_element=main_element)
 
-        WebPartUtility.set_summary(page=page, session = main_element)
+        WebPartUtility.set_summary(page=page, session=main_element)
 
-        WebPartUtility.set_top_box(page=page, session = main_element)
+        WebPartUtility.set_top_box(page=page, session=main_element)
 
-        WebPartUtility.set_sub_subjects(page=page, session = main_element)
+        WebPartUtility.set_sub_subjects(page=page, session=main_element)
 
-        WebPartUtility.set_press_releases(page=page, session = main_element)
+        WebPartUtility.set_press_releases(page=page, session=main_element)
 
-        WebPartUtility.set_tables_and_charts(page=page, session = main_element)
+        WebPartUtility.set_tables_and_charts(page=page, session=main_element)
 
-        WebPartUtility.set_tools_and_db(page=page, session = main_element)
+        WebPartUtility.set_tools_and_db(page=page, session=main_element)
 
-        WebPartUtility.set_publications(page=page, session = main_element)
+        WebPartUtility.set_publications(page=page, session=main_element)
 
     #     TODO another web part
 
@@ -377,7 +375,7 @@ class TestUtility:
             print('test ended on: ' + current_time)
             outer_signals.monitor_data.emit('test ended on: ' + current_time)
             DataBase.save_test_result(test_key, page)
-            DataBase.save_summary_result(test_key,summary)
+            DataBase.save_summary_result(test_key, summary)
 
     @classmethod
     def get_test_result(cls, log_key):

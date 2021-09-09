@@ -122,13 +122,19 @@ class DataBase:
             f.close()
         return data['XPath'][0][key]
 
+    @classmethod
+    def get_webdriver_path(cls):
+        with open('../Configuration/webdriver_path.json', 'rb') as file:
+            data = json.load(file)
+            file.close()
+        return data['driver_path']
 
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
     CBS_MAP_SITE_HE = 'https://www.cbs.gov.il/he/pages/sitemap.aspx'
     CBS_MAP_SITE_EN = 'https://www.cbs.gov.il/en/Pages/sitemap.aspx'
     ROOT_DIR = sys.path[1]
-    CHROME_DRIVER = ROOT_DIR + "/WebDrivers/92.0.4515.43/chromedriver_win32.exe"
+    CHROME_DRIVER = ROOT_DIR + "/" + DataBase.get_webdriver_path()
     MAP_LINKS_XPATH = DataBase.load_xpath('MAP_LINKS_XPATH')
     HEBREW_STATS_XPATH = DataBase.load_xpath('HEBREW_STATS_XPATH')
     RIGHT_EXTRA_PARTS_XPATH = DataBase.load_xpath('RIGHT_EXTRA_PARTS_XPATH')
