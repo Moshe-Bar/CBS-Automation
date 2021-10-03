@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="chinook" uuid="964feb8e-5753-423d-bf76-46ab1e0326f2">
+    <data-source source="LOCAL" name="pagesDB" uuid="fa5bfa39-4baa-4a40-bb5a-97ffd778e3d4">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\Current\Selenium\NewAutomationEnv\dataBase\chinook.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\Current\Selenium\NewAutomationEnv\DL\pagesDB</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.34.0/sqlite-jdbc-3.34.0.jar</url>
+        </library>
+      </libraries>
     </data-source>
   </component>
 </project>
