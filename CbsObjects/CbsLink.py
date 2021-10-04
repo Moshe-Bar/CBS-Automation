@@ -7,7 +7,7 @@ class CbsLink:
         self.file_type = self.url.split('.')[-1]
 
     def __str__(self):
-        return str(self.status_code) + '::' + self.url
+        return str(self.status_code) + '::' + self.url + '::' + self.name
 
 
 
