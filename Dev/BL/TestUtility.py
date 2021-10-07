@@ -12,11 +12,10 @@ from selenium.common.exceptions import WebDriverException, TimeoutException, NoS
 
 # from concurrent.futures import ThreadPoolExecutor
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-from CbsObjects.Pages.SubjectPage import SubjectPage
+from CbsObjects.Page import SubjectPage
 from Utility.WebPartUtility import WebPartUtility
 # from UI.Qt_GUI import WorkerSignals
 from DataBase.DataBase import DataBase, Links
@@ -77,7 +76,7 @@ class TestUtility:
 
             driver.implicitly_wait(wait_time)
 
-            driver.get(r'D:\Current\Selenium\NewAutomationEnv\DataBase\LoadTest\LoadTest.html')
+            driver.get(r'D:\Current\Selenium\NewAutomationEnv\dataBase\htmlPages\start_test_page.html')
 
             return driver
         except WebDriverException as e:

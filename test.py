@@ -20,7 +20,7 @@ def getCurrentLinks(driver):
 # payload = {'apikey': 1, 'locale': enGB}
 from selenium import webdriver
 
-from DL.DataBase import Links
+from DL import Links
 
 start_time = time.time()
 NUM_SESSIONS = 20

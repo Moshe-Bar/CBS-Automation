@@ -5,7 +5,11 @@
       <sourceFolder url="file://$MODULE_DIR$/UI" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/UnitTests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Dev" />
     </content>
+    <content url="file://$MODULE_DIR$/Dev/BL" />
+    <content url="file://$MODULE_DIR$/Dev/DL" />
+    <content url="file://$MODULE_DIR$/Dev/PL" />
     <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

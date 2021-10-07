@@ -1,5 +1,3 @@
-from CbsObjects.CbsLink import CbsLink
-
 
 class ImgTag:
     def __init__(self, url):
@@ -9,7 +7,7 @@ class ImgTag:
 class ATag:
     def __init__(self, url, text=None, img=None):
         self.img = img
-        self.url: CbsLink = url
+        self.url = url
         self.text = text
 
 
@@ -18,3 +16,5 @@ class Componenet:
         self.date = date
         self.a_tags: [ATag] = a_tag_list
         self.img_tag = img
+        self.free_text=None
+

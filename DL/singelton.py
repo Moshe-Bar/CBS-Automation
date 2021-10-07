@@ -26,7 +26,7 @@ class DBConnection(object):
     def __init__(self):
         self.__db = None
         try:
-            self.__db = sqlite3.connect('DL_try/pagesDB')
+            self.__db = sqlite3.connect('../Dev/DL/pagesDB')
             print(sqlite3.version)
         except Error as e:
             print(e)

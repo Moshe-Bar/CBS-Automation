@@ -1,11 +1,11 @@
-from CbsObjects.CbsLink import CbsLink
-from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, ToolsAndDB, Summary, TopBox, \
-    PressReleases, TablesAndMaps, ExParts, Publications
+from Dev.BL.CbsObjects.WebParts import Statisticals, SubSubjects, ToolsAndDB, MoreLinks, Summary, TopBox, PressReleases, \
+    TablesAndMaps, ExParts, Publications
 
 
 class SubjectPage:
 
-    def __init__(self, pageLink: CbsLink, pageName):
+    def __init__(self, pageLink, pageName, pageID):
+        self.id = pageID
         self.link = pageLink
         self.name = pageName
         self.level = None
@@ -104,7 +104,7 @@ class SubjectPage:
     def get_link(self):
         return self.link
 
-    def set_inside_links(self, links: [CbsLink]):
+    def set_inside_links(self, links: []):
         self.inside_links.extend(links)
 
     def __len__(self):
@@ -113,24 +113,3 @@ class SubjectPage:
     def __str__(self):
         return self.name
 
-#
-# web_parts = {'stats_part': Statisticals(),
-#              'sub_subjects': SubSubjects(),
-#              'tools_and_db': ToolsAndDB(),
-#              'more_links': MoreLinks(),
-#              'summary': Summary(),
-#              'top_box': TopBox(),
-#              'press_releases': PressReleases(),
-#              'tables_and_charts': TablesAndMaps(),
-#              'extra_error_parts': ExParts()
-#              }
-# web_parts['stats_part'].errors.append('stats_part')
-# web_parts['sub_subjects'].errors.append('sub_subjects')
-# web_parts['tools_and_db'].errors.append('tools_and_db')
-# web_parts['more_links'].errors.append('more_links')
-# web_parts['summary'].errors.append('summary')
-# web_parts['top_box'].errors.append('top_box')
-# web_parts['press_releases'].errors.append('press_releases')
-# web_parts['tables_and_charts'].errors.append('tables_and_charts')
-# web_parts['extra_error_parts'].errors.append('extra_error_parts')
-# print('\n'.join(str(web_part.get_errors()) for web_part in web_parts.values()))
