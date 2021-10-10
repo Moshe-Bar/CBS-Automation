@@ -33,55 +33,55 @@ class TestProperties():
 
 class TestUtility:
 
-    @classmethod
-    def get_sessions(cls, amount=1, timeout=2, isViseble=True):
-        if amount == 1:
-            return cls.create_web_driver(timeout, isViseble)
-        sessions = []
-        for i in range(amount):
-            sessions.append(cls.create_web_driver(timeout, isViseble))
-        return sessions
+    # @classmethod
+    # def get_sessions(cls, amount=1, timeout=2, isViseble=True):
+    #     if amount == 1:
+    #         return cls.create_web_driver(timeout, isViseble)
+    #     sessions = []
+    #     for i in range(amount):
+    #         sessions.append(cls.create_web_driver(timeout, isViseble))
+    #     return sessions
 
-    @classmethod
-    def get_he_pages(cls):
-        pages = DataBase.get_CBS_he_pages()
-        return pages
+    # @classmethod
+    # def get_he_pages(cls):
+    #     pages = DataBase.get_CBS_he_pages()
+    #     return pages
 
-    @classmethod
-    def get_en_pages(cls):
-        pages = DataBase.get_CBS_en_pages()
-        return pages
+    # @classmethod
+    # def get_en_pages(cls):
+    #     pages = DataBase.get_CBS_en_pages()
+    #     return pages
 
-    @classmethod
-    def initial_test_environment_(cls, wait_time=10, async_=False, pages=[]):
-        if async_:
-            sessions = cls.get_sessions(amount=len(pages), timeout=wait_time)
-            pages = DataBase.get_CBS_he_pages()
-            # with ThreadPoolExecutor
-            for i, session in enumerate(sessions):
-                cls.testPage(pages[i], session)
-        # TODO
+    # @classmethod
+    # def initial_test_environment_(cls, wait_time=10, async_=False, pages=[]):
+    #     if async_:
+    #         sessions = cls.get_sessions(amount=len(pages), timeout=wait_time)
+    #         pages = DataBase.get_CBS_he_pages()
+    #         # with ThreadPoolExecutor
+    #         for i, session in enumerate(sessions):
+    #             cls.testPage(pages[i], session)
+    #     # TODO
 
-    @classmethod
-    def create_web_driver(cls, wait_time=5, withUI=True):
-        try:
-            if not withUI:
-                options = webdriver.ChromeOptions()
-                options.add_argument("headless")
-                # options.add_argument('--disable-gpu')
-                driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
-
-            else:
-                driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
-
-            driver.implicitly_wait(wait_time)
-
-            driver.get(r'D:\Current\Selenium\NewAutomationEnv\dataBase\htmlPages\start_test_page.html')
-
-            return driver
-        except WebDriverException as e:
-            print('driver error: ' + str(e))
-            return None
+    # @classmethod
+    # def create_web_driver(cls, wait_time=5, withUI=True):
+    #     try:
+    #         if not withUI:
+    #             options = webdriver.ChromeOptions()
+    #             options.add_argument("headless")
+    #             # options.add_argument('--disable-gpu')
+    #             driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
+    #
+    #         else:
+    #             driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
+    #
+    #         driver.implicitly_wait(wait_time)
+    #
+    #         driver.get(r'D:\Current\Selenium\NewAutomationEnv\dataBase\htmlPages\start_test_page.html')
+    #
+    #         return driver
+    #     except WebDriverException as e:
+    #         print('driver error: ' + str(e))
+    #         return None
 
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):

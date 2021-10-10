@@ -11,7 +11,7 @@ class DBAdapter:
         return data
         # return [CbsLink(url=i[1],page_name=i[0]) for i in data]
 
-    def save_corrupted_pages(self, page_id:[]):
+    def save_corrupted_pages(self, pages:[]):
         try:
             #TODO multi inserts for ids
             self.cursor.execute("INSERT ")

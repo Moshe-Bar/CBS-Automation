@@ -15,4 +15,4 @@ class Util:
 
 
 x=Util()
-print('len: ',len(x.get_pages()),'first: ',x.get_pages()[0])
+print('len: ',len(x.get_pages()),'first: ',x.get_pages()[1])
