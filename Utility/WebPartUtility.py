@@ -649,10 +649,11 @@ class PageUtility:
 
         # case everything went well - still need to check default error page of CBS
         # and link.url.endswith('.aspx')
-        if link.status_code == 200:
-            print('inside deep check: ')
+        if link.status_code == 200 and link.type=='page':
+            # print('inside deep check: ')
+            # print(link.url)
             content = r.read().decode("utf-8")
-            print('content: ', content)
+            # print('content: ', content)
             cls.check_for_cbs_error_page(content, link)
             return
 
@@ -675,6 +676,7 @@ class PageUtility:
 
     @classmethod
     def check_for_cbs_error_page(cls, content, link: CbsLink):
+        # print('start deep check')
         for error_text in CBS_404_TEXTS:
             if error_text in str(content):
                 link.status_code = 404
@@ -683,6 +685,7 @@ class PageUtility:
             if error_text in str(content):
                 link.status_code = 403
                 return True
+        # print('end deep check')
         return False
 
     @classmethod
@@ -698,6 +701,3 @@ class PageUtility:
         page.lang = Language.HEBREW.value
 
 
-a = CbsLink('https://stackoverflow.com/questions/1726402/in-python-how-do-i-use-urllib-to-see-if-a-website-is-404-or-200')
-PageUtility.set_link_status(a)
-print(a.status_code)
