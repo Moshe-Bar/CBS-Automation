@@ -140,10 +140,12 @@ class Links(Enum):
     PRESS_RELEASES_XPATH = DataBase.load_xpath('PRESS_RELEASES_XPATH')
     TABLES_AND_CHARTS_XPATH = DataBase.load_xpath('TABLES_AND_CHARTS_XPATH')
     PUBLICATIONS_XPATH = DataBase.load_xpath('PUBLICATIONS_XPATH')
+    GEOGRAPHIC_ZONE_XPATH = DataBase.load_xpath('GEOGRAPHIC_ZONE_XPATH')
 
 
 
 
+# print(Links.GEOGRAPHIC_ZONE_XPATH.value)
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 

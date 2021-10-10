@@ -1,3 +1,10 @@
+#for certificate recognition in requests
+##########
+import certifi
+import ssl
+##########
+from urllib.error import URLError
+
 import requests
 from requests.exceptions import InvalidSchema
 from selenium import webdriver
@@ -10,10 +17,12 @@ from CbsObjects.WebPartLine import WebPartLine
 from DL.DataBase import Links
 
 from temp.Language import Language
+import urllib.request
 
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
-CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחסמה בשל פעולה לא מורשית', 'Block ID: 5578236093159424155']
+CBS_403_TEXTS = ['שלום, אנו מצטערים, הגישה לדף זה נחסמה בשל פעולה לא מורשית', 'Block ID: 5578236093159424155',
+                 'מספר חסימה']
 XPATH = {
     "HEBREW_STATS_XPATH": Links.HEBREW_STATS_XPATH.value,
     "RIGHT_EXTRA_PARTS_XPATH": Links.RIGHT_EXTRA_PARTS_XPATH.value,
@@ -524,7 +533,6 @@ class WebPartUtility:
             to_all_maps = element.find_element_by_xpath(".//div//a[@class='MadadTableMapsToAll']")
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
-            print(to_all_maps)
             if not to_all_maps.status_code == 200:
                 raise Exception('last link is broken')
 
@@ -543,6 +551,46 @@ class WebPartUtility:
                 errors.append('url link is broken')
             if not pic_url.status_code == 200:
                 errors.append('image url link is broken')
+
+    @classmethod
+    def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
+        try:
+            element: WebElement = session.find_element_by_xpath(Links.GEOGRAPHIC_ZONE_XPATH.value)
+        except NoSuchElementException as e:
+            print('no geographic_zone', e)
+            return
+        except TimeoutException as e:
+            print('no geographic_zone', e)
+            return
+        except TypeError as e:
+            print('exception, xpath is not recognized', e)
+            return
+        except Exception as e:
+            print('not recognized exception in geographic_zone', e)
+            return
+        # check link status
+        try:
+            a = element.find_element_by_xpath('.//a').get_attribute('href')
+            link = CbsLink(url=a)
+            PageUtility.set_link_status(link)
+            if not link.status_code == 200:
+                page.geographic_zone.errors.append('link is broken')
+            else:
+                print('link is ok')
+            print('status: ', link.status_code)
+        except NoSuchElementException as e:
+            page.geographic_zone.errors.append('no link in geographic zone')
+            print('no geographic_zone', e)
+            return
+        except TimeoutException as e:
+            page.geographic_zone.errors.append('no link in geographic zone')
+            print('no geographic_zone', e)
+            return
+
+        except Exception as e:
+            page.geographic_zone.errors.append('no link in geographic zone')
+            print('not recognized exception in geographic_zone', e)
+            return
 
 
 class PageUtility:
@@ -583,8 +631,9 @@ class PageUtility:
     @classmethod
     def set_link_status(cls, link: CbsLink):
         try:
-            r = requests.get(link.url)
-            link.status_code = r.status_code
+
+            r = urllib.request.urlopen(link.url, context=ssl.create_default_context(cafile=certifi.where()))
+            link.status_code = r.getcode()
 
         except TimeoutException:
             link.status_code = 408
@@ -592,12 +641,6 @@ class PageUtility:
         except InvalidSchema:
             link.status_code = 400
             return
-
-        except requests.exceptions.ConnectionError as e:
-            print('connection error in ' + link.url)
-            link.status_code = 408
-            return
-
 
         except Exception as e:
             print('set link status func unknown exception', e)
@@ -607,7 +650,10 @@ class PageUtility:
         # case everything went well - still need to check default error page of CBS
         # and link.url.endswith('.aspx')
         if link.status_code == 200:
-            cls.check_for_cbs_error_page(r.content, link)
+            print('inside deep check: ')
+            content = r.read().decode("utf-8")
+            print('content: ', content)
+            cls.check_for_cbs_error_page(content, link)
             return
 
     # gets <a> or <img> web elements and check them for errors
@@ -650,3 +696,8 @@ class PageUtility:
             page.lang = Language.ENGLISH.value
             return
         page.lang = Language.HEBREW.value
+
+
+a = CbsLink('https://stackoverflow.com/questions/1726402/in-python-how-do-i-use-urllib-to-see-if-a-website-is-404-or-200')
+PageUtility.set_link_status(a)
+print(a.status_code)
