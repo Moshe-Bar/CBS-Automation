@@ -592,6 +592,20 @@ class WebPartUtility:
             print('not recognized exception in geographic_zone', e)
             return
 
+    @classmethod
+    def set_international_comparisons(cls,page: SubjectPage, session: webdriver):
+        try:
+            main_element = session.find_element_by_xpath(Links.INTERNATIONAL_COMPARISONS_XPATH.value)
+        except NoSuchElementException as e:
+            return
+        except TimeoutException as e:
+            return
+        except Exception as e:
+            print('not recognized exception in geographic_zone', e)
+            return
+        main_element
+
+
 
 class PageUtility:
 
