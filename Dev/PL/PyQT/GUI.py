@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import QDialog, QPushButton, QApplication, QStackedWidget, 
     QAbstractItemView
 from PyQt6.uic import loadUi
 
-from Util import Util
+from Utility.Util import Util
 
 
 

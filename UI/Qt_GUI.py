@@ -6,13 +6,13 @@ from multiprocessing import Queue
 from ast import literal_eval
 
 from PyQt6 import QtCore
-from PyQt6.QtCore import Qt,QObject, QRunnable, pyqtSlot, QThreadPool, QCoreApplication
-from PyQt6.QtGui import QIcon,QFont
-from PyQt6.QtWidgets import QDialog, QPushButton,QApplication,QStackedWidget, QListView, QListWidgetItem, QAbstractItemView
+from PyQt6.QtCore import Qt, QObject, QRunnable, pyqtSlot, QThreadPool, QCoreApplication
+from PyQt6.QtGui import QIcon, QFont
+from PyQt6.QtWidgets import QDialog, QPushButton, QApplication, QStackedWidget, QListView, QListWidgetItem, \
+    QAbstractItemView
 from PyQt6.uic import loadUi
 
 from Utility.TestUtility import TestUtility
-
 
 
 class LogInScreen(QDialog):
@@ -30,7 +30,7 @@ class LogInScreen(QDialog):
 
         print(self.user_n_input.text())
         print(self.pass_input.text())
-        if self.user_n_input.text()=='TEST' and self.pass_input.text()=='TEST':
+        if self.user_n_input.text() == 'TEST' and self.pass_input.text() == 'TEST':
             screen_manager.setFixedWidth(820)
             screen_manager.setFixedHeight(660)
             screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
@@ -53,18 +53,17 @@ class TestPropertiesScreen(QDialog):
         # se.setFont(QFont("Times", 5))
         # se.sizeHint()
         self.h_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
-        self.h_pages_list.setFont(QFont("Sans-Serif",15))
+        self.h_pages_list.setFont(QFont("Sans-Serif", 15))
         self.h_pages_list.setStyleSheet("#h_pages_list::Item{\n"
-                                               "height:20px;}\n"
-                                               "#h_pages_list::Item:hover{\n"
-                                               "background-color: rgb(41, 189, 139);\n"
-                                               "}")
+                                        "height:20px;}\n"
+                                        "#h_pages_list::Item:hover{\n"
+                                        "background-color: rgb(41, 189, 139);\n"
+                                        "}")
         for i, page in enumerate(self.h_pages):
             it = QListWidgetItem(page.name)
             it.setToolTip(page.name)
             self.h_pages_list.addItem(it)
             it.setSelected(True)
-
 
         self.e_pages_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.e_pages_list.setFont(QFont("Sans-Serif", 15))
@@ -86,7 +85,7 @@ class TestPropertiesScreen(QDialog):
         self.check_all_epages.setCheckState(Qt.CheckState.Checked)
         self.check_all_epages.stateChanged.connect(self.select_all_epages)
 
-        #INITIALIZE CHECKED PAGES
+        # INITIALIZE CHECKED PAGES
         self.checked_hpages = []
         for i in range(self.h_pages_list.count()):
             self.checked_hpages.append(True)
@@ -94,21 +93,20 @@ class TestPropertiesScreen(QDialog):
         for i in range(self.e_pages_list.count()):
             self.checked_epages.append(True)
 
-
     def select_all_hpages(self, state):
-        if state==Qt.CheckState.Checked.value:
-            #save the old chosen pages before selecting all
+        if state == Qt.CheckState.Checked.value:
+            # save the old chosen pages before selecting all
             for i in range(self.h_pages_list.count()):
                 self.checked_hpages.append(self.h_pages_list.item(i).isSelected())
-            #selct all
+            # selct all
             for i in range(self.h_pages_list.count()):
                 self.h_pages_list.item(i).setSelected(True)
 
-        elif state==Qt.CheckState.Unchecked.value:
+        elif state == Qt.CheckState.Unchecked.value:
             for i in range(self.h_pages_list.count()):
                 self.h_pages_list.item(i).setSelected(self.checked_hpages[i])
 
-    def select_all_epages(self,state):
+    def select_all_epages(self, state):
         if state == Qt.CheckState.Checked.value:
             # save the old chosen pages before selecting all
             for i in range(self.e_pages_list.count()):
@@ -134,7 +132,7 @@ class TestPropertiesScreen(QDialog):
 
 class TestProgressScreen(QDialog):
 
-    def __init__(self,chosen_pages):
+    def __init__(self, chosen_pages):
         super(TestProgressScreen, self).__init__()
         loadUi('Qt_ui/TestProgress.ui', self)
         # self.progress_signal = pyqtSignal(str)
@@ -143,8 +141,6 @@ class TestProgressScreen(QDialog):
         self.start_button.clicked.connect(self.start_click)
         self.cancel_button.clicked.connect(self.cancel_click)
         self.cancel_button.setEnabled(False)
-
-
 
         self.signals = WorkerSignals()
         self.signals.status.connect(self.update_progress_bar)
@@ -174,20 +170,20 @@ class TestProgressScreen(QDialog):
         self.deleteLater()
 
     def goto_result_screen(self):
-        screen_manager.addWidget(ResultsScreen(log_key = self.test_key))
+        screen_manager.addWidget(ResultsScreen(log_key=self.test_key))
         screen_manager.setCurrentIndex((screen_manager.currentIndex() + 1))
 
     def update_terminal(self, data):
         data = '<p>{}</p>'.format(data)
         self.textMonitor.append(data)
 
-    def convert_to_hyper_text(self,data):
+    def convert_to_hyper_text(self, data):
         dict_data = literal_eval(data)
         error = 'style="color:#FF0000;"'
         if dict_data['error']:
-            info ='<a href="{}" {} >{}</a>'.format(dict_data['url'],error,dict_data['name'])
+            info = '<a href="{}" {} >{}</a>'.format(dict_data['url'], error, dict_data['name'])
         else:
-            info = '<a href="{}" >{}</a>'.format(dict_data['url'],dict_data['name'])
+            info = '<a href="{}" >{}</a>'.format(dict_data['url'], dict_data['name'])
         self.textMonitor.append(info)
 
     def update_progress_bar(self, value):
@@ -208,12 +204,13 @@ class TestProgressScreen(QDialog):
         if not self.signals.end_flag.empty():
             self.signals.end_flag.get()
         self.test_key = time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())
-        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals,self.pages,self.test_key)
+        self.test_runner = Excecutor(TestUtility.test_with_pyqt_slots, self.signals, self.pages, self.test_key)
         self.start_button.setEnabled(False)
         self.cancel_button.setEnabled(True)
         self.back_to_prop_button.setEnabled(False)
         self.update_terminal('test started')
         self.thread_pool.start(self.test_runner)
+
 
 class WorkerSignals(QObject):
     page_info = QtCore.pyqtSignal(str)
@@ -223,6 +220,7 @@ class WorkerSignals(QObject):
     result = QtCore.pyqtSignal(object)
     monitor_data = QtCore.pyqtSignal(str)
     end_flag = Queue()
+
 
 class Excecutor(QRunnable):
 
@@ -240,14 +238,15 @@ class Excecutor(QRunnable):
         try:
             self.function(*self.args)
         except Exception as e:
-            print('Exception was raised during test, '+str(e))
+            print('Exception was raised during test, ' + str(e))
             return
+
 
 class ResultsScreen(QDialog):
     def __init__(self, log_key):
         super(ResultsScreen, self).__init__()
         loadUi('Qt_ui/result.ui', self)
-        self.data, self.file_path = TestUtility.get_test_result(log_key = log_key)
+        self.data, self.file_path = TestUtility.get_test_result(log_key=log_key)
         self.data.replace('target="_blank"', '')
         self.result_monitor.setOpenExternalLinks(True)
         self.result_monitor.setOpenLinks(True)
@@ -261,9 +260,11 @@ class ResultsScreen(QDialog):
     def exit_program(self):
         QCoreApplication.quit()
 
+
 class CBSTestApplication(QApplication):
     def __init__(self, arguments):
         super(CBSTestApplication, self).__init__(arguments)
+
 
 if __name__ == "__main__":
     app = CBSTestApplication(sys.argv)
