@@ -87,7 +87,7 @@ class TestUtility:
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):
 
-        WebPartUtility.set_heb_statistical(page=page, root_element=main_element)
+        WebPartUtility.set_heb_statistical(page=page, session=main_element)
 
         WebPartUtility.set_extra_parts(page=page, root_element=main_element)
 
@@ -110,8 +110,6 @@ class TestUtility:
         WebPartUtility.set_international_comparisons(page=page, session=main_element)
 
         WebPartUtility.set_more_links(page=page, session=main_element)
-
-        # WebPartUtility.set_more_links(page=page, session=main_element)#TODO
 
         # WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
 
