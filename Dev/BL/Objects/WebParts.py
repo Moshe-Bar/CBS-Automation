@@ -10,6 +10,7 @@ class WebPart():
         self.errors = []
         self.images = []
         self.links = []
+        self.id = #TODO enum converts the name into id or constant id
 
 
     def get_errors(self):

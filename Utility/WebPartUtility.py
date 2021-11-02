@@ -9,6 +9,8 @@ import requests
 from requests.exceptions import InvalidSchema
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from CbsObjects.CbsLink import CbsLink
@@ -33,7 +35,8 @@ XPATH = {
     "SUB_SUBJECTS_XPATH": Links.SUB_SUBJECTS_XPATH.value,
     "PRESS_RELEASES_XPATH": Links.PRESS_RELEASES_XPATH.value,
     "TABLES_AND_CHARTS_XPATH": Links.TABLES_AND_CHARTS_XPATH.value,
-    "PUBLICATIONS_XPATH": Links.PUBLICATIONS_XPATH.value}
+    "PUBLICATIONS_XPATH": Links.PUBLICATIONS_XPATH.value,
+    "INTERNATIONAL_COMPARISONS_XPATH":Links.INTERNATIONAL_COMPARISONS_XPATH.value}
 
 
 class WebPartUtility:
@@ -46,7 +49,7 @@ class WebPartUtility:
             print('exception while trying to get xpath from dict: ', e)
             return None
         try:
-            main_element = session.find_element_by_xpath(xpath)
+            main_element = session.find_element(By.XPATH,xpath)
         except TimeoutException:
             return None
         except NoSuchElementException:
@@ -56,57 +59,11 @@ class WebPartUtility:
             return None
         return main_element
 
-    @classmethod  # need to be changed according page file_type
-    def set_internal_links(cls, page: SubjectPage, root_element):
-        if page.link.status_code is None:
-            PageUtility.set_link_status(page.link)
 
-        if page.link.status_code == 200:
-            # inside links check
-            try:
-                root_element.get(page.link.url)
-                links = root_element.find_elements_by_xpath("//div[@class='twoColumn']//a[@href]")
-                cbs_links = []
-                for link in links:
-                    url_: str = link.get_attribute('href')
-                    text: str = link.text
-                    if text == '' and url_ == '':
-                        continue
-                    else:
-                        cur_link = CbsLink(url_)
-                        cur_link.name = text
-                        cbs_links.append(cur_link)
-                page.set_inside_links(cbs_links)
-            except Exception as e:
-                print('exception was occurred in page: ' + page.name)
-            finally:
-                error = False
-                for link in page:
-                    if link.status_code == 200:
-                        error = True
-                        break
-            if error:
-                print(page.name + '::' + 'problems were found')
-                # need to be replace with inserting errors inside the page
-                # def wrightToFile(links):
-            else:
-                print(page.name + '::' + '200 OK for links inside')
-
-    @classmethod
-    def set_extra_statistical(cls, page: SubjectPage, root_element):
-        # check for extra web part - empty statistical (different xPath)
-        try:
-            extra_stats = root_element.find_element_by_xpath(Links.EXTRA_STATS_XPATH.value)
-            page.stats_part.errors.append('extra web part is showed')
-            page.isCorrect = False
-        except TimeoutException:
-            pass
-        except NoSuchElementException:
-            return
 
     # only for hebrew page
     @classmethod
-    def set_heb_statistical(cls, page: SubjectPage, root_element):
+    def set_heb_statistical(cls, page: SubjectPage, session:WebDriver):
         # assuming the page loaded already - therefore no need to wait
 
         # try:
@@ -118,7 +75,7 @@ class WebPartUtility:
         # except NoSuchElementException:
         #     print('heb stats is not displayed')
         #     return
-        hebrew_stats = cls.get_main_element('HEBREW_STATS_XPATH', root_element)
+        hebrew_stats = cls.get_main_element('HEBREW_STATS_XPATH', session)
         if hebrew_stats is None:
             return
 
@@ -143,7 +100,7 @@ class WebPartUtility:
 
             # *****************************************************************************************************************
         try:
-            all_stats_link = root_element.find_element_by_xpath(
+            all_stats_link = session.find_element_by_xpath(
                 "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
             cur_link = CbsLink(all_stats_link.get_attribute('href'))
             page.stats_part.links.append(cur_link)
@@ -238,25 +195,43 @@ class WebPartUtility:
             print(main_element + ' ')
 
     @classmethod
-    def set_more_links(cls, page: SubjectPage, root_element):
-        # this part on test
-        try:
-            elem = root_element.find_element_by_xpath(
-                "//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]")
-        except TimeoutException:
-            print('element not found')
-        finally:
-            pass
-        # the end
+    def set_more_links(cls, page: SubjectPage, session:webdriver.Chrome):
 
         try:
-            part = root_element.find_elements_by_xpath(
-                "//div[@class='generalBox']//h2[@class='ms-webpart-titleText']//span[contains(text(), 'קישורים נוספים')]")
-            print('num elements found: ', str(len(part)))
-            print('found')
-        except NoSuchElementException:
-            print("the part hasn't been found")
-            page.more_links.isHidden = True
+            elem = session.find_element(By.XPATH, Links.MORE_LINKS_XPATH.value)
+            if elem is None:
+                return
+            style = elem.get_attribute('style')
+            if style == 'display: none;':
+                return
+
+        except TimeoutException as e:
+            print('element not found : more links', e)
+            return
+
+        except NoSuchElementException as e:
+            print('no such element exception ', e)
+            return
+
+        except Exception as e:
+            print('exception in more links: ',type(e))
+            return
+
+        # title check
+        title = elem.find_element(By.XPATH, ".//h2//span").text
+        if not title == 'קישורים נוספים':
+            page.more_links.errors.append('title is not correct')
+
+        # inside links check
+        links = elem.find_elements(By.XPATH, ".//ul//div//div//div//div//ul//li//div//div[@class='link-item']//a")
+        links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), links))
+
+        for i,link in enumerate(links):
+            PageUtility.set_link_status(link)
+            # page.sub_subjects.links.append(link)
+            if not link.status_code == 200:
+                page.more_links.errors.append('link number {} is broken'.format(i+1))
+
 
     @classmethod
     def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
@@ -593,17 +568,54 @@ class WebPartUtility:
             return
 
     @classmethod
-    def set_international_comparisons(cls,page: SubjectPage, session: webdriver):
+    def set_international_comparisons(cls,page: SubjectPage, session: webdriver.Chrome):
         try:
-            main_element = session.find_element_by_xpath(Links.INTERNATIONAL_COMPARISONS_XPATH.value)
+            # main_element = session.find_element_by_xpath(Links.INTERNATIONAL_COMPARISONS_XPATH.value)
+            main_element = session.find_element(By.XPATH(Links.INTERNATIONAL_COMPARISONS_XPATH.value))
         except NoSuchElementException as e:
             return
         except TimeoutException as e:
             return
         except Exception as e:
-            print('not recognized exception in geographic_zone', e)
+            print('not recognized exception in international comparisons', e)
             return
-        main_element
+
+        # check link status
+        try:
+            main_link = main_element.find_element(by=By.XPATH,value=".//div//a").get_attribute('href')
+
+            link = CbsLink(url=main_link)
+            PageUtility.set_link_status(link)
+            if not link.status_code == 200:
+                page.international_comparisons.errors.append('link is broken')
+            else:
+                print('link is ok')
+            print('status: ', link.status_code)
+        except NoSuchElementException as e:
+            page.international_comparisons.errors.append('no link in international comparisons')
+            print('no international_comparisons', e)
+            return
+        except TimeoutException as e:
+            page.international_comparisons.errors.append('no link in international comparisons')
+            print('no international_comparisons', e)
+            return
+
+        except Exception as e:
+            page.geographic_zone.errors.append('no link in international_comparisons')
+            print('not recognized exception in international_comparisons', e)
+            return
+
+    @classmethod
+    def set_conferences_and_seminars(cls, page, session):
+        pass
+
+    @classmethod
+    def set_videos_links(cls, page, session):
+        pass
+
+    @classmethod
+    def set_pictures_links(cls, page, session):
+        pass
 
 
 
@@ -655,9 +667,11 @@ class PageUtility:
         except InvalidSchema:
             link.status_code = 400
             return
-
+        except URLError as e:
+            link.status_code = 404
+            return
         except Exception as e:
-            print('set link status func unknown exception', e)
+            print('set link status func unknown exception', type(e))
             link.status_code = 408
             return
 
@@ -681,7 +695,7 @@ class PageUtility:
         for i, element in enumerate(links):
             url = element.get_attribute(attrib)
             link = CbsLink(url)
-            PageUtility.set_link_status(link)
+            cls.set_link_status(link)
             link_list.append(link)
             if not link.status_code == 200:
                 print(str(link.status_code) + str(link.url))
@@ -713,5 +727,56 @@ class PageUtility:
             page.lang = Language.ENGLISH.value
             return
         page.lang = Language.HEBREW.value
+
+
+
+
+
+
+    # @classmethod  # need to be changed according page file_type
+    # def set_internal_links(cls, page: SubjectPage, session: webdriver.Chrome):
+    #
+    #     if page.link.status_code == 200:
+    #         # inside links check
+    #         try:
+    #             session.get(page.link.url)
+    #             links = session.find_elements_by_xpath("//div[@class='twoColumn']//a[@href]")
+    #             cbs_links = []
+    #             for link in links:
+    #                 url_: str = link.get_attribute('href')
+    #                 text: str = link.text
+    #                 if text == '' and url_ == '':
+    #                     continue
+    #                 else:
+    #                     cur_link = CbsLink(url_)
+    #                     cur_link.name = text
+    #                     cbs_links.append(cur_link)
+    #             page.set_inside_links(cbs_links)
+    #         except Exception as e:
+    #             print('exception was occurred in page: ' + page.name)
+    #         finally:
+    #             error = False
+    #             for link in page:
+    #                 if link.status_code == 200:
+    #                     error = True
+    #                     break
+    #         if error:
+    #             print(page.name + '::' + 'problems were found')
+    #             # need to be replace with inserting errors inside the page
+    #             # def wrightToFile(links):
+    #         else:
+    #             print(page.name + '::' + '200 OK for links inside')
+
+    # @classmethod
+    # def set_extra_statistical(cls, page: SubjectPage, root_element:WebDriver):
+    #     # check for extra web part - empty statistical (different xPath)
+    #     try:
+    #         # extra_stats = root_element.find_element_by_xpath(Links.EXTRA_STATS_XPATH.value)
+    #         page.stats_part.errors.append('extra web part is showed')
+    #         page.isCorrect = False
+    #     except TimeoutException:
+    #         pass
+    #     except NoSuchElementException:
+    #         return
 
 

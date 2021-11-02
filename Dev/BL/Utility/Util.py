@@ -4,6 +4,15 @@ from selenium.common.exceptions import WebDriverException
 from Objects.Page import SubjectPage
 from Dev.DL import Adapter
 
+class TestResult:
+    def __init__(self,scanned_page):
+        self.page:SubjectPage = scanned_page
+        self.db_rows = self.to_rows()
+
+    def __repr__(self):
+
+    def to_rows(self):
+        for i in len(self.page.)#TODO add to page repr func
 
 class Util:
     def __init__(self):
@@ -45,8 +54,7 @@ class Util:
         # TODO
         pass
 
-    def _get_path_test(self):
-        return self.__db.get_driver_path()
+
 
 
 

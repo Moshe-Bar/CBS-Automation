@@ -120,6 +120,7 @@ class DataBase:
         with open(r'../Configuration/xpath.json', 'rb') as f:
             data = json.load(f)
             f.close()
+
         return data['XPath'][0][key]
 
 
@@ -142,10 +143,16 @@ class Links(Enum):
     PUBLICATIONS_XPATH = DataBase.load_xpath('PUBLICATIONS_XPATH')
     GEOGRAPHIC_ZONE_XPATH = DataBase.load_xpath('GEOGRAPHIC_ZONE_XPATH')
 
+    INTERNATIONAL_COMPARISONS_XPATH = DataBase.load_xpath('INTERNATIONAL_COMPARISONS_XPATH')#new
+    MORE_LINKS_XPATH = DataBase.load_xpath('MORE_LINKS_XPATH')  #new
+    CONFERENCES_AND_SEMINARS_XPATH = DataBase.load_xpath('CONFERENCES_AND_SEMINARS_XPATH')#new
+    VIDEOS_LINKS_XPATH = DataBase.load_xpath('VIDEOS_LINKS_XPATH')#new
+    PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')#new
 
 
 
-# print(Links.GEOGRAPHIC_ZONE_XPATH.value)
+
+# print(Links.PICTURES_LINKS_XPATH.value)
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 

@@ -79,7 +79,7 @@ class SubjectPage:
         for web_part in self.__web_parts.values():
             err = web_part.get_errors()
             if len(err) > 0:
-                errors.append(err)
+                errors.append({web_part.id, err})
         return errors
         # return [web_part.get_errors() for web_part in self.__web_parts.values()]
 

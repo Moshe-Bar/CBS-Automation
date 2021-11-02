@@ -109,6 +109,16 @@ class TestUtility:
 
         WebPartUtility.set_international_comparisons(page=page, session=main_element)
 
+        WebPartUtility.set_more_links(page=page, session=main_element)
+
+        # WebPartUtility.set_more_links(page=page, session=main_element)#TODO
+
+        # WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
+
+        # WebPartUtility.set_videos_links(page=page, session=main_element)#TODO
+
+        # WebPartUtility.set_pictures_links(page=page, session=main_element)#TODO
+
     #     TODO another web part
 
     # visible func

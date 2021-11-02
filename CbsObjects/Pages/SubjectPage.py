@@ -1,6 +1,6 @@
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, ToolsAndDB, Summary, TopBox, \
-    PressReleases, TablesAndMaps, ExParts, Publications, GeographicZone
+    PressReleases, TablesAndMaps, ExParts, Publications, GeographicZone, InternationalComparisons
 
 
 class SubjectPage:
@@ -23,7 +23,8 @@ class SubjectPage:
             'tables_and_charts': TablesAndMaps(),
             'extra_error_parts': ExParts(),
             'publications': Publications(),
-            'geographic_zone': GeographicZone()
+            'geographic_zone': GeographicZone(),
+            'international_comparisons':InternationalComparisons()
         }
         self.inside_links = []
         self.dom = None
@@ -75,6 +76,10 @@ class SubjectPage:
     @property
     def geographic_zone(self):
         return self.__web_parts['geographic_zone']
+
+    @property
+    def international_comparisons(self):
+        return self.__web_parts['international_comparisons']
 
     def isCorrect(self):
         return len(self.get_errors()) == 0

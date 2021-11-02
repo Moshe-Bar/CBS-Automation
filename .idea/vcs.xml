@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/temp/Browse-Files-Dialog-with-PyQt5" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/temp/HePage/async_test/Supercharged-Web-Scraping-with-Asyncio" vcs="Git" />
   </component>
 </project>

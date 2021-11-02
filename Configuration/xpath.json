@@ -13,8 +13,11 @@
       "TABLES_AND_CHARTS_XPATH": "//div[contains(@ng-show , 'isTableMaps') and not (contains(@style, 'display: none;'))]",
       "PUBLICATIONS_XPATH": "//div[h2[@id='wpTitleMadadResearchPublications']]",
       "GEOGRAPHIC_ZONE_XPATH": "//div[@class='generalBox ng-scope'][@ng-if='isGeographicZone']",
-      "INTERNATIONAL_COMPARISONS_XPATH": "//div[@class='generalBox ng-scope'][@ng-if='isInternationalComparisons']"
-
+      "INTERNATIONAL_COMPARISONS_XPATH": "//div[@class='generalBox ng-scope'][@ng-if='isInternationalComparisons']",
+      "MORE_LINKS_XPATH": "//div[@class='generalBox' ][1]",
+      "CONFERENCES_AND_SEMINARS_XPATH": "//div[@class='generalBox'][2]",
+      "VIDEOS_LINKS_XPATH": "//div[@class='generalBox'][3]",
+      "PICTURES_LINKS_XPATH": "//div[@class='generalBox'][4]"
     }
   ]
 }
