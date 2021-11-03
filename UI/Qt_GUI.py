@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import QDialog, QPushButton, QApplication, QStackedWidget, 
 from PyQt6.uic import loadUi
 
 from Utility.TestUtility import TestUtility
+from selenium.common.exceptions import WebDriverException
 
 
 class LogInScreen(QDialog):
@@ -238,7 +239,11 @@ class Excecutor(QRunnable):
         try:
             self.function(*self.args)
         except Exception as e:
-            print('Exception was raised during test, ' + str(e))
+            print('Exception was raised during test')
+            try:
+                raise e
+            except WebDriverException:
+                print('Chrome driver error, ', 'please check your browser and your connection')
             return
 
 

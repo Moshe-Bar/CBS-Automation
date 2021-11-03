@@ -6,7 +6,7 @@ from Utility.WebPartUtility import WebPartUtility
 from Utility.TestUtility import TestUtility
 
 # URL = r"D:\Current\Selenium\NewAutomationEnv\DataBase\local\test_2.html"
-URL = r"D:\Current\cbs_auto\DataBase\local\test.htm"
+URL = r"https://www.cbs.gov.il/he/subjects/Pages/%D7%9E%D7%A7%D7%91%D7%9C%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%9E%D7%A9%D7%A8%D7%93-%D7%94%D7%A8%D7%95%D7%95%D7%97%D7%94-%D7%95%D7%94%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%94%D7%97%D7%91%D7%A8%D7%AA%D7%99%D7%99%D7%9D.aspx"
 
 sess = TestUtility.create_web_driver(wait_time=10)
 
@@ -16,7 +16,7 @@ sess.get(URL)
 print('test is started')
 
 
-WebPartUtility.set_more_links(page=page, session=sess)
+WebPartUtility.set_international_comparisons(page=page, session=sess)
 print(page.error_to_str())
 
 

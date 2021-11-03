@@ -4,11 +4,8 @@ import certifi
 import ssl
 ##########
 from urllib.error import URLError
-
-import requests
-from requests.exceptions import InvalidSchema
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -54,6 +51,9 @@ class WebPartUtility:
             return None
         except NoSuchElementException:
             return None
+        except WebDriverException:
+            print('chrome session error, consider restart your program and check your driver configuration')
+            return None
         except Exception as e:
             print('unknown exception while trying to get xpath for: ', str(type), ' exception: ', e)
             return None
@@ -64,23 +64,14 @@ class WebPartUtility:
     # only for hebrew page
     @classmethod
     def set_heb_statistical(cls, page: SubjectPage, session:WebDriver):
-        # assuming the page loaded already - therefore no need to wait
+        print('statistical test in: {}'.format(page.name))
 
-        # try:
-        #     hebrew_stats = root_element.find_element_by_xpath(Links.HEBREW_STATS_XPATH.value)
-        #
-        # except TimeoutException:
-        #     print('heb stats is not displayed')
-        #     return
-        # except NoSuchElementException:
-        #     print('heb stats is not displayed')
-        #     return
         hebrew_stats = cls.get_main_element('HEBREW_STATS_XPATH', session)
         if hebrew_stats is None:
             return
-
-        images = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//img")
-        links = hebrew_stats.find_elements_by_xpath(".//ul[@class='cbs-List']//li//a")
+        print('debug: start stats')
+        images = hebrew_stats.find_elements(By.XPATH,".//ul[@class='cbs-List']//li//img")
+        links = hebrew_stats.find_elements(By.XPATH,".//ul[@class='cbs-List']//li//a")
 
         if len(images) == 0 or len(links) == 0:
             page.stats_part.errors.append('images or links content is missing')
@@ -100,7 +91,7 @@ class WebPartUtility:
 
             # *****************************************************************************************************************
         try:
-            all_stats_link = session.find_element_by_xpath(
+            all_stats_link = session.find_element(By.XPATH,
                 "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
             cur_link = CbsLink(all_stats_link.get_attribute('href'))
             page.stats_part.links.append(cur_link)
@@ -111,14 +102,16 @@ class WebPartUtility:
         except NoSuchElementException:
             page.stats_part.errors.append('link to all massages is missing')
             page.isCorrect = False
+        print('debug: end stats')
 
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('press-releases test in: {}'.format(page.name))
 
         # when this web part is not displayed the style is "display: none;" and -> text "הודעות לתקשורת"
         # is not exist thus the element wouldn't be found and the function will return
         try:
-            main_element = session.find_element_by_xpath(Links.PRESS_RELEASES_XPATH.value)
+            main_element = session.find_element(By.XPATH,Links.PRESS_RELEASES_XPATH.value)
 
         except TimeoutException:
             return
@@ -126,17 +119,17 @@ class WebPartUtility:
             return
         try:
             # title check - not real test because the existent of the web parts is depends on it
-            title = main_element.find_element_by_xpath('.//h2//span').text
+            title = main_element.find_element(By.XPATH,'.//h2//span').text
             if not title == 'הודעות לתקשורת':
                 page.press_releases.errors.append('title is not correct')
 
             # inside links check
-            dates = main_element.find_elements_by_xpath(".//..//li//div//div[@class= 'pageItemDate']")
+            dates = main_element.find_elements(By.XPATH,".//..//li//div//div[@class= 'pageItemDate']")
             dates = [date.text for date in dates]
             # TODO dates check
 
-            links = main_element.find_elements_by_xpath(".//..//li//div//div[@class= 'pageAll pageItemTitle']//a")
-            to_all_massages = main_element.find_element_by_xpath(".//..//a[@class='MadadPressReleasesToAll']")
+            links = main_element.find_elements(By.XPATH,".//..//li//div//div[@class= 'pageAll pageItemTitle']//a")
+            to_all_massages = main_element.find_element(By.XPATH,".//..//a[@class='MadadPressReleasesToAll']")
             if len(links) == 0:
                 page.press_releases.errors.append('no content in')
                 return
@@ -154,7 +147,7 @@ class WebPartUtility:
     @classmethod
     def is_element_exist(cls, session: webdriver.chrome, path):
         try:
-            element = session.find_element_by_xpath(path)
+            element = session.find_element(By.XPATH,path)
             if not cls.is_element_displayed(element):
                 raise NoSuchElementException
             return (True, element)
@@ -172,12 +165,13 @@ class WebPartUtility:
 
     @classmethod
     def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('top-box test in: {}'.format(page.name))
         is_exist, main_element = cls.is_element_exist(session, Links.TOP_BOX_XPATH.value)
         # in case the container is displayed
         if is_exist:
-            elements = main_element.find_elements_by_xpath(".//div[@class='categoryBox']")
+            elements = main_element.find_elements(By.XPATH,".//div[@class='categoryBox']")
             elements = list(
-                map(lambda e: e.find_element_by_xpath(".//a"), filter(lambda x: cls.is_element_displayed(x), elements)))
+                map(lambda e: e.find_element(By.XPATH,".//a"), filter(lambda x: cls.is_element_displayed(x), elements)))
             # elements = [element.find_element_by_xpath(".//a") for element in elements]
 
             if len(elements) == 0:  # inside elements are not displayed
@@ -196,6 +190,7 @@ class WebPartUtility:
 
     @classmethod
     def set_more_links(cls, page: SubjectPage, session:webdriver.Chrome):
+        print('more-links test in: {}'.format(page.name))
 
         try:
             elem = session.find_element(By.XPATH, Links.MORE_LINKS_XPATH.value)
@@ -235,9 +230,11 @@ class WebPartUtility:
 
     @classmethod
     def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('sub-subjects test in: {}'.format(page.name))
+
         # find the web part
         try:
-            main_element = session.find_element_by_xpath(Links.SUB_SUBJECTS_XPATH.value)
+            main_element = session.find_element(By.XPATH,Links.SUB_SUBJECTS_XPATH.value)
         except NoSuchElementException:
             return
         except TimeoutException:
@@ -245,7 +242,7 @@ class WebPartUtility:
 
         # check title
         try:
-            title = main_element.find_element_by_xpath("//h2[@class='ms-webpart-titleText']//span").text
+            title = main_element.find_element(By.XPATH,"//h2[@class='ms-webpart-titleText']//span").text
             if not title == 'נושאי משנה':
                 page.sub_subjects.errors.append('title is not correct')
         except NoSuchElementException:
@@ -254,7 +251,7 @@ class WebPartUtility:
             page.sub_subjects.errors.append('title is not correct')
 
         # find all the links inside and set their status
-        raw_links = main_element.find_elements_by_xpath(".//ul[@class='subtopicsList']//li//a")
+        raw_links = main_element.find_elements(By.XPATH,".//ul[@class='subtopicsList']//li//a")
         if len(raw_links) == 0:
             page.sub_subjects.errors.append('no internal links')
             return
@@ -268,10 +265,11 @@ class WebPartUtility:
 
     @classmethod
     def set_publications(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('publications test in: {}'.format(page.name))
 
         # check if web part is exist
         try:
-            main_element = session.find_element_by_xpath(Links.PUBLICATIONS_XPATH.value)
+            main_element = session.find_element(By.XPATH,Links.PUBLICATIONS_XPATH.value)
 
         except NoSuchElementException:
             return
@@ -280,7 +278,7 @@ class WebPartUtility:
 
         # check title
         try:
-            title = main_element.find_element_by_xpath('.//h2//span').text
+            title = main_element.find_element(By.XPATH,'.//h2//span').text
             if not title == 'פרסומים':
                 page.publications.errors.append('title is not correct')
 
@@ -291,12 +289,12 @@ class WebPartUtility:
 
         # check links inside
         try:
-            data_lines = main_element.find_elements_by_xpath('.//div//ul//li')
+            data_lines = main_element.find_elements(By.XPATH,'.//div//ul//li')
             part_lines = []
             for line in data_lines:
-                divs = line.find_elements_by_xpath('.//div//div')  # two divs
+                divs = line.find_elements(By.XPATH,'.//div//div')  # two divs
                 date = divs[1].text
-                a = divs[0].find_element_by_xpath('.//a')
+                a = divs[0].find_element(By.XPATH,'.//a')
                 text = a.text
                 url = a.get_attribute('href')
 
@@ -309,11 +307,11 @@ class WebPartUtility:
 
     @classmethod
     def set_extra_parts(cls, page: SubjectPage, root_element):
-        # assuming the page loaded already - therefore no need to wait
+        print('extra-parts test in: {}'.format(page.name))
 
         # left side of the page
         try:
-            left_extra_parts = root_element.find_element_by_xpath(Links.LEFT_EXTRA_PARTS_XPATH.value)
+            left_extra_parts = root_element.find_element(By.XPATH, Links.LEFT_EXTRA_PARTS_XPATH.value)
             page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
         except TimeoutException:
             pass
@@ -322,7 +320,7 @@ class WebPartUtility:
 
         # right side of the page
         try:
-            right_extra_parts = root_element.find_element_by_xpath(Links.RIGHT_EXTRA_PARTS_XPATH.value)
+            right_extra_parts = root_element.find_element(By.XPATH, Links.RIGHT_EXTRA_PARTS_XPATH.value)
             page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
         except TimeoutException:
             pass
@@ -333,12 +331,14 @@ class WebPartUtility:
 
     @classmethod
     def set_tools_and_db(cls, page: SubjectPage, session):
+        print('tools-and-db test in: {}'.format(page.name))
+
         # left side of the page
         try:
-            tools_and_db = session.find_element_by_xpath(Links.TOOLS_AND_DB_XPATH.value)
-            title = session.find_element_by_xpath("//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
-            images = session.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//img")
-            links = session.find_elements_by_xpath(Links.TOOLS_AND_DB_XPATH.value + "//a")
+            tools_and_db = session.find_element(By.XPATH, Links.TOOLS_AND_DB_XPATH.value)
+            title = session.find_element(By.XPATH, "//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
+            images = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//img")
+            links = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//a")
 
             # test image
             if len(images) == 0:
@@ -382,12 +382,12 @@ class WebPartUtility:
 
     @classmethod
     def set_summary(cls, page: SubjectPage, session: webdriver):
+        print('summary test in: {}'.format(page.name))
         try:
             # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
-            paragraph = session.find_element_by_xpath(Links.SUMMARY_XPATH.value).text
-            images = session.find_elements_by_xpath(Links.SUMMARY_XPATH.value + "//img")
-            links = session.find_elements_by_xpath(Links.SUMMARY_XPATH.value + "//a")
-            print(paragraph)
+            paragraph = session.find_element(By.XPATH,Links.SUMMARY_XPATH.value).text
+            images = session.find_elements(By.XPATH,Links.SUMMARY_XPATH.value + "//img")
+            links = session.find_elements(By.XPATH,Links.SUMMARY_XPATH.value + "//a")
             # check text is exist
             if paragraph == '':
                 page.summary.errors.append('no text')
@@ -428,17 +428,16 @@ class WebPartUtility:
             pass
         except NoSuchElementException:
             print("summary couldn't be found")
-            return
         except Exception as e:
             print('exception in summary test')
-            raise e
         return
 
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
+        print('tables-and-charts test in: {}'.format(page.name))
 
         try:
-            element: WebElement = session.find_element_by_xpath(Links.TABLES_AND_CHARTS_XPATH.value)
+            element: WebElement = session.find_element(By.XPATH, Links.TABLES_AND_CHARTS_XPATH.value)
         except NoSuchElementException as e:
             print('no tables and charts', e)
             return
@@ -455,7 +454,7 @@ class WebPartUtility:
         # title check
         try:
 
-            title = element.find_element_by_xpath(".//h2//span").text
+            title = element.find_element(By.XPATH,".//h2//span").text
             if not title == 'לוחות ותרשימים':
                 page.tables_and_charts.errors.append('title is not correct')
                 print(title)
@@ -478,16 +477,16 @@ class WebPartUtility:
         # links check
         try:
 
-            li_elements = element.find_elements_by_xpath(".//div//ul//li")
+            li_elements = element.find_elements(By.XPATH,".//div//ul//li")
             print('number li: ', len(li_elements))
             web_part_lines = []
             if len(li_elements) == 0:
                 raise NoSuchElementException(msg='elements not found')
 
             for li in li_elements:
-                div = li.find_elements_by_xpath(".//div//div")
-                pic_url = CbsLink(div[0].find_element_by_xpath(".//a//img").get_attribute('src'))
-                link_url = CbsLink(div[0].find_element_by_xpath(".//a").get_attribute('href'))
+                div = li.find_elements(By.XPATH,".//div//div")
+                pic_url = CbsLink(div[0].find_element(By.XPATH,".//a//img").get_attribute('src'))
+                link_url = CbsLink(div[0].find_element(By.XPATH,".//a").get_attribute('href'))
                 name = div[0].text
                 date = div[1].text
                 web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
@@ -505,7 +504,7 @@ class WebPartUtility:
 
         # last link check
         try:
-            to_all_maps = element.find_element_by_xpath(".//div//a[@class='MadadTableMapsToAll']")
+            to_all_maps = element.find_element(By.XPATH,".//div//a[@class='MadadTableMapsToAll']")
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
@@ -529,6 +528,8 @@ class WebPartUtility:
 
     @classmethod
     def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
+        print('geographic-zone test in: {}'.format(page.name))
+
         try:
             element: WebElement = session.find_element_by_xpath(Links.GEOGRAPHIC_ZONE_XPATH.value)
         except NoSuchElementException as e:
@@ -569,9 +570,10 @@ class WebPartUtility:
 
     @classmethod
     def set_international_comparisons(cls,page: SubjectPage, session: webdriver.Chrome):
+        print('international-comparisons test in: {}'.format(page.name))
+
         try:
-            # main_element = session.find_element_by_xpath(Links.INTERNATIONAL_COMPARISONS_XPATH.value)
-            main_element = session.find_element(By.XPATH(Links.INTERNATIONAL_COMPARISONS_XPATH.value))
+            main_element = session.find_element(By.XPATH,Links.INTERNATIONAL_COMPARISONS_XPATH.value)
         except NoSuchElementException as e:
             return
         except TimeoutException as e:
@@ -592,30 +594,32 @@ class WebPartUtility:
                 print('link is ok')
             print('status: ', link.status_code)
         except NoSuchElementException as e:
-            page.international_comparisons.errors.append('no link in international comparisons')
+            page.international_comparisons.errors.append('no link')
             print('no international_comparisons', e)
             return
         except TimeoutException as e:
-            page.international_comparisons.errors.append('no link in international comparisons')
+            page.international_comparisons.errors.append('no link')
             print('no international_comparisons', e)
             return
 
         except Exception as e:
-            page.geographic_zone.errors.append('no link in international_comparisons')
+            page.international_comparisons.errors.append('no link')
             print('not recognized exception in international_comparisons', e)
             return
 
     @classmethod
     def set_conferences_and_seminars(cls, page, session):
-        pass
-
+        print('conferences-and-seminars test in: {}'.format(page.name))
+        print('in developing process')
     @classmethod
     def set_videos_links(cls, page, session):
-        pass
+        print('video-links test in: {}'.format(page.name))
+        print('in developing process')
 
     @classmethod
     def set_pictures_links(cls, page, session):
-        pass
+        print('pictures-links test in: {}'.format(page.name))
+        print('in developing process')
 
 
 
@@ -664,9 +668,9 @@ class PageUtility:
         except TimeoutException:
             link.status_code = 408
             return
-        except InvalidSchema:
-            link.status_code = 400
-            return
+        # except InvalidSchema:
+        #     link.status_code = 400
+        #     return
         except URLError as e:
             link.status_code = 404
             return
