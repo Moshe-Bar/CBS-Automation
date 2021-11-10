@@ -667,24 +667,21 @@ class PageUtility:
     def set_link_status(cls, link: CbsLink):
         try:
 
-            resp = HTTPS.request('GET', link.url)
+            resp = HTTPS.request('GET', link.url,redirect=True)
             link.status_code = resp.status
-            data = resp.data.decode('utf-8')
+
 
 
         except TimeoutException:
             link.status_code = 408
             return
-        # except InvalidSchema:
-        #     link.status_code = 400
-        #     return
         except URLError as e:
             print('URLError in set_link_status: ', e)
             print('link: ', link.url)
             link.status_code = 404
             return
         except Exception as e:
-            print('set link status func unknown exception', type(e))
+            print('set link status func unknown exception', e)
             link.status_code = 408
             return
 
@@ -693,7 +690,7 @@ class PageUtility:
         if link.status_code == 200 and link.type == 'page':
             # print('inside deep check: ')
             # print(link.url)
-            content = data
+            content = resp.data.decode('utf-8')
             # print('content: ', content)
             cls.check_for_cbs_error_page(content, link)
             return

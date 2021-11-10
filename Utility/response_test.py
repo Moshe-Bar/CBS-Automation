@@ -30,11 +30,14 @@ CERT_CONTEXT=ssl.create_default_context(cafile=certifi.where())
 print('before ver3')
 import urllib3
 import certifi
-
+http = urllib3.PoolManager(ca_certs=certifi.where())
 
 url = 'https://httpbin.org/anything'
 
-http = urllib3.PoolManager(ca_certs=certifi.where())
-resp = http.request('GET', url)
 
-print(resp.status)
+
+resp = http.request('GET', url)
+status_code = resp.status
+data = resp.data.decode('utf-8')
+
+print(status_code)
