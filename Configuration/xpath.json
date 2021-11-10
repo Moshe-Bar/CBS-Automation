@@ -9,7 +9,7 @@
       "SUMMARY_XPATH": "//div[@class='rightColumn']//div[@id='ctl00_PlaceHolderMain_ctl00_wrapper']",
       "TOP_BOX_XPATH": "//div[@class='generalBox top-links']",
       "SUB_SUBJECTS_XPATH": "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']",
-      "PRESS_RELEASES_XPATH": "//div[h2[span[contains(text(), 'הודעות לתקשורת')]] and not(@style='display: none;')]",
+      "PRESS_RELEASES_XPATH": "//div[@class='rightColumn']//div[@class='generalBox removeMSWebpart'][1]",
       "TABLES_AND_CHARTS_XPATH": "//div[contains(@ng-show , 'isTableMaps') and not (contains(@style, 'display: none;'))]",
       "PUBLICATIONS_XPATH": "//div[h2[@id='wpTitleMadadResearchPublications']]",
       "GEOGRAPHIC_ZONE_XPATH": "//div[@class='generalBox ng-scope'][@ng-if='isGeographicZone']",
