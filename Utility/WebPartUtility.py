@@ -71,12 +71,34 @@ class WebPartUtility:
     def set_heb_statistical(cls, page: SubjectPage, session: WebDriver):
         print('statistical test in: {}'.format(page.name))
 
+        # check if the element located
         root_element, error = cls.get_main_element('HEBREW_STATS_XPATH', session)
         if root_element is None:
             if error == 'chrome session error':
                 raise Exception('chrome session error')
             return
-        # print('debug: start stats')
+
+        # check id not displayed
+        try:
+            is_hidden = root_element.find_element(By.XPATH, "./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
+        except NoSuchElementException:
+            print('stats nor displayed and not tested in: ',page.name)
+            return
+
+
+        # title check
+        try:
+            title = root_element.find_element(By.XPATH, "./h2/nobr/span")
+            title = title.text
+            if not title == 'עלוני סטטיסטיקל':
+                page.stats_part.errors.append('title not correct')
+        except NoSuchElementException:
+            page.stats_part.errors.append('title not correct')
+            print('stats not contain any title: ',page.name)
+            return
+
+
+
         images = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//img")
         links = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//a")
 
@@ -98,18 +120,21 @@ class WebPartUtility:
 
             # *****************************************************************************************************************
         try:
-            all_stats_link = session.find_element(By.XPATH,
-                                                  "//div[@id='hebstats']//a[contains(text(),'לכל עלוני הסטטיסטיקל')]")
+            all_stats_link = root_element.find_element(By.XPATH,"./a]")
+            # text test
+            text = all_stats_link.text
+            if not text =='לכל עלוני הסטטיסטיקל >':
+                page.stats_part.errors.append('text in link to all massages not correct')
+
             cur_link = CbsLink(all_stats_link.get_attribute('href'))
             page.stats_part.links.append(cur_link)
             PageUtility.set_link_status(cur_link)
             if not cur_link.status_code == 200:
                 page.stats_part.errors.append('link to all massages is broken')
-                page.isCorrect = False
         except NoSuchElementException:
             page.stats_part.errors.append('link to all massages is missing')
-            page.isCorrect = False
-        # print('debug: end stats')
+
+
 
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):

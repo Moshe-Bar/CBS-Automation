@@ -2,7 +2,7 @@
   "XPath": [
     {
       "MAP_LINKS_XPATH": "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a",
-      "HEBREW_STATS_XPATH": "//div[@id='hebstats' and not(div[@style='display: none;'])]",
+      "HEBREW_STATS_XPATH": "//div[@id='hebstats']",
       "RIGHT_EXTRA_PARTS_XPATH": "//div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
       "LEFT_EXTRA_PARTS_XPATH": "//div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
       "TOOLS_AND_DB_XPATH": "//div[contains(@ng-if , 'isToolsAndDatabases') and not (contains(@style, 'display: none;'))]",

@@ -1,12 +1,26 @@
 # -*- coding: cp1252 -*-
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from DataBase.DataBase import Links
 from Utility.WebPartUtility import WebPartUtility
 from Utility.TestUtility import TestUtility
 
+
+
+
+
+
+
+
+
+
+
+
 # URL = r"D:\Current\Selenium\NewAutomationEnv\DataBase\local\test_2.html"
-URL = r"https://www.cbs.gov.il/he/subjects/Pages/%D7%9E%D7%A7%D7%91%D7%9C%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%9E%D7%9E%D7%A9%D7%A8%D7%93-%D7%94%D7%A8%D7%95%D7%95%D7%97%D7%94-%D7%95%D7%94%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99%D7%9D-%D7%94%D7%97%D7%91%D7%A8%D7%AA%D7%99%D7%99%D7%9D.aspx"
+URL = r"https://www.cbs.gov.il/he/subjects/Pages/-%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%95%D7%A6%D7%90.aspx"
 
 sess = TestUtility.create_web_driver(wait_time=10)
 
@@ -16,8 +30,17 @@ sess.get(URL)
 print('test is started')
 
 
-WebPartUtility.set_international_comparisons(page=page, session=sess)
-print(page.error_to_str())
+elem = sess.find_element(By.XPATH,"//div[@id='hebstats']")
+print('stats ready..')
+try:
+    e = elem.find_element(By.XPATH,"./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
+    print('hidden')
+except NoSuchElementException:
+    print('hidden state div not found')
+
+
+# WebPartUtility.set_international_comparisons(page=page, session=sess)
+# print(page.error_to_str())
 
 
 # try:
