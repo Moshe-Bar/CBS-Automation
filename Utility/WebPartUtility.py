@@ -10,6 +10,7 @@ from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote import webelement
 from selenium.webdriver.remote.webelement import WebElement
 
 from CbsObjects.CbsLink import CbsLink
@@ -51,8 +52,7 @@ class WebPartUtility:
             return None, 'exception while trying to get xpath from dict: {}'.format(e)
         try:
             main_element = session.find_element(By.XPATH, xpath)
-            style = main_element.get_attribute('style')
-            if style == 'display: none;':
+            if not main_element.is_displayed():
                 return None, 'Hidden'
         except TimeoutException:
             return None, 'TimeoutException'
@@ -134,8 +134,6 @@ class WebPartUtility:
         except NoSuchElementException:
             page.stats_part.errors.append('link to all massages is missing')
 
-
-
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
         print('press-releases test in: {}'.format(page.name))
@@ -149,77 +147,74 @@ class WebPartUtility:
                 raise Exception('chrome session error')
             return
 
+        # title check
         try:
-            # title check - not real test because the existent of the web parts is depends on it
-            title = root_element.find_element(By.XPATH, './/h2//span').text
+            title = root_element.find_element(By.XPATH, './h2/span')
+            title = title.text
             if not title == 'הודעות לתקשורת':
                 page.press_releases.errors.append('title is not correct')
+        except NoSuchElementException:
+            print('press_releases title fail in: ', page.name)
+            page.press_releases.errors.append('title is not correct')
 
-            # inside links check
-            # dates = root_element.find_elements(By.XPATH, ".//..//li//div//div[@class= 'pageItemDate']")
-            # dates = [date.text for date in dates]
-            # TODO dates check
-
-            links = root_element.find_elements(By.XPATH, ".//..//li//div//div[@class= 'pageAll pageItemTitle']//a")
-            to_all_massages = root_element.find_element(By.XPATH, ".//..//a[@class='MadadPressReleasesToAll']")
+        # inside links check
+        try:
+            links = root_element.find_elements(By.XPATH, "./div[@id='Control_List_Subject_Link']/ul/li/div/div/a")
             if len(links) == 0:
-                page.press_releases.errors.append('no content in')
+                page.press_releases.errors.append('no content inside')
                 return
-            links.append(to_all_massages)
             links, errors = PageUtility.set_url_links(links)
             page.press_releases.links.extend(links)
             page.press_releases.errors.extend(errors)
+        except TimeoutException:
+            page.press_releases.errors.append('no found any content')
+            return
+        except NoSuchElementException:
+            page.press_releases.errors.append('no found any content')
+            return
 
-
+        try:
+            to_all_massages = root_element.find_element(By.XPATH, "./div/a")
+            text =  to_all_massages.text
+            if not text == ' לכל ההודעות לתקשורת >':
+                page.press_releases.errors.append('text not correct in last link')
+            cur_link = CbsLink(to_all_massages.get_attribute('href'))
+            PageUtility.set_link_status(cur_link)
+            if not cur_link.status_code == 200:
+                page.press_releases.errors.append('link to all massages is broken')
         except TimeoutException:
             return
         except NoSuchElementException:
+            page.press_releases.errors.append('link to all massages not found')
             return
-
-    @classmethod
-    def is_element_exist(cls, session: webdriver.chrome, path):
-        try:
-            element = session.find_element(By.XPATH, path)
-            if not cls.is_element_displayed(element):
-                raise NoSuchElementException
-            return (True, element)
-        except TimeoutException as e:
-            return (False, e.msg)
-        except NoSuchElementException as e:
-            return (False, e.msg)
-
-    @classmethod
-    def is_element_displayed(cls, element):
-        if element.get_attribute('style') == 'display: none;':  # display: none;
-            return False
-        else:
-            return True
 
     @classmethod
     def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
         print('top-box test in: {}'.format(page.name))
-        is_exist, main_element = cls.is_element_exist(session, Links.TOP_BOX_XPATH.value)
-        # in case the container is displayed
-        if is_exist:
-            elements = main_element.find_elements(By.XPATH, ".//div[@class='categoryBox']")
-            elements = list(
-                map(lambda e: e.find_element(By.XPATH, ".//a"),
-                    filter(lambda x: cls.is_element_displayed(x), elements)))
-            # elements = [element.find_element_by_xpath(".//a") for element in elements]
+        main_element, error = cls.get_main_element('TOP_BOX_XPATH', session)
+        if main_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
 
-            if len(elements) == 0:  # inside elements are not displayed
-                page.top_box.errors.append('top box is displayed without any data')
-                return
 
-            else:
-                links, errors = PageUtility.set_url_links(elements)
-                page.top_box.links.extend(links)
-                errors = [error + ' ' for error in errors]
-                # errors = list(map(lambda x:x+' in top box',errors))
-                page.top_box.errors.extend(errors)
-        # element does not found
+        elements = main_element.find_elements(By.XPATH, "./div[@class='categoryBox']")
+        elements = list(
+            map(lambda e: e.find_element(By.XPATH, "./a"),
+                filter(lambda x: x.is_displayed(), elements)))
+        # elements = [element.find_element_by_xpath(".//a") for element in elements]
+
+        if len(elements) == 0:  # inside elements are not displayed
+            page.top_box.errors.append('top box is displayed without any data')
+            return
+
         else:
-            print(main_element + ' ')
+            links, errors = PageUtility.set_url_links(elements)
+            # page.top_box.links.extend(links)
+            errors = [error + ' ' for error in errors]
+            # errors = list(map(lambda x:x+' in top box',errors))
+            page.top_box.errors.extend(errors)
+
 
     @classmethod
     def set_more_links(cls, page: SubjectPage, session: webdriver.Chrome):
