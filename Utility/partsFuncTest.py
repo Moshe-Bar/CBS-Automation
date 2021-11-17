@@ -34,6 +34,7 @@ elem = sess.find_element(By.XPATH,"//div[@id='hebstats']")
 print('stats ready..')
 try:
     e = elem.find_element(By.XPATH,"./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
+    print('is displayed: ',elem.is_displayed())
     print('hidden')
 except NoSuchElementException:
     print('hidden state div not found')

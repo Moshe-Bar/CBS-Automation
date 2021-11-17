@@ -220,40 +220,30 @@ class WebPartUtility:
     def set_more_links(cls, page: SubjectPage, session: webdriver.Chrome):
         print('more-links test in: {}'.format(page.name))
 
-        try:
-            elem = session.find_element(By.XPATH, Links.MORE_LINKS_XPATH.value)
-            if elem is None:
-                return
-            style = elem.get_attribute('style')
-            if style == 'display: none;':
-                return
-
-        except TimeoutException as e:
-            print('element not found : more links', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('MORE_LINKS_XPATH', session)
+        if root_element is None:
+            print('more links not tested')
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
 
-        except NoSuchElementException as e:
-            print('no such element exception ', e)
-            return
-
-        except Exception as e:
-            print('exception in more links: ', type(e))
-            return
 
         # title check
-        title = elem.find_element(By.XPATH, ".//h2//span").text
+        title = root_element.find_element(By.XPATH, "./h2//span").text
         if not title == 'קישורים נוספים':
             page.more_links.errors.append('title is not correct')
 
         # inside links check
-        links = elem.find_elements(By.XPATH, ".//ul//div//div//div//div//ul//li//div//div[@class='link-item']//a")
-        links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), links))
+        links = root_element.find_elements(By.XPATH, "./ul/div/div/div/div/ul/li/div/div[@class='link-item']/a")
+        # links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), links))
+        if len(links) < 1:
+            page.more_links.errors.append('no content ')
+        links, errors = PageUtility.set_url_links(links)
+        # page.press_releases.links.extend(links)
+        page.more_links.errors.extend(errors)
 
-        for i, link in enumerate(links):
-            PageUtility.set_link_status(link)
-            # page.sub_subjects.links.append(link)
-            if not link.status_code == 200:
-                page.more_links.errors.append('link number {} is broken'.format(i + 1))
+
 
     @classmethod
     def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
