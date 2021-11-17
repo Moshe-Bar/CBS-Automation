@@ -108,7 +108,7 @@ class WebPartUtility:
             images, errors = PageUtility.set_url_links(images, attrib='src')
             errors = [error + ' in Statistical image' for error in errors]
             page.stats_part.errors.extend(errors)
-            page.stats_part.images.extend(links)
+            # page.stats_part.images.extend(links)
 
         if len(links) == 0:
             page.stats_part.errors.append('links content is missing')
@@ -249,17 +249,18 @@ class WebPartUtility:
     def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
         print('sub-subjects test in: {}'.format(page.name))
 
-        # find the web part
-        try:
-            main_element = session.find_element(By.XPATH, Links.SUB_SUBJECTS_XPATH.value)
-        except NoSuchElementException:
+        # check if the element located
+        root_element, error = cls.get_main_element('SUB_SUBJECTS_XPATH', session)
+        if root_element is None:
+            print('sub-subjects not tested')
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
-        except TimeoutException:
-            return
+
 
         # check title
         try:
-            title = main_element.find_element(By.XPATH, "//h2[@class='ms-webpart-titleText']//span").text
+            title = root_element.find_element(By.XPATH, "/h2[@class='ms-webpart-titleText']/span").text
             if not title == 'נושאי משנה':
                 page.sub_subjects.errors.append('title is not correct')
         except NoSuchElementException:
@@ -268,17 +269,16 @@ class WebPartUtility:
             page.sub_subjects.errors.append('title is not correct')
 
         # find all the links inside and set their status
-        raw_links = main_element.find_elements(By.XPATH, ".//ul[@class='subtopicsList']//li//a")
-        if len(raw_links) == 0:
+        links = root_element.find_elements(By.XPATH, "./ul[@class='subtopicsList']/li/a")
+        if len(links) == 0:
             page.sub_subjects.errors.append('no internal links')
             return
-        internal_links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), raw_links))
+        links, errors = PageUtility.set_url_links(links)
+        errors = [error + ' ' for error in errors]
+        page.sub_subjects.errors.extend(errors)
+        # page.stats_part.links.extend(links)
 
-        for link in internal_links:
-            PageUtility.set_link_status(link)
-            page.sub_subjects.links.append(link)
-            if not link.status_code == 200:
-                page.sub_subjects.errors.append('the link: ' + link.name + 'is broken')
+
 
     @classmethod
     def set_publications(cls, page: SubjectPage, session: webdriver.Chrome):
