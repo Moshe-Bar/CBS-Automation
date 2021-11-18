@@ -38,7 +38,8 @@ XPATH = {
     "PRESS_RELEASES_XPATH": Links.PRESS_RELEASES_XPATH.value,
     "TABLES_AND_CHARTS_XPATH": Links.TABLES_AND_CHARTS_XPATH.value,
     "PUBLICATIONS_XPATH": Links.PUBLICATIONS_XPATH.value,
-    "INTERNATIONAL_COMPARISONS_XPATH": Links.INTERNATIONAL_COMPARISONS_XPATH.value}
+    "INTERNATIONAL_COMPARISONS_XPATH": Links.INTERNATIONAL_COMPARISONS_XPATH.value,
+    "MORE_LINKS_XPATH" : Links.MORE_LINKS_XPATH.value}
 
 
 class WebPartUtility:
@@ -81,9 +82,10 @@ class WebPartUtility:
         # check id not displayed
         try:
             is_hidden = root_element.find_element(By.XPATH, "./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
-        except NoSuchElementException:
-            print('stats nor displayed and not tested in: ',page.name)
+            print('stats not displayed and not tested in: ', page.name)
             return
+        except NoSuchElementException:
+            pass
 
 
         # title check
@@ -91,6 +93,7 @@ class WebPartUtility:
             title = root_element.find_element(By.XPATH, "./h2/nobr/span")
             title = title.text
             if not title == 'עלוני סטטיסטיקל':
+                print('title in stats is: ',title)
                 page.stats_part.errors.append('title not correct')
         except NoSuchElementException:
             page.stats_part.errors.append('title not correct')
@@ -120,19 +123,21 @@ class WebPartUtility:
 
             # *****************************************************************************************************************
         try:
-            all_stats_link = root_element.find_element(By.XPATH,"./a]")
-            # text test
-            text = all_stats_link.text
-            if not text =='לכל עלוני הסטטיסטיקל >':
-                page.stats_part.errors.append('text in link to all massages not correct')
-
-            cur_link = CbsLink(all_stats_link.get_attribute('href'))
-            page.stats_part.links.append(cur_link)
-            PageUtility.set_link_status(cur_link)
-            if not cur_link.status_code == 200:
-                page.stats_part.errors.append('link to all massages is broken')
+            all_stats_link = root_element.find_element(By.XPATH,"./a")
         except NoSuchElementException:
             page.stats_part.errors.append('link to all massages is missing')
+            return
+        # text test
+        text = all_stats_link.text
+        if not text =='לכל עלוני הסטטיסטיקל >':
+            page.stats_part.errors.append('text in link to all massages not correct')
+
+        cur_link = CbsLink(all_stats_link.get_attribute('href'))
+        # page.stats_part.links.append(cur_link)
+        PageUtility.set_link_status(cur_link)
+        if not cur_link.status_code == 200:
+            page.stats_part.errors.append('link to all massages is broken')
+
 
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
@@ -173,6 +178,7 @@ class WebPartUtility:
             page.press_releases.errors.append('no found any content')
             return
 
+        # last link test
         try:
             to_all_massages = root_element.find_element(By.XPATH, "./div/a")
             text =  to_all_massages.text
@@ -260,12 +266,16 @@ class WebPartUtility:
 
         # check title
         try:
-            title = root_element.find_element(By.XPATH, "/h2[@class='ms-webpart-titleText']/span").text
+            title = root_element.find_element(By.XPATH, "./h2[@class='ms-webpart-titleText']/span").text
+
             if not title == 'נושאי משנה':
+                print('title is: ',title)
                 page.sub_subjects.errors.append('title is not correct')
-        except NoSuchElementException:
+        except NoSuchElementException as e:
+            print('Exception: ',e, " in sub-subject, page: ",page.name)
             page.sub_subjects.errors.append('title is not correct')
-        except TimeoutException:
+        except TimeoutException as e:
+            print('Exception: ',e, " in sub-subject, page: ",page.name)
             page.sub_subjects.errors.append('title is not correct')
 
         # find all the links inside and set their status
@@ -284,18 +294,18 @@ class WebPartUtility:
     def set_publications(cls, page: SubjectPage, session: webdriver.Chrome):
         print('publications test in: {}'.format(page.name))
 
-        # check if web part is exist
-        try:
-            main_element = session.find_element(By.XPATH, Links.PUBLICATIONS_XPATH.value)
+        # check if the element located
+        root_element, error = cls.get_main_element('PUBLICATIONS_XPATH', session)
+        if root_element is None:
+            print('publication not tested')
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
 
-        except NoSuchElementException:
-            return
-        except TimeoutException:
-            return
 
         # check title
         try:
-            title = main_element.find_element(By.XPATH, './/h2//span').text
+            title = root_element.find_element(By.XPATH, './h2/span').text
             if not title == 'פרסומים':
                 page.publications.errors.append('title is not correct')
 
@@ -306,21 +316,30 @@ class WebPartUtility:
 
         # check links inside
         try:
-            data_lines = main_element.find_elements(By.XPATH, './/div//ul//li')
-            part_lines = []
-            for line in data_lines:
-                divs = line.find_elements(By.XPATH, './/div//div')  # two divs
-                date = divs[1].text
-                a = divs[0].find_element(By.XPATH, './/a')
-                text = a.text
-                url = a.get_attribute('href')
-
-
+            links = root_element.find_elements(By.XPATH, './div//ul/li/div/div/a')
+            if len(links) <1:
+                page.publications.errors.append('no content')
+            else:
+                links, errors = PageUtility.set_url_links(links)
+                errors = [error + ' ' for error in errors]
+                page.publications.errors.extend(errors)
 
         except NoSuchElementException:
             page.publications.errors.append('title is not correct')
         except TimeoutException:
             page.publications.errors.append('title is not correct')
+
+        # check last link
+        try:
+            link = root_element.find_element(By.XPATH,"./a")
+            link, errors = PageUtility.set_url_links([link])
+            if len(errors)>0:
+                page.publications.errors.append("last link problem")
+                return
+
+        except Exception as e:
+            page.publications.errors.append("last link problem")
+
 
     @classmethod
     def set_extra_parts(cls, page: SubjectPage, root_element):
