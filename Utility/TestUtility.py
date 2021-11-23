@@ -87,35 +87,85 @@ class TestUtility:
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):
 
-        WebPartUtility.set_summary(page=page, session=main_element)
 
-        WebPartUtility.set_heb_statistical(page=page, session=main_element)
+        tests = []
+        # WebPartUtility.set_summary(page=page, session=main_element)
+        summary = threading.Thread(target=WebPartUtility.set_summary, args=(page, main_element))
+        summary.start()
+        tests.append(summary)
 
-        WebPartUtility.set_extra_parts(page=page, root_element=main_element)
+        # WebPartUtility.set_heb_statistical(page=page, session=main_element)
+        statistical = threading.Thread(target=WebPartUtility.set_heb_statistical, args=(page, main_element))
+        statistical.start()
+        tests.append(statistical)
 
-        WebPartUtility.set_top_box(page=page, session=main_element)
+        # WebPartUtility.set_extra_parts(page=page, root_element=main_element)
+        extra_parts = threading.Thread(target=WebPartUtility.set_extra_parts, args=(page, main_element))
+        extra_parts.start()
+        tests.append(extra_parts)
 
-        WebPartUtility.set_sub_subjects(page=page, session=main_element)
+        # WebPartUtility.set_top_box(page=page, session=main_element)
+        top_box = threading.Thread(target=WebPartUtility.set_top_box, args=(page, main_element))
+        top_box.start()
+        tests.append(top_box)
 
-        WebPartUtility.set_press_releases(page=page, session=main_element)
+        # WebPartUtility.set_sub_subjects(page=page, session=main_element)
+        sub_subjects = threading.Thread(target=WebPartUtility.set_sub_subjects, args=(page, main_element))
+        sub_subjects.start()
+        tests.append(sub_subjects)
 
-        WebPartUtility.set_tables_and_charts(page=page, session=main_element)
+        # WebPartUtility.set_press_releases(page=page, session=main_element)
+        press_releases = threading.Thread(target=WebPartUtility.set_press_releases, args=(page, main_element))
+        press_releases.start()
+        tests.append(press_releases)
 
-        WebPartUtility.set_tools_and_db(page=page, session=main_element)
+        # WebPartUtility.set_tables_and_charts(page=page, session=main_element)
+        tables_and_charts = threading.Thread(target=WebPartUtility.set_tables_and_charts, args=(page, main_element))
+        tables_and_charts.start()
+        tests.append(tables_and_charts)
 
-        WebPartUtility.set_publications(page=page, session=main_element)
+        # WebPartUtility.set_tools_and_db(page=page, session=main_element)
+        tools_and_db = threading.Thread(target=WebPartUtility.set_tools_and_db, args=(page, main_element))
+        tools_and_db.start()
+        tests.append(tools_and_db)
 
-        WebPartUtility.set_geographic_zone(page=page, session=main_element)
+        # WebPartUtility.set_publications(page=page, session=main_element)
+        publications = threading.Thread(target=WebPartUtility.set_publications, args=(page, main_element))
+        publications.start()
+        tests.append(publications)
 
-        WebPartUtility.set_international_comparisons(page=page, session=main_element)
+        # WebPartUtility.set_geographic_zone(page=page, session=main_element)
+        geographic_zone = threading.Thread(target=WebPartUtility.set_geographic_zone, args=(page, main_element))
+        geographic_zone.start()
+        tests.append(geographic_zone)
 
-        WebPartUtility.set_more_links(page=page, session=main_element)
+        # WebPartUtility.set_international_comparisons(page=page, session=main_element)
+        international_comparisons = threading.Thread(target=WebPartUtility.set_international_comparisons, args=(page, main_element))
+        international_comparisons.start()
+        tests.append(international_comparisons)
 
-        WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
+        # WebPartUtility.set_more_links(page=page, session=main_element)
+        more_links = threading.Thread(target=WebPartUtility.set_more_links, args=(page, main_element))
+        more_links.start()
+        tests.append(more_links)
 
-        WebPartUtility.set_videos_links(page=page, session=main_element)#TODO
+        # WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
+        conferences_and_seminars = threading.Thread(target=WebPartUtility.set_conferences_and_seminars, args=(page, main_element))
+        conferences_and_seminars.start()
+        tests.append(conferences_and_seminars)
 
-        WebPartUtility.set_pictures_links(page=page, session=main_element)#TODO
+        # WebPartUtility.set_videos_links(page=page, session=main_element)#TODO
+        videos_links = threading.Thread(target=WebPartUtility.set_videos_links, args=(page, main_element))
+        videos_links.start()
+        tests.append(videos_links)
+
+        # WebPartUtility.set_pictures_links(page=page, session=main_element)#TODO
+        pictures_links = threading.Thread(target=WebPartUtility.set_pictures_links, args=(page, main_element))
+        pictures_links.start()
+        tests.append(pictures_links)
+
+        for test in tests:
+            test.join()
 
     #     TODO another web part
 
