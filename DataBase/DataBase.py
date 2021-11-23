@@ -7,14 +7,14 @@ from enum import Enum
 
 
 ####,encoding="utf-8"
-
+ROOT_PATH = sys.path[1]
 
 class DataBase:
     @classmethod
     def get_CBS_he_links(cls):
         links = []
         try:
-            with open(r'../DataBase/heb_pages_links.txt', 'r', encoding="utf-8") as f:
+            with open(ROOT_PATH + '\\DataBase\\heb_pages_links.txt', 'r', encoding="utf-8") as f:
                 for line in f:
                     li = line.split()
                     cbs_link = CbsLink(li[0])
@@ -30,7 +30,7 @@ class DataBase:
     def get_CBS_en_links(cls):
         links = []
         try:
-            with open(r'../DataBase/en_pages_links.txt', 'r', encoding="utf-8") as f:
+            with open(ROOT_PATH + '\\DataBase\\en_pages_links.txt', 'r', encoding="utf-8") as f:
                 for line in f:
                     li = line.split()
                     cbs_link = CbsLink(li[0])
@@ -66,7 +66,7 @@ class DataBase:
     @classmethod
     def save_test_result(cls, test_key, page: SubjectPage):
         try:
-            path = r'../TestData/logs'
+            path = ROOT_PATH + '\\TestData\\logs'
             file = path + '\\' + test_key + '.html'
             with open(file, 'a', encoding='utf-8') as f:
                 style = 'style={color:red; font-size: large; }'
@@ -84,7 +84,7 @@ class DataBase:
     def get_test_result(cls, file_key):
         file_name = file_key
         try:
-            path = r'../TestData/logs'
+            path = ROOT_PATH + '\\TestData\\logs'
             file = path + '\\' + file_name + '.html'
             with open(file, 'r', encoding='utf-8') as f:
                 data = f.read()
@@ -103,7 +103,7 @@ class DataBase:
         sum += 'Total error pages: ' + str(summary[4]) + '</h1>'
         file_name = file_key
         try:
-            path = r'../TestData/logs'
+            path = ROOT_PATH + '\\TestData\\logs'
             file = path + '\\' + file_name + '.html'
             with open(file, 'r', encoding='utf-8') as f:
                 content = f.read()
@@ -117,14 +117,14 @@ class DataBase:
 
     @classmethod
     def load_xpath(cls, key):
-        with open(r'../Configuration/xpath.json', 'rb') as f:
+        with open(ROOT_PATH + '\\Configuration\\xpath.json', 'rb') as f:
             data = json.load(f)
             f.close()
         return data['XPath'][0][key]
 
     @classmethod
     def get_webdriver_path(cls):
-        with open('../Configuration/webdriver_path.json', 'rb') as file:
+        with open(ROOT_PATH + '\\Configuration\\webdriver_path.json', 'rb') as file:
             data = json.load(file)
             file.close()
         return data['driver_path']

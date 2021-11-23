@@ -665,28 +665,6 @@ class WebPartUtility:
 class PageUtility:
 
     @classmethod
-    def setPageLevel(cls, root_element, page: SubjectPage):
-        # finding the Level inside the page text
-        # print('finding span objects...')
-        uList = root_element.find_elements_by_xpath(
-            "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']")
-        page.level = len(uList) - 2
-
-    @classmethod
-    def setPageParent(cls, root_element, page: SubjectPage):
-        if page.level is None:
-            cls.setPageLevel(root_element, page)
-        if page.level > 1:
-            uList = root_element.find_elements_by_xpath(
-                "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']//a[@href]")
-            page.link = uList[len(uList) - 1].get_attribute('href')
-            page.name = uList[len(uList) - 1].text
-        # else the parent page is the home page
-        else:
-            page.link = Links.CBS_HOME_PAGE_HE.value
-            page.name = CBS_HOME_PAGE_NAME
-
-    @classmethod
     def create_pages(cls, link_list):
         return [SubjectPage(link, link.name) for link in link_list]
 
@@ -777,60 +755,6 @@ class PageUtility:
         # print('end deep check')
         return False
 
-    @classmethod
-    def set_page_lang(cls, page: SubjectPage, root_element):
-        try:
-            element = root_element.find_element_by_xpath("//a[@id='ctl00_ctl23_lbEnglish']")
-        except NoSuchElementException as e:
-            print('not a subject page')
-            return
-        if element.text.upper() == 'ENGLISH':
-            page.lang = Language.ENGLISH.value
-            return
-        page.lang = Language.HEBREW.value
 
-    # @classmethod  # need to be changed according page file_type
-    # def set_internal_links(cls, page: SubjectPage, session: webdriver.Chrome):
-    #
-    #     if page.link.status_code == 200:
-    #         # inside links check
-    #         try:
-    #             session.get(page.link.url)
-    #             links = session.find_elements_by_xpath("//div[@class='twoColumn']//a[@href]")
-    #             cbs_links = []
-    #             for link in links:
-    #                 url_: str = link.get_attribute('href')
-    #                 text: str = link.text
-    #                 if text == '' and url_ == '':
-    #                     continue
-    #                 else:
-    #                     cur_link = CbsLink(url_)
-    #                     cur_link.name = text
-    #                     cbs_links.append(cur_link)
-    #             page.set_inside_links(cbs_links)
-    #         except Exception as e:
-    #             print('exception was occurred in page: ' + page.name)
-    #         finally:
-    #             error = False
-    #             for link in page:
-    #                 if link.status_code == 200:
-    #                     error = True
-    #                     break
-    #         if error:
-    #             print(page.name + '::' + 'problems were found')
-    #             # need to be replace with inserting errors inside the page
-    #             # def wrightToFile(links):
-    #         else:
-    #             print(page.name + '::' + '200 OK for links inside')
 
-    # @classmethod
-    # def set_extra_statistical(cls, page: SubjectPage, root_element:WebDriver):
-    #     # check for extra web part - empty statistical (different xPath)
-    #     try:
-    #         # extra_stats = root_element.find_element_by_xpath(Links.EXTRA_STATS_XPATH.value)
-    #         page.stats_part.errors.append('extra web part is showed')
-    #         page.isCorrect = False
-    #     except TimeoutException:
-    #         pass
-    #     except NoSuchElementException:
-    #         return
+

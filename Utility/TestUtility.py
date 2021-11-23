@@ -1,4 +1,5 @@
 import datetime
+import sys
 import threading
 import time
 from multiprocessing import Queue
@@ -75,9 +76,9 @@ class TestUtility:
             else:
                 driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
-            driver.implicitly_wait(wait_time)
-
-            driver.get(r'D:\Current\Selenium\NewAutomationEnv\DataBase\LoadTest\LoadTest.html')
+            # driver.implicitly_wait(wait_time)
+            path = sys.path[1] + '\\DataBase\\LoadTest.html'
+            driver.get(path)
 
             return driver
         except WebDriverException as e:
@@ -86,7 +87,6 @@ class TestUtility:
 
     @classmethod
     def testPage(cls, page: SubjectPage, main_element):
-
 
         tests = []
         # WebPartUtility.set_summary(page=page, session=main_element)
@@ -140,7 +140,8 @@ class TestUtility:
         tests.append(geographic_zone)
 
         # WebPartUtility.set_international_comparisons(page=page, session=main_element)
-        international_comparisons = threading.Thread(target=WebPartUtility.set_international_comparisons, args=(page, main_element))
+        international_comparisons = threading.Thread(target=WebPartUtility.set_international_comparisons,
+                                                     args=(page, main_element))
         international_comparisons.start()
         tests.append(international_comparisons)
 
@@ -150,7 +151,8 @@ class TestUtility:
         tests.append(more_links)
 
         # WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
-        conferences_and_seminars = threading.Thread(target=WebPartUtility.set_conferences_and_seminars, args=(page, main_element))
+        conferences_and_seminars = threading.Thread(target=WebPartUtility.set_conferences_and_seminars,
+                                                    args=(page, main_element))
         conferences_and_seminars.start()
         tests.append(conferences_and_seminars)
 
@@ -166,8 +168,7 @@ class TestUtility:
 
         for test in tests:
             test.join()
-        print("Done threads test in ",page.name)
-    #     TODO another web part
+        print("Done threads test in ", page.name)
 
     # visible func
     @classmethod
@@ -443,3 +444,6 @@ class TestUtility:
     def get_test_result(cls, log_key):
         file_key = log_key
         return DataBase.get_test_result(file_key=file_key)
+
+
+# print(sys.path[1] + '\\DataBase\\LoadTest.html')
