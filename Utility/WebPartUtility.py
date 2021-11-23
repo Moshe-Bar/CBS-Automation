@@ -1,5 +1,7 @@
 # for certificate recognition in requests
 ##########
+import threading
+
 import certifi
 # import ssl
 ##########
@@ -727,6 +729,15 @@ class PageUtility:
             cls.check_for_cbs_error_page(content, link)
             return
 
+    @classmethod
+    def link_state(cls,element,attrib,link_list,errors,iteration):
+        url = element.get_attribute(attrib)
+        link = CbsLink(url)
+        cls.set_link_status(link)
+        link_list.append(link)
+        if not link.status_code == 200:
+            print(str(link.status_code) + str(link.url))
+            errors.append(str(iteration + 1) + 'th link is broken')
     # gets <a> or <img> web elements and check them for errors
     # returns tuple of list of CBS links from input and list of errors -
     # each error describes the index of the error link
@@ -734,14 +745,22 @@ class PageUtility:
     def set_url_links(cls, links: [WebElement], attrib='href'):
         link_list = []
         errors = []
+        threads =[]
         for i, element in enumerate(links):
-            url = element.get_attribute(attrib)
-            link = CbsLink(url)
-            cls.set_link_status(link)
-            link_list.append(link)
-            if not link.status_code == 200:
-                print(str(link.status_code) + str(link.url))
-                errors.append(str(i + 1) + 'th link is broken')
+            t = threading.Thread(target=cls.link_state, args=(element,attrib,link_list,errors,i))
+            threads.append(t)
+            t.start()
+
+            # url = element.get_attribute(attrib)
+            # link = CbsLink(url)
+            # cls.set_link_status(link)
+            # link_list.append(link)
+            # if not link.status_code == 200:
+            #     print(str(link.status_code) + str(link.url))
+            #     errors.append(str(i + 1) + 'th link is broken')
+        for t in threads:
+            t.join()
+
         return link_list, errors
 
     @classmethod

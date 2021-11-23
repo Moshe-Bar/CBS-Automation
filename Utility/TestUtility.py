@@ -166,7 +166,7 @@ class TestUtility:
 
         for test in tests:
             test.join()
-
+        print("Done threads test in ",page.name)
     #     TODO another web part
 
     # visible func
