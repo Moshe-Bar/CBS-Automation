@@ -2,7 +2,6 @@
   "XPath": [
     {
       "ROOT_XPATH": "./html/body/form/div[@id='s4-workspace']/div/div/main/div/div[@id='DeltaPlaceHolderMain']/div[@role='main']/div",
-      "MAP_LINKS_XPATH": "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a",
       "HEBREW_STATS_XPATH": "/div[@class='leftColumn']/div[@id='hebstats']",
       "RIGHT_EXTRA_PARTS_XPATH": "/div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
       "LEFT_EXTRA_PARTS_XPATH": "/div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']",

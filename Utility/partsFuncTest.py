@@ -20,20 +20,34 @@ from Utility.TestUtility import TestUtility
 
 
 # URL = r"D:\Current\Selenium\NewAutomationEnv\DataBase\local\test_2.html"
-URL = r"https://www.cbs.gov.il/he/subjects/Pages/-%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%95%D7%A6%D7%90.aspx"
+URL = r"D:\Current\cbs_auto\DataBase\local\pop_new.html"
 
 sess = TestUtility.create_web_driver(wait_time=10)
 
 
-page = SubjectPage(CbsLink(url=URL), '????? ??')
+page = SubjectPage(CbsLink(url=URL), 'population damaged')
 sess.get(URL)
 print('test is started')
 
 
 
 try:
-    e = sess.find_element(By.XPATH,Links.ROOT_XPATH.value)
-    print(e)
+    # e = sess.find_element(By.XPATH,Links.ROOT_XPATH.value+Links.HEBREW_STATS_XPATH.value)
+    # WebPartUtility.set_heb_statistical(page=page, session=sess)
+    # WebPartUtility.set_extra_parts(page=page,root_element=sess)
+    # WebPartUtility.set_summary(page=page, session=sess)
+    # WebPartUtility.set_international_comparisons(page=page, session=sess)
+    # WebPartUtility.set_more_links(page=page, session=sess)
+    WebPartUtility.set_geographic_zone(page=page, session=sess)
+    # WebPartUtility.set_publications(page=page, session=sess)
+    # WebPartUtility.set_tools_and_db(page=page, session=sess)
+    # WebPartUtility.set_press_releases(page=page, session=sess)
+    # WebPartUtility.set_sub_subjects(page=page, session=sess)
+    # WebPartUtility.set_top_box(page=page, session=sess)
+    # WebPartUtility.set_tables_and_charts(page=page, session=sess)
+
+    print('test functions ended')
+    print('errors: ',page.error_to_str())
 except NoSuchElementException:
     print("couldn't find main html")
 

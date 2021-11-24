@@ -18,7 +18,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from CbsObjects.WebPartLine import WebPartLine
-from DL.DataBase import Links
+from DataBase.DataBase import Links
 
 import urllib.request
 
@@ -40,8 +40,9 @@ XPATH = {
     "TABLES_AND_CHARTS_XPATH": Links.TABLES_AND_CHARTS_XPATH.value,
     "PUBLICATIONS_XPATH": Links.PUBLICATIONS_XPATH.value,
     "INTERNATIONAL_COMPARISONS_XPATH": Links.INTERNATIONAL_COMPARISONS_XPATH.value,
-    "MORE_LINKS_XPATH" : Links.MORE_LINKS_XPATH.value}
-
+    "MORE_LINKS_XPATH" : Links.MORE_LINKS_XPATH.value,
+    "GEOGRAPHIC_ZONE_XPATH":Links.GEOGRAPHIC_ZONE_XPATH.value}
+ROOT_ELEMENT = Links.ROOT_XPATH.value
 
 class WebPartUtility:
     # returns the element from web page which contains the web-part component
@@ -53,7 +54,7 @@ class WebPartUtility:
             print('exception while trying to get xpath from dict: ', e)
             return None, 'exception while trying to get xpath from dict: {}'.format(e)
         try:
-            main_element = session.find_element(By.XPATH, xpath)
+            main_element = session.find_element(By.XPATH,ROOT_ELEMENT+xpath)
             if not main_element.is_displayed():
                 return None, 'Hidden'
         except TimeoutException:
@@ -79,13 +80,15 @@ class WebPartUtility:
             if error == 'chrome session error':
                 raise Exception('chrome session error')
             return
-
+        else:
+            print('stats been found')
         # check id not displayed
         try:
             is_hidden = root_element.find_element(By.XPATH, "./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
             print('stats not displayed and not tested in: ', page.name)
             return
         except NoSuchElementException:
+            print('stats is visible')
             pass
 
 
@@ -93,6 +96,7 @@ class WebPartUtility:
         try:
             title = root_element.find_element(By.XPATH, "./h2/nobr/span")
             title = title.text
+            print('stats title: ',title)
             if not title == 'עלוני סטטיסטיקל':
                 print('title in stats is: ',title)
                 page.stats_part.errors.append('title not correct')
@@ -105,7 +109,7 @@ class WebPartUtility:
 
         images = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//img")
         links = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//a")
-
+        print('num images: {}, num links: {}'.format(len(images),len(links)))
         if len(images) == 0 or len(links) == 0:
             page.stats_part.errors.append('images or links content is missing')
         else:
@@ -480,25 +484,19 @@ class WebPartUtility:
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
         print('tables-and-charts test in: {}'.format(page.name))
 
-        try:
-            element: WebElement = session.find_element(By.XPATH, Links.TABLES_AND_CHARTS_XPATH.value)
-        except NoSuchElementException as e:
-            print('no tables and charts', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('TABLES_AND_CHARTS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
-        except TimeoutException as e:
-            print('no tables and charts', e)
-            return
-        except TypeError as e:
-            print('exception, xpath is not recognized', e)
-            return
-        except Exception as e:
-            print('not recognized exception in tables and charts', e)
-            return
+
+
 
         # title check
         try:
 
-            title = element.find_element(By.XPATH, ".//h2//span").text
+            title = root_element.find_element(By.XPATH, "./h2/span").text
             if not title == 'לוחות ותרשימים':
                 page.tables_and_charts.errors.append('title is not correct')
                 print(title)
@@ -519,36 +517,33 @@ class WebPartUtility:
             return
 
         # links check
-        try:
+        links = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a")
+        # images check
+        images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a/img")
 
-            li_elements = element.find_elements(By.XPATH, ".//div//ul//li")
-            print('number li: ', len(li_elements))
-            web_part_lines = []
-            if len(li_elements) == 0:
-                raise NoSuchElementException(msg='elements not found')
 
-            for li in li_elements:
-                div = li.find_elements(By.XPATH, ".//div//div")
-                pic_url = CbsLink(div[0].find_element(By.XPATH, ".//a//img").get_attribute('src'))
-                link_url = CbsLink(div[0].find_element(By.XPATH, ".//a").get_attribute('href'))
-                name = div[0].text
-                date = div[1].text
-                web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
-
-            cls.check_lines(web_part_lines, page.tables_and_charts.errors)
-
-        except NoSuchElementException as e:
-            page.tables_and_charts.errors.append('not found any links')
-        except TimeoutException as e:
-            page.tables_and_charts.errors.append('not found any links')
-        except TypeError as e:
-            print('exception, xpath is not recognized')
-        except Exception as e:
-            print('not recognized exception in tables and charts: {}'.format(e))
+            # for li in li_elements:
+            #     div = li.find_elements(By.XPATH, ".//div//div")
+            #     pic_url = CbsLink(div[0].find_element(By.XPATH, ".//a//img").get_attribute('src'))
+            #     link_url = CbsLink(div[0].find_element(By.XPATH, ".//a").get_attribute('href'))
+            #     name = div[0].text
+            #     date = div[1].text
+            #     web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
+            #
+            # cls.check_lines(web_part_lines, page.tables_and_charts.errors)
+        #
+        # except NoSuchElementException as e:
+        #     page.tables_and_charts.errors.append('not found any links')
+        # except TimeoutException as e:
+        #     page.tables_and_charts.errors.append('not found any links')
+        # except TypeError as e:
+        #     print('exception, xpath is not recognized')
+        # except Exception as e:
+        #     print('not recognized exception in tables and charts: {}'.format(e))
 
         # last link check
         try:
-            to_all_maps = element.find_element(By.XPATH, ".//div//a[@class='MadadTableMapsToAll']")
+            to_all_maps = root_element.find_element(By.XPATH, ".//div//a[@class='MadadTableMapsToAll']")
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
@@ -574,23 +569,16 @@ class WebPartUtility:
     def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
         print('geographic-zone test in: {}'.format(page.name))
 
-        try:
-            element: WebElement = session.find_element(By.XPATH, Links.GEOGRAPHIC_ZONE_XPATH.value)
-        except NoSuchElementException as e:
-            print('no geographic_zone', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('GEOGRAPHIC_ZONE_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
-        except TimeoutException as e:
-            print('no geographic_zone', e)
-            return
-        except TypeError as e:
-            print('exception, xpath is not recognized', e)
-            return
-        except Exception as e:
-            print('not recognized exception in geographic_zone', e)
-            return
+
         # check link status
         try:
-            a = element.find_element(By.XPATH, './/a').get_attribute('href')
+            a = root_element.find_element(By.XPATH, './/a').get_attribute('href')
             link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
