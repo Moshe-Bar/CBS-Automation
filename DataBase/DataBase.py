@@ -126,7 +126,9 @@ class Links(Enum):
     CBS_MAP_SITE_HE = 'https://www.cbs.gov.il/he/pages/sitemap.aspx'
     CBS_MAP_SITE_EN = 'https://www.cbs.gov.il/en/Pages/sitemap.aspx'
     ROOT_DIR = sys.path[1]
+
     CHROME_DRIVER = ROOT_DIR + "/" + DataBase.get_webdriver_path()
+    ROOT_XPATH = DataBase.load_xpath('ROOT_XPATH')
     MAP_LINKS_XPATH = DataBase.load_xpath('MAP_LINKS_XPATH')
     HEBREW_STATS_XPATH = DataBase.load_xpath('HEBREW_STATS_XPATH')
     RIGHT_EXTRA_PARTS_XPATH = DataBase.load_xpath('RIGHT_EXTRA_PARTS_XPATH')
@@ -146,7 +148,7 @@ class Links(Enum):
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 
-# print(DataBase.get_CBS_en_links())
+# print(Links.ROOT_XPATH.value)
 # summ = [1,2,3,4,5]
 # path = '02_Jun_2021_10.48.50'
 # DataBase.save_summary_result(file_key=path,summery=summ)

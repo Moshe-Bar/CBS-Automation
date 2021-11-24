@@ -419,52 +419,62 @@ class WebPartUtility:
     @classmethod
     def set_summary(cls, page: SubjectPage, session: webdriver):
         print('summary test in: {}'.format(page.name))
-        try:
-            # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
-            paragraph = session.find_element(By.XPATH, Links.SUMMARY_XPATH.value).text
-            images = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//img")
-            links = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//a")
-            # check text is exist
-            if paragraph == '':
-                page.summary.errors.append('no text')
+        # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
+        # check if the element located
+        root_element, error = cls.get_main_element('SUMMARY_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
+        # paragraphs test
+        paragraphs = root_element.find_elements(By.XPATH, "./div[4]/p")
 
-            # test images
-            if len(images) > 0:
-                counter = 0
-                for i, img in enumerate(images):
-                    cur_link = CbsLink(img.get_attribute('src'))
-                    PageUtility.set_link_status(cur_link)
-                    page.summary.images.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        counter += 1
 
-                if counter > 1:
-                    page.summary.errors.append('{} images are broken'.format(counter))
-                elif counter == 1:
-                    page.summary.errors.append('{} image is broken'.format(counter))
+        # images test
+        # links test
+        # images = session.find_element(By.XPATH,"./div[2]/div/img")
+        # links = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//a")
+        # check text is exist
+        #     if paragraph == '':
+        #         page.summary.errors.append('no text')
 
-            # test links
-            if len(links) > 0:
-                counter = 0
-                for i, url in enumerate(links):
-                    cur_link = CbsLink(url.get_attribute('href'))
-                    PageUtility.set_link_status(cur_link)
-                    page.summary.links.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        counter += 1
-
-                if counter > 1:
-                    page.summary.errors.append('{} links is broken'.format(counter))
-                elif counter == 1:
-                    page.summary.errors.append('{} link is broken'.format(counter))
-
-        except TimeoutException:
-            pass
-        except NoSuchElementException:
-            print("summary couldn't be found")
-        except Exception as e:
-            print('exception in summary test')
-        return
+        # test images
+        # if len(images) > 0:
+        #     counter = 0
+        #     for i, img in enumerate(images):
+        #         cur_link = CbsLink(img.get_attribute('src'))
+        #         PageUtility.set_link_status(cur_link)
+        #         page.summary.images.append(cur_link)
+        #         if not cur_link.status_code == 200:
+        #             counter += 1
+        #
+        #     if counter > 1:
+        #         page.summary.errors.append('{} images are broken'.format(counter))
+        #     elif counter == 1:
+        #         page.summary.errors.append('{} image is broken'.format(counter))
+        #
+        #     # test links
+        #     if len(links) > 0:
+        #         counter = 0
+        #         for i, url in enumerate(links):
+        #             cur_link = CbsLink(url.get_attribute('href'))
+        #             PageUtility.set_link_status(cur_link)
+        #             page.summary.links.append(cur_link)
+        #             if not cur_link.status_code == 200:
+        #                 counter += 1
+        #
+        #         if counter > 1:
+        #             page.summary.errors.append('{} links is broken'.format(counter))
+        #         elif counter == 1:
+        #             page.summary.errors.append('{} link is broken'.format(counter))
+        #
+        # except TimeoutException:
+        #     pass
+        # except NoSuchElementException:
+        #     print("summary couldn't be found")
+        # except Exception as e:
+        #     print('exception in summary test')
+        # return
 
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):

@@ -30,14 +30,12 @@ sess.get(URL)
 print('test is started')
 
 
-elem = sess.find_element(By.XPATH,"//div[@id='hebstats']")
-print('stats ready..')
+
 try:
-    e = elem.find_element(By.XPATH,"./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
-    print('is displayed: ',elem.is_displayed())
-    print('hidden')
+    e = sess.find_element(By.XPATH,Links.ROOT_XPATH.value)
+    print(e)
 except NoSuchElementException:
-    print('hidden state div not found')
+    print("couldn't find main html")
 
 
 # WebPartUtility.set_international_comparisons(page=page, session=sess)

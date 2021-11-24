@@ -77,7 +77,8 @@ class TestUtility:
                 driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
             # driver.implicitly_wait(wait_time)
-            path = sys.path[1] + '\\DataBase\\LoadTest.html'
+
+            path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
             driver.get(path)
 
             return driver
