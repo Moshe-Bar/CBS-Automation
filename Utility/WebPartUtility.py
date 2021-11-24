@@ -120,7 +120,7 @@ class WebPartUtility:
             links, errors = PageUtility.set_url_links(links)
             errors = [error + ' ' for error in errors]
             page.stats_part.errors.extend(errors)
-            page.stats_part.links.extend(links)
+            # page.stats_part.links.extend(links)
 
             # *****************************************************************************************************************
         try:
@@ -377,50 +377,40 @@ class WebPartUtility:
             title = title.text
             if not title == 'כלים ומאגרי נתונים':
                 # print('title in tadb is: ', title)
-                page.stats_part.errors.append('title not correct')
+                page.tools_and_db.errors.append('title not correct')
         except NoSuchElementException:
-            page.stats_part.errors.append('title not correct')
-            print('stats not contain any title: ', page.name)
-            return
-        title = session.find_element(By.XPATH, "//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
-            images = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//img")
-            links = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//a")
+            page.tools_and_db.errors.append('title not correct')
+            print('tools_db not contain any title: ', page.name)
 
-            # test image
-            if len(images) == 0:
-                page.stats_part.errors.append('image content is missing')
-            else:
-                for i, img in enumerate(images):
-                    cur_link = CbsLink(img.get_attribute('src'))
-                    PageUtility.set_link_status(cur_link)
-                    page.tools_and_db.images.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        page.tools_and_db.errors.append('image is broken')
-                        page.isCorrect = False
 
-            # test links
-            if len(links) == 0:
-                page.stats_part.errors.append('link content is missing')
-                page.isCorrect = False
-            else:
-                for i, sheet in enumerate(links):
-                    cur_link = CbsLink(sheet.get_attribute('href'))
-                    page.tools_and_db.links.append(cur_link)
-                    PageUtility.set_link_status(cur_link)
-                    if not cur_link.status_code == 200:
-                        page.tools_and_db.errors.append('link is broken')
-                        page.isCorrect = False
+        # image test
+        try:
+            image = root_element.find_element(By.XPATH, "./div/div/div/img")
+            image = CbsLink(url=image.get_attribute('src'))
+            PageUtility.set_link_status(image)
+            if not image.status_code == 200:
+                page.tools_and_db.errors.append('image is broken')
 
-            # test title
-            if not title == 'כלים ומאגרי נתונים':
-                print(title)
-                page.tools_and_db.errors.append('title i not correct')
-                print('title is not correct')
-
+        except NoSuchElementException:
+            page.tools_and_db.errors.append('no image')
         except TimeoutException:
-            pass
+            page.tools_and_db.errors.append('no image')
+        except Exception as e:
+            print('exception in tools and DB')
+            raise e
+
+        # link test
+        try:
+            link = root_element.find_element(By.XPATH, "./div/div/div/a")
+            link = CbsLink(link.get_attribute('href'))
+            PageUtility.set_link_status(link)
+            if not link.status_code == 200:
+                page.tools_and_db.errors.append('link is broken')
+
         except NoSuchElementException:
-            pass
+            page.tools_and_db.errors.append('no link')
+        except TimeoutException:
+            page.tools_and_db.errors.append('no link')
         except Exception as e:
             print('exception in tools and DB')
             raise e
