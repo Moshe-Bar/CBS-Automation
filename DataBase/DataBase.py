@@ -54,15 +54,7 @@ class DataBase:
         pages = [SubjectPage(link, link.name) for link in links]
         return pages
 
-    # @classmethod
-    # def get_cbs_pages_online(cls):
-    #     driver = TestUtility.get_sessions()[0]  # returns a one obj list with defualt driver
-    #     driver.get(Links.CBS_MAP_SITE_HE.value) # opens the map site for extracting the links inside
-    #     raw_urls = driver.find_elements_by_xpath(Links.MAP_LINKS_XPATH)
-    #     print('number of link objects found: ', len(raw_urls))
-    #     pages = list(map(lambda x: CbsPage(CbsLink(x.get_attribute('href')), x.text), raw_urls))
-    #     driver.close()
-    #     return pages
+
     @classmethod
     def save_test_result(cls, test_key, page: SubjectPage):
         try:
@@ -154,7 +146,7 @@ class Links(Enum):
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 
-# links = DataBase.get_CBS_en_links()
+# print(DataBase.get_CBS_en_links())
 # summ = [1,2,3,4,5]
 # path = '02_Jun_2021_10.48.50'
 # DataBase.save_summary_result(file_key=path,summery=summ)

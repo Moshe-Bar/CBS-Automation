@@ -20,7 +20,6 @@ from CbsObjects.Pages.SubjectPage import SubjectPage
 from CbsObjects.WebPartLine import WebPartLine
 from DL.DataBase import Links
 
-from temp.Language import Language
 import urllib.request
 
 HTTPS = urllib3.PoolManager(ca_certs=certifi.where())
@@ -228,7 +227,7 @@ class WebPartUtility:
         page.sub_subjects.errors.extend(errors)
         # page.stats_part.links.extend(links)
 
-    #todo
+
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
         print('press-releases test in: {}'.format(page.name))
@@ -284,15 +283,6 @@ class WebPartUtility:
         except NoSuchElementException:
             page.press_releases.errors.append('link to all massages not found')
             return
-
-
-
-
-
-
-
-
-
 
 
     @classmethod
@@ -374,10 +364,25 @@ class WebPartUtility:
     def set_tools_and_db(cls, page: SubjectPage, session):
         print('tools-and-db test in: {}'.format(page.name))
 
-        # left side of the page
+        # check if the element located
+        root_element, error = cls.get_main_element('TOOLS_AND_DB_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
+
+        # title test
         try:
-            tools_and_db = session.find_element(By.XPATH, Links.TOOLS_AND_DB_XPATH.value)
-            title = session.find_element(By.XPATH, "//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
+            title = root_element.find_element(By.XPATH, "./div/h2/span")
+            title = title.text
+            if not title == 'כלים ומאגרי נתונים':
+                # print('title in tadb is: ', title)
+                page.stats_part.errors.append('title not correct')
+        except NoSuchElementException:
+            page.stats_part.errors.append('title not correct')
+            print('stats not contain any title: ', page.name)
+            return
+        title = session.find_element(By.XPATH, "//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
             images = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//img")
             links = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//a")
 
