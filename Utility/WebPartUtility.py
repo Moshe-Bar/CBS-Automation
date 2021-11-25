@@ -110,8 +110,8 @@ class WebPartUtility:
             print('stats not contain any title: ', page.name)
             return
 
-        images = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//img")
-        links = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//a")
+        images = root_element.find_elements(By.XPATH, "./ul/li/div/div/img")
+        links = root_element.find_elements(By.XPATH, "./ul/li/div/div[3]/a")
         # print('num images: {}, num links: {}'.format(len(images),len(links)))
         if len(images) == 0:
             page.stats_part.errors.append('images content is missing')
@@ -189,7 +189,7 @@ class WebPartUtility:
             return
 
         # title check
-        title = root_element.find_element(By.XPATH, "./h2//span").text
+        title = root_element.find_element(By.XPATH, "./h2/span").text
         if not title == 'קישורים נוספים':
             page.more_links.errors.append('title is not correct')
 
@@ -322,7 +322,7 @@ class WebPartUtility:
 
         # check links inside
         try:
-            links = root_element.find_elements(By.XPATH, './div//ul/li/div/div/a')
+            links = root_element.find_elements(By.XPATH, './div/ul/li/div/div/a')
             if len(links) < 1:
                 page.publications.errors.append('no content')
             else:
@@ -569,7 +569,7 @@ class WebPartUtility:
 
         # last link check
         try:
-            to_all_maps = root_element.find_element(By.XPATH, ".//div//a[@class='MadadTableMapsToAll']")
+            to_all_maps = root_element.find_element(By.XPATH, "./div[1]/a[@class='MadadTableMapsToAll']")
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
@@ -604,7 +604,7 @@ class WebPartUtility:
 
         # check link status
         try:
-            a = root_element.find_element(By.XPATH, './/a').get_attribute('href')
+            a = root_element.find_element(By.XPATH, './div/a').get_attribute('href')
             link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
@@ -642,7 +642,7 @@ class WebPartUtility:
 
         # check link status
         try:
-            main_link = main_element.find_element(by=By.XPATH, value=".//div//a").get_attribute('href')
+            main_link = main_element.find_element(by=By.XPATH, value="./div/a").get_attribute('href')
 
             link = CbsLink(url=main_link)
             PageUtility.set_link_status(link)
