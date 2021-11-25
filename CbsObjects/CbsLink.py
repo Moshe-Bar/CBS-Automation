@@ -14,6 +14,12 @@ class CbsLink:
     def __str__(self):
         return str(self.status_code) + '::' + self.url + '::' + self.name
 
+    def __eq__(self, other):
+        return other.url == self.url
+
+    def __hash__(self):
+        return hash(self.url)
+
 
 
 

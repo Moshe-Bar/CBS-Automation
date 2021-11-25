@@ -24,6 +24,8 @@ class DataBase:
         except Exception as e:
             print(e)
             print('database file did not read', e)
+        links = list(set(links))
+        print('num links: ',len(links))
         return links
 
     @classmethod
