@@ -7,6 +7,7 @@ from multiprocessing import Queue
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchWindowException, \
     StaleElementReferenceException
+from selenium.webdriver.support import expected_conditions as EC
 
 # # from Objects.CbsPageUtility import CbsPageUtility
 # import asyncio
@@ -18,7 +19,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Utility.WebPartUtility import WebPartUtility
+from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
 # from UI.Qt_GUI import WorkerSignals
 from DataBase.DataBase import DataBase, Links
 
@@ -54,15 +55,15 @@ class TestUtility:
         pages = DataBase.get_CBS_en_pages()
         return pages
 
-    @classmethod
-    def initial_test_environment_(cls, wait_time=10, async_=False, pages=[]):
-        if async_:
-            sessions = cls.get_sessions(amount=len(pages), timeout=wait_time)
-            pages = DataBase.get_CBS_he_pages()
-            # with ThreadPoolExecutor
-            for i, session in enumerate(sessions):
-                cls.testPage(pages[i], session)
-        # TODO
+    # @classmethod
+    # def initial_test_environment_(cls, wait_time=10, async_=False, pages=[]):
+    #     if async_:
+    #         sessions = cls.get_sessions(amount=len(pages), timeout=wait_time)
+    #         pages = DataBase.get_CBS_he_pages()
+    #         # with ThreadPoolExecutor
+    #         for i, session in enumerate(sessions):
+    #             cls.testPage(pages[i], session)
+    #     # TODO
 
     @classmethod
     def create_web_driver(cls, wait_time=5, withUI=True):
@@ -77,6 +78,7 @@ class TestUtility:
                 driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
             # driver.implicitly_wait(wait_time)
+            # driver.implicitly_wait(10)
 
             path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
             driver.get(path)
@@ -170,6 +172,51 @@ class TestUtility:
         for test in tests:
             test.join()
         print("Done threads test in ", page.name)
+
+    @classmethod
+    def testPage_(cls, page: SubjectPage, main_element):
+
+
+        WebPartUtility.set_summary(page=page, session=main_element)
+
+
+        WebPartUtility.set_heb_statistical(page=page, session=main_element)
+
+
+        WebPartUtility.set_extra_parts(page=page, root_element=main_element)
+
+        WebPartUtility.set_top_box(page=page, session=main_element)
+
+
+        WebPartUtility.set_sub_subjects(page=page, session=main_element)
+
+
+        WebPartUtility.set_press_releases(page=page, session=main_element)
+
+
+        WebPartUtility.set_tables_and_charts(page=page, session=main_element)
+
+        WebPartUtility.set_tools_and_db(page=page, session=main_element)
+
+        WebPartUtility.set_publications(page=page, session=main_element)
+
+
+        WebPartUtility.set_geographic_zone(page=page, session=main_element)
+
+        WebPartUtility.set_international_comparisons(page=page, session=main_element)
+
+
+        WebPartUtility.set_more_links(page=page, session=main_element)
+
+
+        WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
+
+        WebPartUtility.set_videos_links(page=page, session=main_element)#TODO
+
+
+        WebPartUtility.set_pictures_links(page=page, session=main_element)#TODO
+
+
 
     # visible func
     @classmethod
@@ -380,9 +427,12 @@ class TestUtility:
                 # load page
                 timeout = 5
                 try:
-                    main_element = WebDriverWait(session, timeout).until(
-                        expected_conditions.presence_of_element_located(
-                            (By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
+                    main_element = WebDriverWait(session, 10).until(
+                        EC.presence_of_element_located((By.XPATH, ROOT_ELEMENT))
+                    )
+                    # main_element = WebDriverWait(session, timeout).until(
+                    #     expected_conditions.presence_of_element_located(
+                    #         (By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
                     # start = time.time()
                     cls.testPage(page, main_element)
                     # print('average page test time: {}'.format(str(time.time()-start)))
@@ -399,8 +449,7 @@ class TestUtility:
                         page.stats_part.errors.append('unknown error')
                         break
                 except TimeoutException:
-                    print("Timed out waiting for page to load")
-                    page.isChecked = False
+                    print("Timed out waiting for page to load: {}".format(page.name))
                     DataBase.save_test_result(key, page)
                     continue
                 except NoSuchWindowException:
