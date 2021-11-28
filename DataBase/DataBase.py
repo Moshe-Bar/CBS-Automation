@@ -25,6 +25,8 @@ class DataBase:
             print(e)
             print('database file did not read', e)
         links = list(set(links))
+        links = list(filter(lambda x:'Surveys' not in x.url,links))
+        links.sort(key=lambda x: x.name)
         print('num links: ',len(links))
         return links
 
@@ -67,7 +69,7 @@ class DataBase:
                 page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,
                                                                                                             page.link.url,
                                                                                                             page.name)
-                errors = ('<h1 {}>' + str(page.get_errors()) + '</h1><br>').format(style)
+                errors = ('<h1 {}>' + str(page.error_to_str()) + '</h1><br>').format(style)
                 f.write(page_link + errors)
             f.close()
         except Exception as e:

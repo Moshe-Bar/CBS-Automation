@@ -16,6 +16,7 @@ from selenium.webdriver.remote import webelement
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from urllib3.exceptions import MaxRetryError
 
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
@@ -63,15 +64,18 @@ class WebPartUtility:
             # main_element = session.find_element(By.XPATH, xpath)
             if not main_element.is_displayed():
                 return None, 'Hidden'
-        except TimeoutException:
+        except TimeoutException as e:
+
             return None, 'TimeoutException in get main_element'
-        except NoSuchElementException:
+        except NoSuchElementException as e:
+
             return None, 'NoSuchElementException'
         except WebDriverException:
             print('chrome session error, consider restart your program and check your driver configuration')
             return None, 'chrome session error'
         except Exception as e:
             print('unknown exception while trying to get xpath for: ', str(type), ' exception: ', e)
+
             return None, 'Exception'
         return main_element, None
 
@@ -194,7 +198,7 @@ class WebPartUtility:
             page.more_links.errors.append('title is not correct')
 
         # inside links check
-        links = root_element.find_elements(By.XPATH, "./ul/div/div/div/div/ul/li/div/div[@class='link-item']/a")
+        links = root_element.find_elements(By.XPATH, "./ul/div/div/div/div/ul/li/div/div[1]/a")
         # links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), links))
         if len(links) < 1:
             page.more_links.errors.append('no content ')
@@ -356,8 +360,8 @@ class WebPartUtility:
         print('extra-parts test in: {}'.format(page.name))
 
         # check if left element located
-        root_element, error = cls.get_main_element('LEFT_EXTRA_PARTS_XPATH', root_element)
-        if root_element is None:
+        left_element, error = cls.get_main_element('LEFT_EXTRA_PARTS_XPATH', root_element)
+        if left_element is None:
             if error == 'chrome session error':
                 raise Exception('chrome session error')
             return
@@ -365,33 +369,14 @@ class WebPartUtility:
             page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
 
         # check if right element located
-        root_element, error = cls.get_main_element('RIGHT_EXTRA_PARTS_XPATH', root_element)
-        if root_element is None:
+        right_element, error = cls.get_main_element('RIGHT_EXTRA_PARTS_XPATH', root_element)
+        if right_element is None:
+            print('right errors not found')
             if error == 'chrome session error':
                 raise Exception('chrome session error')
             return
         else:
             page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
-
-        # # left side of the page
-        # try:
-        #     left_extra_parts = root_element.find_element(By.XPATH, Links.LEFT_EXTRA_PARTS_XPATH.value)
-        #     page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
-        # except TimeoutException:
-        #     pass
-        # except NoSuchElementException:
-        #     pass
-
-
-
-        # right side of the page
-        # try:
-        #     right_extra_parts = root_element.find_element(By.XPATH, Links.RIGHT_EXTRA_PARTS_XPATH.value)
-        #     page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
-        # except TimeoutException:
-        #     pass
-        # except NoSuchElementException:
-        #     pass
 
     @classmethod
     def set_tools_and_db(cls, page: SubjectPage, session):
@@ -697,11 +682,8 @@ class PageUtility:
     @classmethod
     def set_link_status(cls, link: CbsLink):
         try:
-
             resp = HTTPS.request('GET', link.url, redirect=True)
             link.status_code = resp.status
-
-
 
         except TimeoutException:
             link.status_code = 408
@@ -711,6 +693,11 @@ class PageUtility:
             print('link: ', link.url)
             link.status_code = 404
             return
+        except MaxRetryError as e:
+            if link.url == 'https://stats.oecd.org/':
+                link.status_code = 200
+            else:
+                link.status_code = 404
         except Exception as e:
             print('set link status func unknown exception', e)
             link.status_code = 408

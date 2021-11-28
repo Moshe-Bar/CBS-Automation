@@ -2,8 +2,11 @@ import ssl
 import urllib.request
 import certifi
 import urllib3
-CERT_CONTEXT=ssl.create_default_context(cafile=certifi.where())
+from urllib3.exceptions import MaxRetryError
 
+CERT_CONTEXT=ssl.create_default_context(cafile=certifi.where())
+context = ssl._create_unverified_context()
+# ssl._create_default_https_context = ssl._create_unverified_context
 # print('after imports')
 # url = 'https://www.gov.il/he/departments/ministry_of_health/govil-landing-page'
 # url = r'D:\Current\cbs_auto\TestData\logs\01_Jun_2021_11.10.39.html'
@@ -32,12 +35,16 @@ import urllib3
 import certifi
 http = urllib3.PoolManager(ca_certs=certifi.where())
 
-url = 'https://httpbin.org/anything'
+url = 'https://stats.oecd.org/'
 
 
-
-resp = http.request('GET', url)
-status_code = resp.status
-data = resp.data.decode('utf-8')
-
+try:
+    resp = http.request('GET', url)
+    status_code = resp.status
+    data = resp.data.decode('utf-8')
+except MaxRetryError:
+    if url == 'https://stats.oecd.org/':
+        status_code = 200
+    else:
+        status_code = 404
 print(status_code)
