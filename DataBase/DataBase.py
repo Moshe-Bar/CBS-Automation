@@ -25,7 +25,8 @@ class DataBase:
             print(e)
             print('database file did not read', e)
         links = list(set(links))
-        links = list(filter(lambda x:'Surveys' not in x.url,links))
+        excluded = ('search','Surveys', 'Documents')
+        links = list(filter(lambda x: all(s not in x.url for s in excluded),links))
         links.sort(key=lambda x: x.name)
         print('num links: ',len(links))
         return links

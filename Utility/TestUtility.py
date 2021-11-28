@@ -416,7 +416,7 @@ class TestUtility:
                     outer_signals.monitor_data.emit('test canceled')
                     return
 
-                percents = (float(i + 1) / pages_size) * 50
+                percents = (float(i + 1) / pages_size) * 100
                 outer_signals.status.emit(percents)
                 print(str("%.1f" % percents) + '%')
 
@@ -430,9 +430,7 @@ class TestUtility:
                     main_element = WebDriverWait(session, 10).until(
                         EC.presence_of_element_located((By.XPATH, ROOT_ELEMENT))
                     )
-                    # main_element = WebDriverWait(session, timeout).until(
-                    #     expected_conditions.presence_of_element_located(
-                    #         (By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
+
                     # start = time.time()
                     cls.testPage(page, main_element)
                     # print('average page test time: {}'.format(str(time.time()-start)))
