@@ -153,6 +153,48 @@ class Links(Enum):
 
 
 
+
+# import sqlite3
+# import sys
+#
+#
+# class DB:
+#     def __init__(self):
+#         self.path = sys.path[1]+"\\DL\\DB\\"
+#         self.__db = sqlite3.connect(self.path + 'pagesDB')
+#         self.__cursor = self.__db.cursor()
+#
+#     def get_he_links(self):
+#         self.__cursor.execute("SELECT * FROM addresses")
+#         data = self.__cursor.fetchall()
+#         return data
+#
+#     def get_wp_ids(self):
+#         self.__cursor.execute("SELECT * FROM WPARTS")
+#         data = self.__cursor.fetchall()
+#         return data
+#
+#     def save_test_result(self, row_data):
+#         insert = "INSERT INTO TEST_RESULT VALUES ({},{},{},{},{});"
+#         self.__cursor.executescript(insert.format(*row_data))
+#         self.__cursor.fetchall()
+#
+#     def load_test_data(self, test_key):
+#         pass
+#
+#     def load_error_details(self):
+#         self.__cursor.execute("SELECT * FROM ERRORS")
+#         data = self.__cursor.fetchall()
+#         return data
+#
+#     def add_new_test(self,details):
+#         insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});"
+#         self.__cursor.executescript(insert.format(*details))
+#         self.__cursor.fetchall()
+
+# x = DB()
+# x.save_test_result([0,1,2,3,4])
+# print(sys.path[1]+"\\DL\\DB\\")
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
 

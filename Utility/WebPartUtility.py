@@ -665,6 +665,11 @@ class WebPartUtility:
         print('pictures-links test in: {}'.format(page.name))
         print('in developing process')
 
+    @classmethod
+    def set_slideshows(cls, page, session):
+        #todo
+        pass
+
 
 class PageUtility:
 
