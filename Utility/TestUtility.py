@@ -55,15 +55,6 @@ class TestUtility:
         pages = DataBase.get_CBS_en_pages()
         return pages
 
-    # @classmethod
-    # def initial_test_environment_(cls, wait_time=10, async_=False, pages=[]):
-    #     if async_:
-    #         sessions = cls.get_sessions(amount=len(pages), timeout=wait_time)
-    #         pages = DataBase.get_CBS_he_pages()
-    #         # with ThreadPoolExecutor
-    #         for i, session in enumerate(sessions):
-    #             cls.testPage(pages[i], session)
-    #     # TODO
 
     @classmethod
     def create_web_driver(cls, wait_time=5, withUI=True):
@@ -220,7 +211,7 @@ class TestUtility:
 
     # visible func
     @classmethod
-    def test(cls, shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
+    def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
              pages=None, session_visible=True):
 
         if pages is None:
@@ -233,60 +224,115 @@ class TestUtility:
                 raise e
 
         # status flow
-        shared_data.put('initializing test environment...')
+        shared_data.put(('text','initializing test environment...'))
         print('initializing test environment...')
         t = time.localtime()
         current_time = time.strftime("%H:%M:%S", t)
-        shared_data.put('test started on: ' + str(current_time))
+        shared_data.put(('text','test started on: ' + str(current_time)))
         print('test started on: ' + str(current_time))
 
         try:
             session = cls.get_sessions(isViseble=session_visible)  # default as synchronous test - one instance session
         except Exception as e:
             print('error loading sessions, test is closed')
-            shared_data.put('error loading sessions, test is closed')
+            shared_data.put(('text','error loading sessions, test is closed'))
             end_flag.put('error loading sessions, test is closed')
             raise e
 
-        error_pages = []
+
         pages_size = len(pages)
         print('num pages', str(len(pages)))
-        shared_data.put('num pages: ' + str(pages_size))
+        shared_data.put(('text','num pages: ' + str(pages_size)))
+
+        summary = []
+        summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
+        summary.append(str(current_time))  # test start time
+        summary.append(str(pages_size))  # number of chosen pages for test
+        summary.append(0)  # counter for checked pages
+        summary.append(0)  # counter for error pages
 
         try:
             for i, page in enumerate(pages):
                 if end_flag.qsize() > 0:
-                    raise Exception('test canceled')
+                    print('test aborted due to user request:  {}'.format(end_flag.get()))
+                    return
+                    # raise Exception('test canceled')
                     # outside canceled
-                percents = i / pages_size
-                progress_status.put(str("%.1f" % percents) + '%')
+                percents = (float(i + 1) / pages_size) * 100
+                progress_status.put(percents*100)
                 print(str("%.1f" % percents) + '%')
+                try:
+                    session.get(page.link.url)
 
-                session.get(page.link.url)
-                cls.testPage(page, session)
+                except WebDriverException as e:
+                    print(e)
+                try:
+                    main_element = WebDriverWait(session, 10).until(
+                        EC.presence_of_element_located((By.XPATH, ROOT_ELEMENT))
+                    )
+                    cls.testPage(page, main_element)
+                    percents = (float(i + 1) / pages_size) * 100
+                except StaleElementReferenceException:
+                    try:
+                        main_element = WebDriverWait(session, 5).until(
+                            expected_conditions.presence_of_element_located(
+                                (By.XPATH, "//body[@class='INDDesktop INDChrome INDlangdirRTL INDpositionRight']")))
+                        cls.testPage(page, main_element)
 
-                if len(page.stats_part.errors) > 0:
-                    print(page.name, page.link.url)
-                    print(page.stats_part.errors)
-                    shared_data.put(str(page.name)[::-1])
-                    shared_data.put(page.stats_part.errors)
-                    error_pages.append((page.name, page.link.url, page.stats_part.errors))
+                    except Exception:
+                        page.stats_part.errors.append('unknown error')
+                        break
+                except TimeoutException:
+                    print("Timed out waiting for page to load: {}".format(page.name))
+                    DataBase.save_test_result('test_results', page)
+                    continue
+                except NoSuchWindowException:
+                    page.stats_part.errors.append("couldn't find root element")
+                    page.isChecked = False
+                    DataBase.save_test_result('test_results', page)
+                    continue
+                summary[3] += 1
+                if len(page.get_errors()) > 0:
+                    # print(page.name, page.link.url)
+                    print(page.error_to_str())
+                    shared_data.put(('link',page.name,page.link.url))
+                    shared_data.put(('text',page.error_to_str() ))
+                    # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
+                    # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
+                    # error_pages.append((page.name, page.link.url, page.error_to_str()))
+                    DataBase.save_test_result('test_results', page)
+                    summary[4] += 1
                 else:
-                    shared_data.put(str(page.name)[::-1])
-                    shared_data.put(str(200))
-
+                    shared_data.put(('link', page.name, page.link.url))
+                    # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
+                    # outer_signals.monitor_data.emit(str(200))
+        except NoSuchWindowException as e:
+            print('Main test stopped due to unexpected  session close')
+            shared_data.put(('text','Main test stopped due to unexpected  session close'))
+            # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
+            end_flag.put('unexpected  session close')
+            # outer_signals.finished.emit()
+            raise e
         except Exception as e:
             print('main process stopped due to exception: ' + str(e))
-            shared_data.put('main process stopped due to exception: ' + str(e))
-            end_flag.put('main process stopped due to exception: ' + str(e))
+            shared_data.put(('text', 'main process stopped due to exception: ' + str(e)))
+            # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
+            end_flag.put('unexpected  session close')
+            # outer_signals.monitor_data.emit('main process stopped due to exception: ' + str(e))
+            # outer_signals.finished.emit()
+            raise e
         finally:
             session.close()
-            end_flag.put('end main process')
+            end_flag.put('session close')
+            # outer_signals.finished.emit()
             t = time.localtime()
             current_time = time.strftime("%H:%M:%S", t)
             # str(time.time() - start_time)
             print('test ended on: ' + current_time)
-            shared_data.put('test ended on: ' + current_time)
+            shared_data.put(('test','test ended on: ' + current_time))
+            # outer_signals.monitor_data.emit('test ended on: ' + current_time)
+            DataBase.save_test_result('test_results', page)
+            DataBase.save_summary_result('test_results', summary)
 
     @classmethod
     def test_with_events(cls, working: threading.Event(), shared_data: Queue = Queue(),
@@ -494,4 +540,3 @@ class TestUtility:
         return DataBase.get_test_result(file_key=file_key)
 
 
-# print(sys.path[1] + '\\DataBase\\LoadTest.html')

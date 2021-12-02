@@ -30,11 +30,7 @@ class TestProgress(tk.Frame):
         self.text_area.focus()
         self.text_area.pack()
 
-        # s = Style()
-        # s.theme_use("default")
-        # s.configure("TProgressbar", thickness=50)
-        self.progress = Progressbar(root, orient=HORIZONTAL,
-                                    length=600, mode='determinate')
+        self.progress = Progressbar(root, orient=HORIZONTAL,length=600, mode='determinate')
         self.progress.pack(ipady=10)
 
         self.shared_data= Queue()
@@ -46,10 +42,9 @@ class TestProgress(tk.Frame):
         self.test_observer = threading.Thread(target=self.observer,args=(self.test_thread,))
 
     def observer(self,test_thread):
-        i=1
+
         while self.end_flag.empty() and test_thread.is_alive():
-            print('inside observer',i)
-            i+=1
+
             if not self.progress_status.empty():
                 data = self.progress_status.get()
                 self.update_progress(data)
@@ -76,9 +71,24 @@ class TestProgress(tk.Frame):
 
 
     def update_monitor(self, data):
-        self.text_area.config(state=NORMAL)
-        self.text_area.insert(tk.INSERT, '\n'+data)
-        self.text_area.config(state=DISABLED)
+        if data[0]== 'text':
+            self.text_area.config(state=NORMAL)
+            self.text_area.insert(tk.INSERT, '\n' + data[1])
+            self.text_area.config(state=DISABLED)
+        elif data[0]=='link':
+            # txt = Text(self.text_area)
+            # txt.pack(expand=True, fill="both")
+            # txt.insert(END, "Press ")
+            # txt.insert(END, "here ", ('link', str(0)))
+            # txt.insert(END, "for Python. Press ")
+            # txt.insert(END, "here ", ('link', str(1)))
+            # txt.insert(END, "for Heaven.")
+            # txt.tag_config('link', foreground="blue")
+            # txt.tag_bind('link', '<Button-1>', showLink)
+
+            self.text_area.config(state=NORMAL)
+            self.text_area.insert(tk.INSERT, '\n'+data[1])
+            self.text_area.config(state=DISABLED)
 
     def convert_to_hyper_text(self, data):
         dict_data = literal_eval(data)
@@ -90,7 +100,7 @@ class TestProgress(tk.Frame):
         self.text_area.insert(tk.INSERT, info)
 
     def update_progress(self, value):
-        self.progress['value'] = int(value[0])
+        self.progress['value'] = int(value)
 
 
 class TestProperties(tk.Frame):
