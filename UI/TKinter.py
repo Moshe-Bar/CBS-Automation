@@ -1,4 +1,5 @@
 import threading
+import webbrowser
 from ast import literal_eval
 from multiprocessing import Queue
 from tkinter import *
@@ -9,6 +10,10 @@ import tkinter as tk
 from tkinter.ttk import Progressbar, Style
 
 from Utility.TestUtility import TestUtility
+
+
+def open_browser(url):
+    webbrowser.open_new(url)
 
 
 class TestProgress(tk.Frame):
@@ -76,6 +81,15 @@ class TestProgress(tk.Frame):
             self.text_area.insert(tk.INSERT, '\n' + data[1])
             self.text_area.config(state=DISABLED)
         elif data[0]=='link':
+            link = Text(self.text_area,text=data[1], fg="blue", cursor="hand2")
+            link.pack()
+            link.bind(func=lambda e: open_browser("http://www.google.com"))
+            # link = Label(self.text_area, text=data[1], fg="blue", cursor="hand2")
+            # link.pack()
+            # link.bind("<Button-1>", lambda e: open_browser("http://www.google.com"))
+            # self.text_area.config(state=NORMAL)
+            # self.text_area.insert(tk.INSERT, '\n' + link)
+            # self.text_area.config(state=DISABLED)
             # txt = Text(self.text_area)
             # txt.pack(expand=True, fill="both")
             # txt.insert(END, "Press ")
@@ -86,9 +100,11 @@ class TestProgress(tk.Frame):
             # txt.tag_config('link', foreground="blue")
             # txt.tag_bind('link', '<Button-1>', showLink)
 
-            self.text_area.config(state=NORMAL)
-            self.text_area.insert(tk.INSERT, '\n'+data[1])
-            self.text_area.config(state=DISABLED)
+
+        self.text_area.config(state=NORMAL)
+        self.text_area.insert(tk.INSERT, '\n\n')
+        self.text_area.config(state=DISABLED)
+
 
     def convert_to_hyper_text(self, data):
         dict_data = literal_eval(data)

@@ -258,8 +258,8 @@ class TestUtility:
                     return
                     # raise Exception('test canceled')
                     # outside canceled
-                percents = (float(i + 1) / pages_size) * 100
-                progress_status.put(percents*100)
+                percents = (float(i + 1) / pages_size) *100
+                progress_status.put(percents)
                 print(str("%.1f" % percents) + '%')
                 try:
                     session.get(page.link.url)
