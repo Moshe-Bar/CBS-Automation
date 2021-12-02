@@ -1,6 +1,0 @@
-jupyter
-fire
-sqlalchemy
-pandas
-arsenic
-requests-html

@@ -1,5 +1,7 @@
 # for certificate recognition in requests
 ##########
+import threading
+
 import certifi
 # import ssl
 ##########
@@ -12,13 +14,15 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote import webelement
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from urllib3.exceptions import MaxRetryError
 
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from CbsObjects.WebPartLine import WebPartLine
-from DL.DataBase import Links
+from DataBase.DataBase import Links
 
-from temp.Language import Language
 import urllib.request
 
 HTTPS = urllib3.PoolManager(ca_certs=certifi.where())
@@ -39,7 +43,9 @@ XPATH = {
     "TABLES_AND_CHARTS_XPATH": Links.TABLES_AND_CHARTS_XPATH.value,
     "PUBLICATIONS_XPATH": Links.PUBLICATIONS_XPATH.value,
     "INTERNATIONAL_COMPARISONS_XPATH": Links.INTERNATIONAL_COMPARISONS_XPATH.value,
-    "MORE_LINKS_XPATH" : Links.MORE_LINKS_XPATH.value}
+    "MORE_LINKS_XPATH": Links.MORE_LINKS_XPATH.value,
+    "GEOGRAPHIC_ZONE_XPATH": Links.GEOGRAPHIC_ZONE_XPATH.value}
+ROOT_ELEMENT = Links.ROOT_XPATH.value
 
 
 class WebPartUtility:
@@ -47,23 +53,29 @@ class WebPartUtility:
     @classmethod
     def get_main_element(cls, type, session: webdriver.Chrome):
         try:
-            xpath = XPATH[type]
+            xpath ='.'+XPATH[type]
         except Exception as e:
             print('exception while trying to get xpath from dict: ', e)
             return None, 'exception while trying to get xpath from dict: {}'.format(e)
         try:
-            main_element = session.find_element(By.XPATH, xpath)
+            main_element = WebDriverWait(session, 10).until(
+                EC.presence_of_element_located((By.XPATH, xpath))
+            )
+            # main_element = session.find_element(By.XPATH, xpath)
             if not main_element.is_displayed():
                 return None, 'Hidden'
-        except TimeoutException:
-            return None, 'TimeoutException'
-        except NoSuchElementException:
+        except TimeoutException as e:
+
+            return None, 'TimeoutException in get main_element'
+        except NoSuchElementException as e:
+
             return None, 'NoSuchElementException'
         except WebDriverException:
             print('chrome session error, consider restart your program and check your driver configuration')
             return None, 'chrome session error'
         except Exception as e:
             print('unknown exception while trying to get xpath for: ', str(type), ' exception: ', e)
+
             return None, 'Exception'
         return main_element, None
 
@@ -71,46 +83,47 @@ class WebPartUtility:
     @classmethod
     def set_heb_statistical(cls, page: SubjectPage, session: WebDriver):
         print('statistical test in: {}'.format(page.name))
-
+        log_test = 0
         # check if the element located
         root_element, error = cls.get_main_element('HEBREW_STATS_XPATH', session)
         if root_element is None:
             if error == 'chrome session error':
                 raise Exception('chrome session error')
+            print('stats  not tested in: ', page.name, ', {}'.format(error))
             return
-
         # check id not displayed
         try:
-            is_hidden = root_element.find_element(By.XPATH, "./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
+            is_hidden = root_element.find_element(By.XPATH,
+                                                  "./div[@class='ms-webpart-chrome ms-webpart-chrome-fullWidth ']")
             print('stats not displayed and not tested in: ', page.name)
             return
         except NoSuchElementException:
+            log_test += 1
             pass
-
 
         # title check
         try:
             title = root_element.find_element(By.XPATH, "./h2/nobr/span")
             title = title.text
             if not title == 'עלוני סטטיסטיקל':
-                print('title in stats is: ',title)
+                print('title in stats is: ', title)
                 page.stats_part.errors.append('title not correct')
+            log_test += 1
         except NoSuchElementException:
             page.stats_part.errors.append('title not correct')
-            print('stats not contain any title: ',page.name)
+            print('stats not contain any title: ', page.name)
             return
 
-
-
-        images = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//img")
-        links = root_element.find_elements(By.XPATH, ".//ul[@class='cbs-List']//li//a")
-
-        if len(images) == 0 or len(links) == 0:
-            page.stats_part.errors.append('images or links content is missing')
+        images = root_element.find_elements(By.XPATH, "./ul/li/div/div/img")
+        links = root_element.find_elements(By.XPATH, "./ul/li/div/div[3]/a")
+        # print('num images: {}, num links: {}'.format(len(images),len(links)))
+        if len(images) == 0:
+            page.stats_part.errors.append('images content is missing')
         else:
             images, errors = PageUtility.set_url_links(images, attrib='src')
             errors = [error + ' in Statistical image' for error in errors]
             page.stats_part.errors.extend(errors)
+            log_test += 1
             # page.stats_part.images.extend(links)
 
         if len(links) == 0:
@@ -119,25 +132,115 @@ class WebPartUtility:
             links, errors = PageUtility.set_url_links(links)
             errors = [error + ' ' for error in errors]
             page.stats_part.errors.extend(errors)
-            page.stats_part.links.extend(links)
+            log_test += 1
+            # page.stats_part.links.extend(links)
 
             # *****************************************************************************************************************
         try:
-            all_stats_link = root_element.find_element(By.XPATH,"./a")
+            all_stats_link = root_element.find_element(By.XPATH, "./a")
         except NoSuchElementException:
             page.stats_part.errors.append('link to all massages is missing')
             return
         # text test
         text = all_stats_link.text
-        if not text =='לכל עלוני הסטטיסטיקל >':
+        if not text == 'לכל עלוני הסטטיסטיקל >':
             page.stats_part.errors.append('text in link to all massages not correct')
 
         cur_link = CbsLink(all_stats_link.get_attribute('href'))
-        # page.stats_part.links.append(cur_link)
         PageUtility.set_link_status(cur_link)
         if not cur_link.status_code == 200:
             page.stats_part.errors.append('link to all massages is broken')
+        print('stats ended in: {} with {} checks'.format(page.name, log_test))
 
+    @classmethod
+    def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('top-box test in: {}'.format(page.name))
+        main_element, error = cls.get_main_element('TOP_BOX_XPATH', session)
+        if main_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('top_box not tested in: ', page.name, ', {}'.format(error))
+            return
+
+        elements = main_element.find_elements(By.XPATH, "./div[@class='categoryBox']")
+        elements = list(
+            map(lambda e: e.find_element(By.XPATH, "./a"),
+                filter(lambda x: x.is_displayed(), elements)))
+        # elements = [element.find_element_by_xpath(".//a") for element in elements]
+
+        if len(elements) == 0:  # inside elements are not displayed
+            page.top_box.errors.append('top box is displayed without any data')
+            return
+
+        else:
+            links, errors = PageUtility.set_url_links(elements)
+            # page.top_box.links.extend(links)
+            errors = [error + ' ' for error in errors]
+            # errors = list(map(lambda x:x+' in top box',errors))
+            page.top_box.errors.extend(errors)
+
+    @classmethod
+    def set_more_links(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('more-links test in: {}'.format(page.name))
+
+        # check if the element located
+        root_element, error = cls.get_main_element('MORE_LINKS_XPATH', session)
+        if root_element is None:
+            print('more links not tested')
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('more links not tested in: ', page.name, ', {}'.format(error))
+            return
+
+        # title check
+        title = root_element.find_element(By.XPATH, "./h2/span").text
+        if not title == 'קישורים נוספים':
+            page.more_links.errors.append('title is not correct')
+
+        # inside links check
+        links = root_element.find_elements(By.XPATH, "./ul/div/div/div/div/ul/li/div/div[1]/a")
+        # links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), links))
+        if len(links) < 1:
+            page.more_links.errors.append('no content ')
+        links, errors = PageUtility.set_url_links(links)
+        # page.press_releases.links.extend(links)
+        page.more_links.errors.extend(errors)
+
+    @classmethod
+    def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
+        print('sub-subjects test in: {}'.format(page.name))
+
+        # check if the element located
+        root_element, error = cls.get_main_element('SUB_SUBJECTS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('sub-subjects not tested in: ', page.name, ', {}'.format(error))
+            return
+
+        # check title
+        try:
+            title = root_element.find_element(By.XPATH, "./h2[@class='ms-webpart-titleText']/span").text
+
+            if not title == 'נושאי משנה':
+                print('title is: ', title)
+                page.sub_subjects.errors.append('title is not correct')
+        except NoSuchElementException as e:
+            print('Exception: ', e, " in sub-subject, page: ", page.name)
+            page.sub_subjects.errors.append('title is not correct')
+        except TimeoutException as e:
+            print('Exception: ', e, " in sub-subject, page: ", page.name)
+            page.sub_subjects.errors.append('title is not correct')
+
+        # find all the links inside and set their status
+        links = root_element.find_elements(By.XPATH, "./ul[@class='subtopicsList']/li/a")
+        if len(links) == 0:
+            page.sub_subjects.errors.append('no internal links')
+            return
+        links, errors = PageUtility.set_url_links(links)
+        errors = [error + ' ' for error in errors]
+        page.sub_subjects.errors.extend(errors)
+        # page.stats_part.links.extend(links)
 
     @classmethod
     def set_press_releases(cls, page: SubjectPage, session: webdriver.Chrome):
@@ -150,6 +253,7 @@ class WebPartUtility:
         if root_element is None:
             if error == 'chrome session error':
                 raise Exception('chrome session error')
+            print('press_releases not tested in: ', page.name, ', {}'.format(error))
             return
 
         # title check
@@ -181,9 +285,10 @@ class WebPartUtility:
         # last link test
         try:
             to_all_massages = root_element.find_element(By.XPATH, "./div/a")
-            text =  to_all_massages.text
-            if not text == ' לכל ההודעות לתקשורת >':
-                page.press_releases.errors.append('text not correct in last link')
+            # text = to_all_massages.text
+            # if not text == ' לכל ההודעות לתקשורת <':
+            #     print('press r last link text: ', text)
+            #     page.press_releases.errors.append('text not correct in last link')
             cur_link = CbsLink(to_all_massages.get_attribute('href'))
             PageUtility.set_link_status(cur_link)
             if not cur_link.status_code == 200:
@@ -195,113 +300,18 @@ class WebPartUtility:
             return
 
     @classmethod
-    def set_top_box(cls, page: SubjectPage, session: webdriver.Chrome):
-        print('top-box test in: {}'.format(page.name))
-        main_element, error = cls.get_main_element('TOP_BOX_XPATH', session)
-        if main_element is None:
-            if error == 'chrome session error':
-                raise Exception('chrome session error')
-            return
-
-
-        elements = main_element.find_elements(By.XPATH, "./div[@class='categoryBox']")
-        elements = list(
-            map(lambda e: e.find_element(By.XPATH, "./a"),
-                filter(lambda x: x.is_displayed(), elements)))
-        # elements = [element.find_element_by_xpath(".//a") for element in elements]
-
-        if len(elements) == 0:  # inside elements are not displayed
-            page.top_box.errors.append('top box is displayed without any data')
-            return
-
-        else:
-            links, errors = PageUtility.set_url_links(elements)
-            # page.top_box.links.extend(links)
-            errors = [error + ' ' for error in errors]
-            # errors = list(map(lambda x:x+' in top box',errors))
-            page.top_box.errors.extend(errors)
-
-
-    @classmethod
-    def set_more_links(cls, page: SubjectPage, session: webdriver.Chrome):
-        print('more-links test in: {}'.format(page.name))
-
-        # check if the element located
-        root_element, error = cls.get_main_element('MORE_LINKS_XPATH', session)
-        if root_element is None:
-            print('more links not tested')
-            if error == 'chrome session error':
-                raise Exception('chrome session error')
-            return
-
-
-        # title check
-        title = root_element.find_element(By.XPATH, "./h2//span").text
-        if not title == 'קישורים נוספים':
-            page.more_links.errors.append('title is not correct')
-
-        # inside links check
-        links = root_element.find_elements(By.XPATH, "./ul/div/div/div/div/ul/li/div/div[@class='link-item']/a")
-        # links = list(map(lambda li: CbsLink(url=li.get_attribute('href'), page_name=li.text), links))
-        if len(links) < 1:
-            page.more_links.errors.append('no content ')
-        links, errors = PageUtility.set_url_links(links)
-        # page.press_releases.links.extend(links)
-        page.more_links.errors.extend(errors)
-
-
-
-    @classmethod
-    def set_sub_subjects(cls, page: SubjectPage, session: webdriver.Chrome):
-        print('sub-subjects test in: {}'.format(page.name))
-
-        # check if the element located
-        root_element, error = cls.get_main_element('SUB_SUBJECTS_XPATH', session)
-        if root_element is None:
-            print('sub-subjects not tested')
-            if error == 'chrome session error':
-                raise Exception('chrome session error')
-            return
-
-
-        # check title
-        try:
-            title = root_element.find_element(By.XPATH, "./h2[@class='ms-webpart-titleText']/span").text
-
-            if not title == 'נושאי משנה':
-                print('title is: ',title)
-                page.sub_subjects.errors.append('title is not correct')
-        except NoSuchElementException as e:
-            print('Exception: ',e, " in sub-subject, page: ",page.name)
-            page.sub_subjects.errors.append('title is not correct')
-        except TimeoutException as e:
-            print('Exception: ',e, " in sub-subject, page: ",page.name)
-            page.sub_subjects.errors.append('title is not correct')
-
-        # find all the links inside and set their status
-        links = root_element.find_elements(By.XPATH, "./ul[@class='subtopicsList']/li/a")
-        if len(links) == 0:
-            page.sub_subjects.errors.append('no internal links')
-            return
-        links, errors = PageUtility.set_url_links(links)
-        errors = [error + ' ' for error in errors]
-        page.sub_subjects.errors.extend(errors)
-        # page.stats_part.links.extend(links)
-
-
-
-    @classmethod
     def set_publications(cls, page: SubjectPage, session: webdriver.Chrome):
         print('publications test in: {}'.format(page.name))
 
         # check if the element located
         root_element, error = cls.get_main_element('PUBLICATIONS_XPATH', session)
         if root_element is None:
-            print('publication not tested')
+
             if error == 'chrome session error':
                 raise Exception('chrome session error')
-            return
+            print('publications not tested in: ', page.name, ', {}'.format(error))
 
+            return
 
         # check title
         try:
@@ -316,8 +326,8 @@ class WebPartUtility:
 
         # check links inside
         try:
-            links = root_element.find_elements(By.XPATH, './div//ul/li/div/div/a')
-            if len(links) <1:
+            links = root_element.find_elements(By.XPATH, './div/ul/li/div/div/a')
+            if len(links) < 1:
                 page.publications.errors.append('no content')
             else:
                 links, errors = PageUtility.set_url_links(links)
@@ -331,86 +341,95 @@ class WebPartUtility:
 
         # check last link
         try:
-            link = root_element.find_element(By.XPATH,"./a")
-            link, errors = PageUtility.set_url_links([link])
-            if len(errors)>0:
-                page.publications.errors.append("last link problem")
-                return
+            link = root_element.find_element(By.XPATH, "./div/a")
+            link = CbsLink(link.get_attribute('href'))
+            PageUtility.set_link_status(link)
+            # link, errors = PageUtility.set_url_links([link])
+            # if len(errors) > 0:
+            #     page.publications.errors.append("last link problem")
+            #     return
+            if not link.status_code == 200:
+                page.publications.errors.append("last link is broken")
 
         except Exception as e:
+            print("publication last link exception {}".format(e))
             page.publications.errors.append("last link problem")
-
 
     @classmethod
     def set_extra_parts(cls, page: SubjectPage, root_element):
         print('extra-parts test in: {}'.format(page.name))
 
-        # left side of the page
-        try:
-            left_extra_parts = root_element.find_element(By.XPATH, Links.LEFT_EXTRA_PARTS_XPATH.value)
+        # check if left element located
+        left_element, error = cls.get_main_element('LEFT_EXTRA_PARTS_XPATH', root_element)
+        if left_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
+        else:
             page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
-        except TimeoutException:
-            pass
-        except NoSuchElementException:
-            pass
 
-        # right side of the page
-        try:
-            right_extra_parts = root_element.find_element(By.XPATH, Links.RIGHT_EXTRA_PARTS_XPATH.value)
+        # check if right element located
+        right_element, error = cls.get_main_element('RIGHT_EXTRA_PARTS_XPATH', root_element)
+        if right_element is None:
+            print('right errors not found')
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
+        else:
             page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
-        except TimeoutException:
-            pass
-        except NoSuchElementException:
-            pass
-
-        return
 
     @classmethod
     def set_tools_and_db(cls, page: SubjectPage, session):
         print('tools-and-db test in: {}'.format(page.name))
 
-        # left side of the page
+        # check if the element located
+        root_element, error = cls.get_main_element('TOOLS_AND_DB_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('tools_and_db not tested in: ', page.name, ', {}'.format(error))
+
+            return
+
+        # title test
         try:
-            tools_and_db = session.find_element(By.XPATH, Links.TOOLS_AND_DB_XPATH.value)
-            title = session.find_element(By.XPATH, "//h2[@id='WpTitleToolAndDataBasesLinks']//span").text
-            images = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//img")
-            links = session.find_elements(By.XPATH, Links.TOOLS_AND_DB_XPATH.value + "//a")
-
-            # test image
-            if len(images) == 0:
-                page.stats_part.errors.append('image content is missing')
-            else:
-                for i, img in enumerate(images):
-                    cur_link = CbsLink(img.get_attribute('src'))
-                    PageUtility.set_link_status(cur_link)
-                    page.tools_and_db.images.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        page.tools_and_db.errors.append('image is broken')
-                        page.isCorrect = False
-
-            # test links
-            if len(links) == 0:
-                page.stats_part.errors.append('link content is missing')
-                page.isCorrect = False
-            else:
-                for i, sheet in enumerate(links):
-                    cur_link = CbsLink(sheet.get_attribute('href'))
-                    page.tools_and_db.links.append(cur_link)
-                    PageUtility.set_link_status(cur_link)
-                    if not cur_link.status_code == 200:
-                        page.tools_and_db.errors.append('link is broken')
-                        page.isCorrect = False
-
-            # test title
+            title = root_element.find_element(By.XPATH, "./div/h2/span")
+            title = title.text
             if not title == 'כלים ומאגרי נתונים':
-                print(title)
-                page.tools_and_db.errors.append('title i not correct')
-                print('title is not correct')
-
-        except TimeoutException:
-            pass
+                # print('title in tadb is: ', title)
+                page.tools_and_db.errors.append('title not correct')
         except NoSuchElementException:
-            pass
+            page.tools_and_db.errors.append('title not correct')
+            print('tools_db not contain any title: ', page.name)
+
+        # image test
+        try:
+            image = root_element.find_element(By.XPATH, "./div/div/div/img")
+            image = CbsLink(url=image.get_attribute('src'))
+            PageUtility.set_link_status(image)
+            if not image.status_code == 200:
+                page.tools_and_db.errors.append('image is broken')
+
+        except NoSuchElementException:
+            page.tools_and_db.errors.append('no image')
+        except TimeoutException:
+            page.tools_and_db.errors.append('no image')
+        except Exception as e:
+            print('exception in tools and DB')
+            raise e
+
+        # link test
+        try:
+            link = root_element.find_element(By.XPATH, "./div/div/div/a")
+            link = CbsLink(link.get_attribute('href'))
+            PageUtility.set_link_status(link)
+            if not link.status_code == 200:
+                page.tools_and_db.errors.append('link is broken')
+
+        except NoSuchElementException:
+            page.tools_and_db.errors.append('no link')
+        except TimeoutException:
+            page.tools_and_db.errors.append('no link')
         except Exception as e:
             print('exception in tools and DB')
             raise e
@@ -419,76 +438,77 @@ class WebPartUtility:
     @classmethod
     def set_summary(cls, page: SubjectPage, session: webdriver):
         print('summary test in: {}'.format(page.name))
-        try:
-            # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
-            paragraph = session.find_element(By.XPATH, Links.SUMMARY_XPATH.value).text
-            images = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//img")
-            links = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//a")
-            # check text is exist
-            if paragraph == '':
-                page.summary.errors.append('no text')
+        # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
+        # check if the element located
+        root_element, error = cls.get_main_element('SUMMARY_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            return
+        # paragraphs test
+        paragraphs = root_element.find_elements(By.XPATH, "./div[4]/p")
 
-            # test images
-            if len(images) > 0:
-                counter = 0
-                for i, img in enumerate(images):
-                    cur_link = CbsLink(img.get_attribute('src'))
-                    PageUtility.set_link_status(cur_link)
-                    page.summary.images.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        counter += 1
+        # images test
+        # links test
+        # images = session.find_element(By.XPATH,"./div[2]/div/img")
+        # links = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//a")
+        # check text is exist
+        #     if paragraph == '':
+        #         page.summary.errors.append('no text')
 
-                if counter > 1:
-                    page.summary.errors.append('{} images are broken'.format(counter))
-                elif counter == 1:
-                    page.summary.errors.append('{} image is broken'.format(counter))
-
-            # test links
-            if len(links) > 0:
-                counter = 0
-                for i, url in enumerate(links):
-                    cur_link = CbsLink(url.get_attribute('href'))
-                    PageUtility.set_link_status(cur_link)
-                    page.summary.links.append(cur_link)
-                    if not cur_link.status_code == 200:
-                        counter += 1
-
-                if counter > 1:
-                    page.summary.errors.append('{} links is broken'.format(counter))
-                elif counter == 1:
-                    page.summary.errors.append('{} link is broken'.format(counter))
-
-        except TimeoutException:
-            pass
-        except NoSuchElementException:
-            print("summary couldn't be found")
-        except Exception as e:
-            print('exception in summary test')
-        return
+        # test images
+        # if len(images) > 0:
+        #     counter = 0
+        #     for i, img in enumerate(images):
+        #         cur_link = CbsLink(img.get_attribute('src'))
+        #         PageUtility.set_link_status(cur_link)
+        #         page.summary.images.append(cur_link)
+        #         if not cur_link.status_code == 200:
+        #             counter += 1
+        #
+        #     if counter > 1:
+        #         page.summary.errors.append('{} images are broken'.format(counter))
+        #     elif counter == 1:
+        #         page.summary.errors.append('{} image is broken'.format(counter))
+        #
+        #     # test links
+        #     if len(links) > 0:
+        #         counter = 0
+        #         for i, url in enumerate(links):
+        #             cur_link = CbsLink(url.get_attribute('href'))
+        #             PageUtility.set_link_status(cur_link)
+        #             page.summary.links.append(cur_link)
+        #             if not cur_link.status_code == 200:
+        #                 counter += 1
+        #
+        #         if counter > 1:
+        #             page.summary.errors.append('{} links is broken'.format(counter))
+        #         elif counter == 1:
+        #             page.summary.errors.append('{} link is broken'.format(counter))
+        #
+        # except TimeoutException:
+        #     pass
+        # except NoSuchElementException:
+        #     print("summary couldn't be found")
+        # except Exception as e:
+        #     print('exception in summary test')
+        # return
 
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
         print('tables-and-charts test in: {}'.format(page.name))
 
-        try:
-            element: WebElement = session.find_element(By.XPATH, Links.TABLES_AND_CHARTS_XPATH.value)
-        except NoSuchElementException as e:
-            print('no tables and charts', e)
-            return
-        except TimeoutException as e:
-            print('no tables and charts', e)
-            return
-        except TypeError as e:
-            print('exception, xpath is not recognized', e)
-            return
-        except Exception as e:
-            print('not recognized exception in tables and charts', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('TABLES_AND_CHARTS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
 
         # title check
         try:
 
-            title = element.find_element(By.XPATH, ".//h2//span").text
+            title = root_element.find_element(By.XPATH, "./h2/span").text
             if not title == 'לוחות ותרשימים':
                 page.tables_and_charts.errors.append('title is not correct')
                 print(title)
@@ -509,36 +529,32 @@ class WebPartUtility:
             return
 
         # links check
-        try:
+        links = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a")
+        # images check
+        images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a/img")
 
-            li_elements = element.find_elements(By.XPATH, ".//div//ul//li")
-            print('number li: ', len(li_elements))
-            web_part_lines = []
-            if len(li_elements) == 0:
-                raise NoSuchElementException(msg='elements not found')
-
-            for li in li_elements:
-                div = li.find_elements(By.XPATH, ".//div//div")
-                pic_url = CbsLink(div[0].find_element(By.XPATH, ".//a//img").get_attribute('src'))
-                link_url = CbsLink(div[0].find_element(By.XPATH, ".//a").get_attribute('href'))
-                name = div[0].text
-                date = div[1].text
-                web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
-
-            cls.check_lines(web_part_lines, page.tables_and_charts.errors)
-
-        except NoSuchElementException as e:
-            page.tables_and_charts.errors.append('not found any links')
-        except TimeoutException as e:
-            page.tables_and_charts.errors.append('not found any links')
-        except TypeError as e:
-            print('exception, xpath is not recognized')
-        except Exception as e:
-            print('not recognized exception in tables and charts: {}'.format(e))
+        # for li in li_elements:
+        #     div = li.find_elements(By.XPATH, ".//div//div")
+        #     pic_url = CbsLink(div[0].find_element(By.XPATH, ".//a//img").get_attribute('src'))
+        #     link_url = CbsLink(div[0].find_element(By.XPATH, ".//a").get_attribute('href'))
+        #     name = div[0].text
+        #     date = div[1].text
+        #     web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
+        #
+        # cls.check_lines(web_part_lines, page.tables_and_charts.errors)
+        #
+        # except NoSuchElementException as e:
+        #     page.tables_and_charts.errors.append('not found any links')
+        # except TimeoutException as e:
+        #     page.tables_and_charts.errors.append('not found any links')
+        # except TypeError as e:
+        #     print('exception, xpath is not recognized')
+        # except Exception as e:
+        #     print('not recognized exception in tables and charts: {}'.format(e))
 
         # last link check
         try:
-            to_all_maps = element.find_element(By.XPATH, ".//div//a[@class='MadadTableMapsToAll']")
+            to_all_maps = root_element.find_element(By.XPATH, "./div[1]/a[@class='MadadTableMapsToAll']")
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
@@ -564,23 +580,16 @@ class WebPartUtility:
     def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
         print('geographic-zone test in: {}'.format(page.name))
 
-        try:
-            element: WebElement = session.find_element(By.XPATH, Links.GEOGRAPHIC_ZONE_XPATH.value)
-        except NoSuchElementException as e:
-            print('no geographic_zone', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('GEOGRAPHIC_ZONE_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
-        except TimeoutException as e:
-            print('no geographic_zone', e)
-            return
-        except TypeError as e:
-            print('exception, xpath is not recognized', e)
-            return
-        except Exception as e:
-            print('not recognized exception in geographic_zone', e)
-            return
+
         # check link status
         try:
-            a = element.find_element(By.XPATH, './/a').get_attribute('href')
+            a = root_element.find_element(By.XPATH, './div/a').get_attribute('href')
             link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
@@ -618,7 +627,7 @@ class WebPartUtility:
 
         # check link status
         try:
-            main_link = main_element.find_element(by=By.XPATH, value=".//div//a").get_attribute('href')
+            main_link = main_element.find_element(by=By.XPATH, value="./div/a").get_attribute('href')
 
             link = CbsLink(url=main_link)
             PageUtility.set_link_status(link)
@@ -656,30 +665,13 @@ class WebPartUtility:
         print('pictures-links test in: {}'.format(page.name))
         print('in developing process')
 
+    @classmethod
+    def set_slideshows(cls, page, session):
+        #todo
+        pass
+
 
 class PageUtility:
-
-    @classmethod
-    def setPageLevel(cls, root_element, page: SubjectPage):
-        # finding the Level inside the page text
-        # print('finding span objects...')
-        uList = root_element.find_elements_by_xpath(
-            "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']")
-        page.level = len(uList) - 2
-
-    @classmethod
-    def setPageParent(cls, root_element, page: SubjectPage):
-        if page.level is None:
-            cls.setPageLevel(root_element, page)
-        if page.level > 1:
-            uList = root_element.find_elements_by_xpath(
-                "//div[@class='breadcrumb']//span[@class = 'ms-sitemapdirectional']//a[@href]")
-            page.link = uList[len(uList) - 1].get_attribute('href')
-            page.name = uList[len(uList) - 1].text
-        # else the parent page is the home page
-        else:
-            page.link = Links.CBS_HOME_PAGE_HE.value
-            page.name = CBS_HOME_PAGE_NAME
 
     @classmethod
     def create_pages(cls, link_list):
@@ -695,11 +687,8 @@ class PageUtility:
     @classmethod
     def set_link_status(cls, link: CbsLink):
         try:
-
-            resp = HTTPS.request('GET', link.url,redirect=True)
+            resp = HTTPS.request('GET', link.url, redirect=True)
             link.status_code = resp.status
-
-
 
         except TimeoutException:
             link.status_code = 408
@@ -709,6 +698,11 @@ class PageUtility:
             print('link: ', link.url)
             link.status_code = 404
             return
+        except MaxRetryError as e:
+            if link.url == 'https://stats.oecd.org/':
+                link.status_code = 200
+            else:
+                link.status_code = 404
         except Exception as e:
             print('set link status func unknown exception', e)
             link.status_code = 408
@@ -724,6 +718,16 @@ class PageUtility:
             cls.check_for_cbs_error_page(content, link)
             return
 
+    @classmethod
+    def link_state(cls, element, attrib, link_list, errors, iteration):
+        url = element.get_attribute(attrib)
+        link = CbsLink(url)
+        cls.set_link_status(link)
+        link_list.append(link)
+        if not link.status_code == 200:
+            print(str(link.status_code) + str(link.url))
+            errors.append(str(iteration + 1) + 'th link is broken')
+
     # gets <a> or <img> web elements and check them for errors
     # returns tuple of list of CBS links from input and list of errors -
     # each error describes the index of the error link
@@ -731,14 +735,22 @@ class PageUtility:
     def set_url_links(cls, links: [WebElement], attrib='href'):
         link_list = []
         errors = []
+        threads = []
         for i, element in enumerate(links):
-            url = element.get_attribute(attrib)
-            link = CbsLink(url)
-            cls.set_link_status(link)
-            link_list.append(link)
-            if not link.status_code == 200:
-                print(str(link.status_code) + str(link.url))
-                errors.append(str(i + 1) + 'th link is broken')
+            t = threading.Thread(target=cls.link_state, args=(element,attrib,link_list,errors,i))
+            threads.append(t)
+            t.start()
+
+            # url = element.get_attribute(attrib)
+            # link = CbsLink(url)
+            # cls.set_link_status(link)
+            # link_list.append(link)
+            # if not link.status_code == 200:
+            #     print(str(link.status_code) + str(link.url))
+            #     errors.append(str(i + 1) + 'th link is broken')
+        for t in threads:
+            t.join()
+
         return link_list, errors
 
     @classmethod
@@ -754,61 +766,3 @@ class PageUtility:
                 return True
         # print('end deep check')
         return False
-
-    @classmethod
-    def set_page_lang(cls, page: SubjectPage, root_element):
-        try:
-            element = root_element.find_element_by_xpath("//a[@id='ctl00_ctl23_lbEnglish']")
-        except NoSuchElementException as e:
-            print('not a subject page')
-            return
-        if element.text.upper() == 'ENGLISH':
-            page.lang = Language.ENGLISH.value
-            return
-        page.lang = Language.HEBREW.value
-
-    # @classmethod  # need to be changed according page file_type
-    # def set_internal_links(cls, page: SubjectPage, session: webdriver.Chrome):
-    #
-    #     if page.link.status_code == 200:
-    #         # inside links check
-    #         try:
-    #             session.get(page.link.url)
-    #             links = session.find_elements_by_xpath("//div[@class='twoColumn']//a[@href]")
-    #             cbs_links = []
-    #             for link in links:
-    #                 url_: str = link.get_attribute('href')
-    #                 text: str = link.text
-    #                 if text == '' and url_ == '':
-    #                     continue
-    #                 else:
-    #                     cur_link = CbsLink(url_)
-    #                     cur_link.name = text
-    #                     cbs_links.append(cur_link)
-    #             page.set_inside_links(cbs_links)
-    #         except Exception as e:
-    #             print('exception was occurred in page: ' + page.name)
-    #         finally:
-    #             error = False
-    #             for link in page:
-    #                 if link.status_code == 200:
-    #                     error = True
-    #                     break
-    #         if error:
-    #             print(page.name + '::' + 'problems were found')
-    #             # need to be replace with inserting errors inside the page
-    #             # def wrightToFile(links):
-    #         else:
-    #             print(page.name + '::' + '200 OK for links inside')
-
-    # @classmethod
-    # def set_extra_statistical(cls, page: SubjectPage, root_element:WebDriver):
-    #     # check for extra web part - empty statistical (different xPath)
-    #     try:
-    #         # extra_stats = root_element.find_element_by_xpath(Links.EXTRA_STATS_XPATH.value)
-    #         page.stats_part.errors.append('extra web part is showed')
-    #         page.isCorrect = False
-    #     except TimeoutException:
-    #         pass
-    #     except NoSuchElementException:
-    #         return

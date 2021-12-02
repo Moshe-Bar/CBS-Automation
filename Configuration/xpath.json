@@ -1,23 +1,23 @@
 {
   "XPath": [
     {
-      "MAP_LINKS_XPATH": "//ul[@class='level1 sitemapmenu']//li[@class='ng-scope']//ul[@class='level2']//li[@class='ng-scope']//ul[@class='level3']//li//a",
-      "HEBREW_STATS_XPATH": "//div[@id='hebstats']",
-      "RIGHT_EXTRA_PARTS_XPATH": "//div[@class='rightColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
-      "LEFT_EXTRA_PARTS_XPATH": "//div[@class='leftColumn']//div[@class='ms-webpart-zone ms-fullWidth']",
-      "TOOLS_AND_DB_XPATH": "//div[contains(@ng-if , 'isToolsAndDatabases') and not (contains(@style, 'display: none;'))]",
-      "SUMMARY_XPATH": "//div[@class='rightColumn']//div[@id='ctl00_PlaceHolderMain_ctl00_wrapper']",
-      "TOP_BOX_XPATH": "//div[@class='generalBox top-links']",
-      "SUB_SUBJECTS_XPATH": "//div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']",
-      "PRESS_RELEASES_XPATH": "//div[@class='rightColumn']/div[@class='generalBox removeMSWebpart'][1]",
-      "TABLES_AND_CHARTS_XPATH": "//div[contains(@ng-show , 'isTableMaps') and not (contains(@style, 'display: none;'))]",
-      "PUBLICATIONS_XPATH": "//div[@class='generalBox removeMSWebpart'][4]",
-      "GEOGRAPHIC_ZONE_XPATH": "//div[@class='generalBox ng-scope'][@ng-if='isGeographicZone']",
-      "INTERNATIONAL_COMPARISONS_XPATH": "//div[@class='generalBox ng-scope'][@ng-if='isInternationalComparisons']",
-      "MORE_LINKS_XPATH": "//div[@class='generalBox' ][1]",
-      "CONFERENCES_AND_SEMINARS_XPATH": "//div[@class='generalBox'][2]",
-      "VIDEOS_LINKS_XPATH": "//div[@class='generalBox'][3]",
-      "PICTURES_LINKS_XPATH": "//div[@class='generalBox'][4]"
+      "ROOT_XPATH": "./html/body/form/div[@id='s4-workspace']/div/div/main/div/div[@id='DeltaPlaceHolderMain']/div[@role='main']/div",
+      "HEBREW_STATS_XPATH": "/div[@class='leftColumn']/div[@id='hebstats']",
+      "RIGHT_EXTRA_PARTS_XPATH": "/div[@class='rightColumn']/div[@class='ms-webpart-zone ms-fullWidth']",
+      "LEFT_EXTRA_PARTS_XPATH": "/div[@class='leftColumn']/div[@class='ms-webpart-zone ms-fullWidth']",
+      "TOOLS_AND_DB_XPATH": "/div[@class='rightColumn']/div[@ng-if='isToolsAndDatabases']",
+      "SUMMARY_XPATH": "/div[@class='rightColumn']/div[@class='textBox borderBottom transBox']",
+      "TOP_BOX_XPATH": "/div[@class='rightColumn']/div[@class='generalBox top-links']",
+      "SUB_SUBJECTS_XPATH": "/div[@class='rightColumn']/div[@class='generalBox ng-scope'][@ng-controller='subSubjectsList']",
+      "PRESS_RELEASES_XPATH": "/div[@class='rightColumn']/div[@class='generalBox removeMSWebpart'][1]",
+      "TABLES_AND_CHARTS_XPATH": "/div[@class='rightColumn']/div[@ng-show='isTableMaps']",
+      "PUBLICATIONS_XPATH": "/div[@class='rightColumn']/div[@class='generalBox removeMSWebpart'][4]",
+      "GEOGRAPHIC_ZONE_XPATH": "/div[@class='leftColumn']/div[@class='generalBox ng-scope'][@ng-if='isGeographicZone']",
+      "INTERNATIONAL_COMPARISONS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox ng-scope'][@ng-if='isInternationalComparisons']",
+      "MORE_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox' ][1]",
+      "CONFERENCES_AND_SEMINARS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][2]",
+      "VIDEOS_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][3]",
+      "PICTURES_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][4]"
     }
   ]
 }
