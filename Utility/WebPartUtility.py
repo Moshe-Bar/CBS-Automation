@@ -533,24 +533,18 @@ class WebPartUtility:
         # images check
         images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a/img")
 
-        # for li in li_elements:
-        #     div = li.find_elements(By.XPATH, ".//div//div")
-        #     pic_url = CbsLink(div[0].find_element(By.XPATH, ".//a//img").get_attribute('src'))
-        #     link_url = CbsLink(div[0].find_element(By.XPATH, ".//a").get_attribute('href'))
-        #     name = div[0].text
-        #     date = div[1].text
-        #     web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
-        #
-        # cls.check_lines(web_part_lines, page.tables_and_charts.errors)
-        #
-        # except NoSuchElementException as e:
-        #     page.tables_and_charts.errors.append('not found any links')
-        # except TimeoutException as e:
-        #     page.tables_and_charts.errors.append('not found any links')
-        # except TypeError as e:
-        #     print('exception, xpath is not recognized')
-        # except Exception as e:
-        #     print('not recognized exception in tables and charts: {}'.format(e))
+        if not links:
+            page.tables_and_charts.errors.append('links are missing')
+        else:
+            links, errors = PageUtility.set_url_links(links)
+            page.tables_and_charts.errors.extend(errors)
+
+            if not images:
+                page.tables_and_charts.errors.append('icons are missing')
+            else:
+                images, errors = PageUtility.set_url_links(images,attrib='src')
+                errors = [error + ' ' for error in errors]
+                page.tables_and_charts.errors.extend(errors)
 
         # last link check
         try:
@@ -558,10 +552,10 @@ class WebPartUtility:
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
-                raise Exception('last link is broken')
+                page.tables_and_charts.errors.append('last link is broken')
 
         except Exception as e:
-            page.tables_and_charts.errors.append('to all charts link is broken')
+            page.tables_and_charts.errors.append('to all charts link is missing')
             print('exception in set_tables_and_charts: {}'.format(e))
 
     @classmethod
