@@ -427,7 +427,13 @@ class TestUtility:
             pages_collection = pages
         # set up session for test
         try:
-            session = cls.get_sessions()  # default as synchronous test - one instance session
+            session = cls.get_sessions()
+        except WebDriverException as e:
+            print('error loading sessions, test is closed')
+            outer_signals.status.emit(0)
+            outer_signals.error.emit(('error loading sessions, test is closed', 'nothing was checked'))
+            outer_signals.finished.emit()
+            raise e
         except Exception as e:
             print('error loading sessions, test is closed')
             outer_signals.status.emit(0)
@@ -463,7 +469,7 @@ class TestUtility:
                     return
 
                 percents = (float(i + 1) / pages_size) * 100
-                outer_signals.status.emit(percents)
+                outer_signals.status.emit(percents*100)
                 print(str("%.1f" % percents) + '%')
 
                 session.get(page.link.url)
