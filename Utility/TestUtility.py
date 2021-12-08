@@ -265,7 +265,7 @@ class TestUtility:
                     session.get(page.link.url)
 
                 except WebDriverException as e:
-                    print(e)
+                    print('exception while trying to get page: {}'.format(page.name))
                 try:
                     main_element = WebDriverWait(session, 10).until(
                         EC.presence_of_element_located((By.XPATH, ROOT_ELEMENT))

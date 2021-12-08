@@ -25,7 +25,8 @@ from DataBase.DataBase import Links
 
 import urllib.request
 
-HTTPS = urllib3.PoolManager(ca_certs=certifi.where())
+HTTPS = urllib3.PoolManager(ca_certs=certifi.where(),num_pools=50)
+
 # CERT_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
@@ -521,9 +522,6 @@ class WebPartUtility:
             print('no title in tables and charts')
             page.tables_and_charts.errors.append('no title')
             return
-        except TypeError as e:
-            print('exception, xpath is not recognized')
-            return
         except Exception:
             print('not recognized exception in tables and charts')
             return
@@ -559,24 +557,13 @@ class WebPartUtility:
             print('exception in set_tables_and_charts: {}'.format(e))
 
     @classmethod
-    def check_lines(cls, web_part_lines: [WebPartLine], errors: [str]):
-        for web_part_line in web_part_lines:
-            link_url = web_part_line.url
-            pic_url = web_part_line.pic
-            PageUtility.set_link_status(link_url)
-            PageUtility.set_link_status(pic_url)
-            if not link_url.status_code == 200:
-                errors.append('url link is broken')
-            if not pic_url.status_code == 200:
-                errors.append('image url link is broken')
-
-    @classmethod
     def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
         print('geographic-zone test in: {}'.format(page.name))
 
         # check if the element located
         root_element, error = cls.get_main_element('GEOGRAPHIC_ZONE_XPATH', session)
         if root_element is None:
+            print('geographic zone not exist in {}'.format(page.name))
             if error == 'chrome session error':
                 raise Exception('chrome session error')
             return
@@ -588,9 +575,9 @@ class WebPartUtility:
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
                 page.geographic_zone.errors.append('link is broken')
-            else:
-                print('link is ok')
-            print('status: ', link.status_code)
+            # else:
+            #     print('link is ok')
+            # print('status: ', link.status_code)
         except NoSuchElementException as e:
             page.geographic_zone.errors.append('no link in geographic zone')
             print('no geographic_zone', e)
@@ -609,27 +596,25 @@ class WebPartUtility:
     def set_international_comparisons(cls, page: SubjectPage, session: webdriver.Chrome):
         print('international-comparisons test in: {}'.format(page.name))
 
-        try:
-            main_element = session.find_element(By.XPATH, Links.INTERNATIONAL_COMPARISONS_XPATH.value)
-        except NoSuchElementException as e:
-            return
-        except TimeoutException as e:
-            return
-        except Exception as e:
-            print('not recognized exception in international comparisons', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('INTERNATIONAL_COMPARISONS_XPATH', session)
+        if root_element is None:
+            print('geographic zone not exist in {}'.format(page.name))
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
 
         # check link status
         try:
-            main_link = main_element.find_element(by=By.XPATH, value="./div/a").get_attribute('href')
-
-            link = CbsLink(url=main_link)
+            # a = main_element.find_element(by=By.XPATH, value="./div/a").get_attribute('href')
+            a = root_element.find_element(By.XPATH, './div/a').get_attribute('href')
+            link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
                 page.international_comparisons.errors.append('link is broken')
-            else:
-                print('link is ok')
-            print('status: ', link.status_code)
+            # else:
+            #     print('link is ok')
+            # print('status: ', link.status_code)
         except NoSuchElementException as e:
             page.international_comparisons.errors.append('no link')
             print('no international_comparisons', e)
@@ -652,6 +637,13 @@ class WebPartUtility:
     @classmethod
     def set_videos_links(cls, page, session):
         print('video-links test in: {}'.format(page.name))
+        # check if the element located
+        root_element, error = cls.get_main_element('HEBREW_STATS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('stats  not tested in: ', page.name, ', {}'.format(error))
+            return
         print('in developing process')
 
     @classmethod

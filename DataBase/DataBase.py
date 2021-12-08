@@ -50,7 +50,10 @@ class DataBase:
     @classmethod
     def get_CBS_he_pages(cls):
         links = cls.get_CBS_he_links()  # the links only saved locally
-        pages = [SubjectPage(link, link.name) for link in links]
+        pages =[SubjectPage(link, link.name, i+1) for i,link in enumerate(links)]
+
+        # pages = list(map(lambda link:SubjectPage(link, link.name,),links))
+        # pages = [SubjectPage(link, link.name,) for i,link in links]
         return pages
 
     @classmethod
@@ -202,3 +205,4 @@ class Links(Enum):
 # summ = [1,2,3,4,5]
 # path = '02_Jun_2021_10.48.50'
 # DataBase.save_summary_result(file_key=path,summery=summ)
+print(DataBase.get_CBS_he_pages()[30])
