@@ -55,7 +55,6 @@ class TestUtility:
         pages = DataBase.get_CBS_en_pages()
         return pages
 
-
     @classmethod
     def create_web_driver(cls, wait_time=5, withUI=True):
         try:
@@ -167,23 +166,17 @@ class TestUtility:
     @classmethod
     def testPage_(cls, page: SubjectPage, main_element):
 
-
         WebPartUtility.set_summary(page=page, session=main_element)
 
-
         WebPartUtility.set_heb_statistical(page=page, session=main_element)
-
 
         WebPartUtility.set_extra_parts(page=page, root_element=main_element)
 
         WebPartUtility.set_top_box(page=page, session=main_element)
 
-
         WebPartUtility.set_sub_subjects(page=page, session=main_element)
 
-
         WebPartUtility.set_press_releases(page=page, session=main_element)
-
 
         WebPartUtility.set_tables_and_charts(page=page, session=main_element)
 
@@ -191,23 +184,17 @@ class TestUtility:
 
         WebPartUtility.set_publications(page=page, session=main_element)
 
-
         WebPartUtility.set_geographic_zone(page=page, session=main_element)
 
         WebPartUtility.set_international_comparisons(page=page, session=main_element)
 
-
         WebPartUtility.set_more_links(page=page, session=main_element)
 
+        WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)  # TODO
 
-        WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
+        WebPartUtility.set_videos_links(page=page, session=main_element)  # TODO
 
-        WebPartUtility.set_videos_links(page=page, session=main_element)#TODO
-
-
-        WebPartUtility.set_pictures_links(page=page, session=main_element)#TODO
-
-
+        WebPartUtility.set_pictures_links(page=page, session=main_element)  # TODO
 
     # visible func
     @classmethod
@@ -224,25 +211,24 @@ class TestUtility:
                 raise e
 
         # status flow
-        shared_data.put(('text','initializing test environment...'))
+        shared_data.put(('text', 'initializing test environment...'))
         print('initializing test environment...')
         t = time.localtime()
         current_time = time.strftime("%H:%M:%S", t)
-        shared_data.put(('text','test started on: ' + str(current_time)))
+        shared_data.put(('text', 'test started on: ' + str(current_time)))
         print('test started on: ' + str(current_time))
 
         try:
             session = cls.get_sessions(isViseble=session_visible)  # default as synchronous test - one instance session
         except Exception as e:
             print('error loading sessions, test is closed')
-            shared_data.put(('text','error loading sessions, test is closed'))
+            shared_data.put(('text', 'error loading sessions, test is closed'))
             end_flag.put('error loading sessions, test is closed')
             raise e
 
-
         pages_size = len(pages)
         print('num pages', str(len(pages)))
-        shared_data.put(('text','num pages: ' + str(pages_size)))
+        shared_data.put(('text', 'num pages: ' + str(pages_size)))
 
         summary = []
         summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
@@ -258,7 +244,7 @@ class TestUtility:
                     return
                     # raise Exception('test canceled')
                     # outside canceled
-                percents = (float(i + 1) / pages_size) *100
+                percents = (float(i + 1) / pages_size) * 100
                 progress_status.put(percents)
                 print(str("%.1f" % percents) + '%')
                 try:
@@ -295,8 +281,8 @@ class TestUtility:
                 if len(page.get_errors()) > 0:
                     # print(page.name, page.link.url)
                     print(page.error_to_str())
-                    shared_data.put(('link',page.name,page.link.url))
-                    shared_data.put(('text',page.error_to_str() ))
+                    shared_data.put(('link', page.name, page.link.url))
+                    shared_data.put(('text', page.error_to_str()))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
                     # error_pages.append((page.name, page.link.url, page.error_to_str()))
@@ -308,7 +294,7 @@ class TestUtility:
                     # outer_signals.monitor_data.emit(str(200))
         except NoSuchWindowException as e:
             print('Main test stopped due to unexpected  session close')
-            shared_data.put(('text','Main test stopped due to unexpected  session close'))
+            shared_data.put(('text', 'Main test stopped due to unexpected  session close'))
             # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
             end_flag.put('unexpected  session close')
             # outer_signals.finished.emit()
@@ -329,7 +315,7 @@ class TestUtility:
             current_time = time.strftime("%H:%M:%S", t)
             # str(time.time() - start_time)
             print('test ended on: ' + current_time)
-            shared_data.put(('test','test ended on: ' + current_time))
+            shared_data.put(('test', 'test ended on: ' + current_time))
             # outer_signals.monitor_data.emit('test ended on: ' + current_time)
             DataBase.save_test_result('test_results', page)
             DataBase.save_summary_result('test_results', summary)
@@ -469,7 +455,7 @@ class TestUtility:
                     return
 
                 percents = (float(i + 1) / pages_size) * 100
-                outer_signals.status.emit(percents*100)
+                outer_signals.status.emit(percents * 100)
                 print(str("%.1f" % percents) + '%')
 
                 session.get(page.link.url)
@@ -544,5 +530,3 @@ class TestUtility:
     def get_test_result(cls, log_key):
         file_key = log_key
         return DataBase.get_test_result(file_key=file_key)
-
-

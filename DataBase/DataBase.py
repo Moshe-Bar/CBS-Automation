@@ -28,8 +28,12 @@ class DataBase:
         excluded = ('/search/','/Surveys/', '/Documents/', '/publications/')
         links = list(filter(lambda x: all(s not in x.url for s in excluded),links))
         links.sort(key=lambda x: x.name)
-        print('num links: ',len(links))
         return links
+
+    @classmethod
+    def get_CBS_he_links_db(cls):
+        #todo
+        pass
 
     @classmethod
     def get_CBS_en_links(cls):
@@ -205,4 +209,4 @@ class Links(Enum):
 # summ = [1,2,3,4,5]
 # path = '02_Jun_2021_10.48.50'
 # DataBase.save_summary_result(file_key=path,summery=summ)
-print(DataBase.get_CBS_he_pages()[30])
+# print(DataBase.get_CBS_he_pages()[30])
