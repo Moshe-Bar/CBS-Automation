@@ -129,10 +129,10 @@ class Publications(WebPart):
     def error_to_str(self):
         return 'Publications: ' + super().error_to_str()
 
-class GeographicZone(WebPart):
+class Presentations(WebPart):
     def __init__(self):
         super().__init__()
 
     def error_to_str(self):
-        return 'GeographicZone: ' + super().error_to_str()
+        return 'Presentations: ' + super().error_to_str()
 

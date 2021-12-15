@@ -156,6 +156,7 @@ class Links(Enum):
     CONFERENCES_AND_SEMINARS_XPATH = DataBase.load_xpath('CONFERENCES_AND_SEMINARS_XPATH')  # new
     VIDEOS_LINKS_XPATH = DataBase.load_xpath('VIDEOS_LINKS_XPATH')  # new
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
+    PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH') # new
 
 
 

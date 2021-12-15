@@ -33,7 +33,7 @@ class ConnectionPool:
     def request(self,method,url,redirect):
         return next(self.iterator).request(method=method,url=url,redirect=redirect)
 
-HTTPS = ConnectionPool()
+HTTPS = urllib3.PoolManager(ca_certs=certifi.where())
 # HTTPS = urllib3.PoolManager(ca_certs=certifi.where(),maxsize=100, block=True)
 
 # CERT_CONTEXT = ssl.create_default_context(cafile=certifi.where())
@@ -458,8 +458,6 @@ class WebPartUtility:
         # paragraphs test
         paragraphs = root_element.find_elements(By.XPATH, "./div[4]/p")
 
-
-
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
         print('tables-and-charts test in: {}'.format(page.name))
@@ -617,9 +615,28 @@ class WebPartUtility:
         print('in developing process')
 
     @classmethod
-    def set_slideshows(cls, page, session):
-        #todo
-        pass
+    def set_presentations(cls, page, session):
+        print('slideshows test in: {}'.format(page.name))
+
+        root_element, error = cls.get_main_element('PRESENTATIONS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('presentations  not tested in: ', page.name, ', {}'.format(error))
+            return
+
+        # title check
+        try:
+            title = root_element.find_element(By.XPATH, "./h2/span")
+            title = title.text
+            if not title == 'מצגות':
+                print('title in stats is: ', title)
+                page.presentations.errors.append('title not correct')
+
+        except NoSuchElementException:
+            page.presentations.errors.append('title not correct')
+            print('stats not contain any title: ', page.name)
+            return
 
 
 class PageUtility:
@@ -639,7 +656,7 @@ class PageUtility:
     def set_link_status(cls, link: CbsLink):
         resp = None
         try:
-            resp = HTTPS.request('GET', link.url, True)
+            resp = HTTPS.request('GET', link.url, redirect=True)
             link.status_code = resp.status
 
         except TimeoutException:
