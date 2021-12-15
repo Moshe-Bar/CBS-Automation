@@ -6,7 +6,7 @@ import certifi
 # import ssl
 ##########
 from urllib.error import URLError
-
+from itertools import cycle
 import urllib3
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
@@ -25,7 +25,16 @@ from DataBase.DataBase import Links
 
 import urllib.request
 
-HTTPS = urllib3.PoolManager(ca_certs=certifi.where(),num_pools=50)
+class ConnectionPool:
+    def __init__(self):
+        self.pool = [urllib3.PoolManager(ca_certs=certifi.where(),maxsize=100, block=True) for i in range(20)]
+        self.iterator = cycle(self.pool) # cycle iterator for reuse connections
+
+    def request(self,method,url,redirect):
+        return next(self.iterator).request(method=method,url=url,redirect=redirect)
+
+HTTPS = ConnectionPool()
+# HTTPS = urllib3.PoolManager(ca_certs=certifi.where(),maxsize=100, block=True)
 
 # CERT_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 CBS_HOME_PAGE_NAME = 'דף הבית'
@@ -449,51 +458,7 @@ class WebPartUtility:
         # paragraphs test
         paragraphs = root_element.find_elements(By.XPATH, "./div[4]/p")
 
-        # images test
-        # links test
-        # images = session.find_element(By.XPATH,"./div[2]/div/img")
-        # links = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//a")
-        # check text is exist
-        #     if paragraph == '':
-        #         page.summary.errors.append('no text')
 
-        # test images
-        # if len(images) > 0:
-        #     counter = 0
-        #     for i, img in enumerate(images):
-        #         cur_link = CbsLink(img.get_attribute('src'))
-        #         PageUtility.set_link_status(cur_link)
-        #         page.summary.images.append(cur_link)
-        #         if not cur_link.status_code == 200:
-        #             counter += 1
-        #
-        #     if counter > 1:
-        #         page.summary.errors.append('{} images are broken'.format(counter))
-        #     elif counter == 1:
-        #         page.summary.errors.append('{} image is broken'.format(counter))
-        #
-        #     # test links
-        #     if len(links) > 0:
-        #         counter = 0
-        #         for i, url in enumerate(links):
-        #             cur_link = CbsLink(url.get_attribute('href'))
-        #             PageUtility.set_link_status(cur_link)
-        #             page.summary.links.append(cur_link)
-        #             if not cur_link.status_code == 200:
-        #                 counter += 1
-        #
-        #         if counter > 1:
-        #             page.summary.errors.append('{} links is broken'.format(counter))
-        #         elif counter == 1:
-        #             page.summary.errors.append('{} link is broken'.format(counter))
-        #
-        # except TimeoutException:
-        #     pass
-        # except NoSuchElementException:
-        #     print("summary couldn't be found")
-        # except Exception as e:
-        #     print('exception in summary test')
-        # return
 
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
@@ -672,8 +637,9 @@ class PageUtility:
 
     @classmethod
     def set_link_status(cls, link: CbsLink):
+        resp = None
         try:
-            resp = HTTPS.request('GET', link.url, redirect=True)
+            resp = HTTPS.request('GET', link.url, True)
             link.status_code = resp.status
 
         except TimeoutException:
@@ -689,20 +655,24 @@ class PageUtility:
                 link.status_code = 200
             else:
                 link.status_code = 404
+            return
         except Exception as e:
             print('set link status func unknown exception', e)
             link.status_code = 408
             return
+        finally:
+            # case everything went well - still need to check default error page of CBS
+            # and link.url.endswith('.aspx')
+            if resp and link.status_code == 200 and link.type == 'page':
+                # print('inside deep check: ')
+                # print(link.url)
+                content = resp.data.decode('utf-8')
+                resp.release_conn()
+                # print('content: ', content)
+                cls.check_for_cbs_error_page(content, link)
+                return
 
-        # case everything went well - still need to check default error page of CBS
-        # and link.url.endswith('.aspx')
-        if link.status_code == 200 and link.type == 'page':
-            # print('inside deep check: ')
-            # print(link.url)
-            content = resp.data.decode('utf-8')
-            # print('content: ', content)
-            cls.check_for_cbs_error_page(content, link)
-            return
+
 
     @classmethod
     def link_state(cls, element, attrib, link_list, errors, iteration):

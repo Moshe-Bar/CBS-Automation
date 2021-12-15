@@ -7,21 +7,16 @@ from multiprocessing import Queue
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchWindowException, \
     StaleElementReferenceException
-from selenium.webdriver.support import expected_conditions as EC
-
-# # from Objects.CbsPageUtility import CbsPageUtility
-# import asyncio
-
-# from concurrent.futures import ThreadPoolExecutor
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
-# from UI.Qt_GUI import WorkerSignals
 from DataBase.DataBase import DataBase, Links
+from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
 
 
 class TestProperties():
@@ -37,12 +32,12 @@ class TestProperties():
 class TestUtility:
 
     @classmethod
-    def get_sessions(cls, amount=1, timeout=2, isViseble=True):
+    def get_sessions(cls, amount=1,isViseble=True):
         if amount == 1:
-            return cls.create_web_driver(timeout, isViseble)
+            return cls.create_web_driver(isViseble)
         sessions = []
         for i in range(amount):
-            sessions.append(cls.create_web_driver(timeout, isViseble))
+            sessions.append(cls.create_web_driver(isViseble))
         return sessions
 
     @classmethod
@@ -56,19 +51,19 @@ class TestUtility:
         return pages
 
     @classmethod
-    def create_web_driver(cls, wait_time=5, withUI=True):
+    def create_web_driver(cls, withUI=True):
         try:
+            driver_service = Service(Links.CHROME_DRIVER.value)
             if not withUI:
                 options = webdriver.ChromeOptions()
-                options.add_argument("headless")
-                # options.add_argument('--disable-gpu')
-                driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
+                options.headless(True)
+                # # options.add_argument('--disable-gpu')
+                driver =  webdriver.Chrome(service=driver_service,chrome_options=options)
+                # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
 
             else:
-                driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
-
-            # driver.implicitly_wait(wait_time)
-            # driver.implicitly_wait(10)
+                driver = webdriver.Chrome(service=driver_service)
+                # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
             path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
             driver.get(path)
@@ -244,7 +239,7 @@ class TestUtility:
                     return
                     # raise Exception('test canceled')
                     # outside canceled
-                percents = (float(i + 1) / pages_size) * 100
+                percents = (float(i + 1) / pages_size)
                 progress_status.put(percents)
                 print(str("%.1f" % percents) + '%')
                 try:
@@ -281,7 +276,7 @@ class TestUtility:
                 if len(page.get_errors()) > 0:
                     # print(page.name, page.link.url)
                     print(page.error_to_str())
-                    shared_data.put(('link', page.name, page.link.url))
+                    shared_data.put(('link', page.name, page.link.url,'Fail'))
                     shared_data.put(('text', page.error_to_str()))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
@@ -289,7 +284,7 @@ class TestUtility:
                     DataBase.save_test_result('test_results', page)
                     summary[4] += 1
                 else:
-                    shared_data.put(('link', page.name, page.link.url))
+                    shared_data.put(('link', page.name, page.link.url,'Pass'))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
                     # outer_signals.monitor_data.emit(str(200))
         except NoSuchWindowException as e:

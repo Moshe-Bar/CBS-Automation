@@ -1,42 +1,87 @@
-# Part 01 using opencv access webcam and transmit the video in HTML
-import cv2
-import pyshine as ps  # pip3 install pyshine==0.0.9
+import threading
+import time
+from multiprocessing import Queue, Process
+import tornado
 
-HTML = """
-<html>
-<head>
-<title>PyShine Live Streaming</title>
-</head>
+import pywebio
+import urllib3.request
 
-<body>
-<center><h1> PyShine Live Streaming using OpenCV </h1></center>
-<center><img src="stream.mjpg" width='640' height='480' autoplay playsinline></center>
-</body>
-</html>
-"""
+from pywebio import start_server
+from pywebio.output import put_text, put_loading, put_processbar, set_processbar, put_markdown, put_file, put_table, \
+    put_buttons, put_html, span, put_scrollable, put_scope, put_grid, put_collapse
+
+import warnings
+
+# from selenium import webdriver
+
+warnings.filterwarnings("error")
+
+from pywebio.session import register_thread, run_async, run_asyncio_coroutine
+
+from Utility.TestUtility import TestUtility
+
+
+def timer(q_list):
+    # await timer2()
+    TestUtility.test(shared_data=q_list[0], progress_status=q_list[1], end_flag=q_list[2])
+
+
+def timer2(q_list):
+    i = 0
+    while True:
+        time.sleep(2)
+        print(i)
+        put_text(f'timer2: {i}')
+        i += 1
 
 
 def main():
-    StreamProps = ps.StreamProps
-    StreamProps.set_Page(StreamProps, HTML)
-    address = ('127.0.0.1', 9000)  # Enter your IP address
-    try:
-        StreamProps.set_Mode(StreamProps, 'cv2')
-        capture = cv2.VideoCapture(0)
-        capture.set(cv2.CAP_PROP_BUFFERSIZE, 4)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-        capture.set(cv2.CAP_PROP_FPS, 30)
-        StreamProps.set_Capture(StreamProps, capture)
-        StreamProps.set_Quality(StreamProps, 90)
-        server = ps.Streamer(address, StreamProps)
-        print('Server started at', 'http://' + address[0] + ':' + str(address[1]))
-        server.serve_forever()
+    q_list = (Queue(), Queue(), Queue())
+    # run_asyncio_coroutine(timer(q_list))
+    # run_async(timer(q_list))
+    # await timer2()
+    # run_async(timer2())
+    # print('try starting thread..')
+    #
+    t1 = Process(target=timer, args=(q_list,))
 
-    except KeyboardInterrupt:
-        capture.release()
-        server.socket.close()
+    t2 = threading.Thread(target=timer2)
+    t1.start()
+    print('thread is running')
+
+    # register_thread(t1)
+    register_thread(t2)
+
+    t2.start()
+    t1.join()
+    t2.join()
+
+
+def offline():
+    http = urllib3.PoolManager(timeout=3.0)
+    try:
+        r = http.request('GET', 'http://216.58.192.142', preload_content=False)
+    except Exception as err:
+        return False
+    code = r.status
+    r.release_conn()
+    if code == 200:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
-    main()
+    cdn = True
+    if offline():
+        cdn = False
+    start_server(applications=main,auto_open_webbrowser=True, port=8080, cdn=False)
+
+    # except RuntimeWarning:
+    #     import ipdb
+    #
+    #     ipdb.set_trace()
+    # except RuntimeWarning:
+    #     import ipdb
+    #     ipdb.set_trace()
+    #
