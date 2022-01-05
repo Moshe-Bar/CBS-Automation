@@ -9,7 +9,7 @@ from pywebio.output import put_text, put_processbar, put_link, put_scrollable, p
     set_processbar, use_scope
 # from pywebio.pin import put_checkbox
 # from pywebio.session import register_thread
-from pywebio.pin import put_checkbox
+from pywebio.pin import put_checkbox, put_input
 
 from Utility.TestUtility import TestUtility
 
@@ -23,32 +23,34 @@ class WebTest:
     def set_test_progress(self):
         put_scrollable(put_scope('test_results'), height=350, keep_bottom=True, position=OutputPosition.BOTTOM)
         put_processbar('bar').style("height='50px'")
+        put_input('a', type='button', value=0)
 
     def choose_pages(self):
         pages = list(map(lambda page: {'label': page.name, 'value': page.id, "selected": True}, self.pages_list))
         # put_scrollable(put_scope('pages'))
         # height=350)
         # ig = input_group()
-        pages_id = checkbox(label='Chose_pages', options=pages,
+        self.chosen_pages = checkbox(label='Chose_pages', options=pages,
                             other_html_attrs={'style': 'overflow-y: scroll; height:400px;'}
                             )
         # chosen_pages = put_checkbox(name='ch', options=pages)
         # chosen_pages = put_checkbox(name='pages_checkbox',label='Choose pages to test:', options=pages,scope='pages')
         # return list(filter(lambda x: x.id in pages_id, self.pages_list))
-        return pages_id
 
-    def start_test(self,pages):
+
+    def start_test(self):
         self.set_test_progress()
-        data = *self.data_share,pages,True
+
 
         # print(data)
-        self.test_proc = Process(target=TestUtility.test, args=data)
+        self.test_proc = Process(target=TestUtility.test, args=(*self.data_share,self.chosen_pages,True))
         self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share, self.test_proc))
         # pywebio.session.register_thread(self.test_thread)
         pywebio.session.register_thread(self.observer_thread)
 
-        self.observer_thread.start()
         self.test_proc.start()
+        self.observer_thread.start()
+
         self.observer_thread.join()
         self.test_proc.join()
 
@@ -65,8 +67,8 @@ class WebTest:
     def update_client_bar(self, data):
         set_processbar('bar', data)
 
-    def observe_test(self, data: Queue, progress: Queue, end_flag: Queue, test_thread: threading.Thread):
-        while test_thread.is_alive() and end_flag.empty():
+    def observe_test(self, data: Queue, progress: Queue, end_flag: Queue, test_proc: Process):
+        while test_proc.is_alive() and end_flag.empty():
             if not data.empty():
                 self.update_client_data(data.get())
 
@@ -82,8 +84,8 @@ class WebTest:
 
 def main():
     test = WebTest()
-    p =test.choose_pages()
-    test.start_test(p)
+    test.choose_pages()
+    test.start_test()
 
 
 def online():

@@ -16,6 +16,7 @@ from pywebio.output import put_text, put_loading, put_processbar, set_processbar
 # from selenium import webdriver
 
 ###########warnings.filterwarnings("error")
+from pywebio.pin import put_input
 
 from pywebio.session import register_thread, run_async, run_asyncio_coroutine
 
@@ -39,14 +40,9 @@ def f_5(a,b,c,d,e):
     print(a+b+c+d+e)
 
 def main():
-    data = (Queue(), Queue(), Queue())
-    pages = TestUtility.get_he_pages()
-    visible = True
-    s = {'q1':Queue(), 'q2':Queue(), 'q3':Queue(), 'pages':[1,2,3], 'visible':visible}
-    print(*s.values())
-    p = Process(target=f_5, args=(*s.values(),))
-    p.start()
-    p.join()
+    put_scrollable(put_scope('test_results'), height=350, keep_bottom=True)
+    put_processbar('bar').style("height='50px'")
+
     # test_proc = Process(target=TestUtility.test, args=(*data,pages,visible))
     ##test_proc = Process(target=TestUtility.test, args=(*s,))
     # self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share, self.test_proc))

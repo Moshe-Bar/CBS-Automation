@@ -194,7 +194,7 @@ class TestUtility:
     # visible func
     @classmethod
     def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
-             pages_: list, session_visible:bool):
+             pages_: list, session_visible:bool=True):
 
         if pages_ is None:
             try:
