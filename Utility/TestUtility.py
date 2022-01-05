@@ -32,7 +32,7 @@ class TestProperties():
 class TestUtility:
 
     @classmethod
-    def get_sessions(cls, amount=1,isViseble=True):
+    def get_sessions(cls, amount=1, isViseble=True):
         if amount == 1:
             return cls.create_web_driver(isViseble)
         sessions = []
@@ -58,7 +58,7 @@ class TestUtility:
                 options = webdriver.ChromeOptions()
                 options.headless(True)
                 # # options.add_argument('--disable-gpu')
-                driver =  webdriver.Chrome(service=driver_service,chrome_options=options)
+                driver = webdriver.Chrome(service=driver_service, chrome_options=options)
                 # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
 
             else:
@@ -194,9 +194,9 @@ class TestUtility:
     # visible func
     @classmethod
     def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
-             pages=None, session_visible=True):
+             pages_: list, session_visible:bool):
 
-        if pages is None:
+        if pages_ is None:
             try:
                 pages = cls.get_he_pages()
             except Exception as e:
@@ -204,6 +204,13 @@ class TestUtility:
                 shared_data.put('error in loading pages, test is closed')
                 end_flag.put('error in loading pages, test is closed')
                 raise e
+
+        elif type(pages_[0])==type(1):
+            pages = list(filter(lambda x: x.id in pages_,cls.get_he_pages()))
+        else:
+            print('no action needed')
+            print('type page elem: '+str(type(pages_[0]))+' type int: '+str(type(1)))
+            pages = pages_
 
         # status flow
         shared_data.put(('text', 'initializing test environment...'))
@@ -276,7 +283,7 @@ class TestUtility:
                 if len(page.get_errors()) > 0:
                     # print(page.name, page.link.url)
                     print(page.error_to_str())
-                    shared_data.put(('link', page.name, page.link.url,'Fail'))
+                    shared_data.put(('link', page.name, page.link.url, 'Fail'))
                     shared_data.put(('text', page.error_to_str()))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
@@ -284,7 +291,7 @@ class TestUtility:
                     DataBase.save_test_result('test_results', page)
                     summary[4] += 1
                 else:
-                    shared_data.put(('link', page.name, page.link.url,'Pass'))
+                    shared_data.put(('link', page.name, page.link.url, 'Pass'))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
                     # outer_signals.monitor_data.emit(str(200))
         except NoSuchWindowException as e:

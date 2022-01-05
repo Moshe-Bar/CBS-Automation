@@ -143,7 +143,6 @@ class WebPartUtility:
             errors = [error + ' ' for error in errors]
             page.stats_part.errors.extend(errors)
             log_test += 1
-            # page.stats_part.links.extend(links)
 
             # *****************************************************************************************************************
         try:
@@ -632,12 +631,35 @@ class WebPartUtility:
             if not title == 'מצגות':
                 print('title in stats is: ', title)
                 page.presentations.errors.append('title not correct')
-
         except NoSuchElementException:
             page.presentations.errors.append('title not correct')
             print('stats not contain any title: ', page.name)
             return
 
+        # inside elements test
+        links = root_element.find_elements(By.XPATH, "./div/ul/li/div/div/a")
+        images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div/img")
+
+        if len(images) == 0:
+            page.presentations.errors.append('images content is missing')
+        else:
+            images, errors = PageUtility.set_url_links(images, attrib='src')
+            # errors = [error + ' in Statistical image' for error in errors]
+            page.presentations.errors.extend(errors)
+
+        if len(links) == 0:
+            page.presentations.errors.append('links content is missing')
+        else:
+            links, errors = PageUtility.set_url_links(links)
+            errors = [error + ' ' for error in errors]
+            page.presentations.errors.extend(errors)
+
+        # *****************************************************************************************************************
+        try:
+            to_all_link = root_element.find_element(By.XPATH, "./div/a")
+        except NoSuchElementException:
+            page.presentations.errors.append('link to all massages is missing')
+            return
 
 class PageUtility:
 

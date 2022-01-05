@@ -17,8 +17,8 @@ from Utility.TestUtility import TestUtility
 class WebTest:
     def __init__(self):
         self.pages_list = TestUtility.get_he_pages()
-        self.data_share = (Queue(), Queue(), Queue())
         self.chosen_pages = None
+        self.data_share = (Queue(), Queue(), Queue())
 
     def set_test_progress(self):
         put_scrollable(put_scope('test_results'), height=350, keep_bottom=True, position=OutputPosition.BOTTOM)
@@ -29,23 +29,28 @@ class WebTest:
         # put_scrollable(put_scope('pages'))
         # height=350)
         # ig = input_group()
-        pages = checkbox(label='Chose_pages', options=pages,other_html_attrs={'style':'overflow-y: scroll; height:400px;'}
-                         )
+        pages_id = checkbox(label='Chose_pages', options=pages,
+                            other_html_attrs={'style': 'overflow-y: scroll; height:400px;'}
+                            )
         # chosen_pages = put_checkbox(name='ch', options=pages)
         # chosen_pages = put_checkbox(name='pages_checkbox',label='Choose pages to test:', options=pages,scope='pages')
-        self.chosen_pages = list(filter(lambda x: x.id in pages, self.pages_list))
+        # return list(filter(lambda x: x.id in pages_id, self.pages_list))
+        return pages_id
 
-    def start_test(self):
+    def start_test(self,pages):
         self.set_test_progress()
-        self.test_thread = Process(target=TestUtility.test, args=self.data_share, daemon=True)
-        self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share, self.test_thread),
-                                                daemon=False)
+        data = *self.data_share,pages,True
+
+        # print(data)
+        self.test_proc = Process(target=TestUtility.test, args=data)
+        self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share, self.test_proc))
         # pywebio.session.register_thread(self.test_thread)
         pywebio.session.register_thread(self.observer_thread)
-        self.test_thread.start()
+
         self.observer_thread.start()
+        self.test_proc.start()
         self.observer_thread.join()
-        self.test_thread.join()
+        self.test_proc.join()
 
     def update_client_data(self, data: tuple):
         if data[0] == 'text':
@@ -55,6 +60,7 @@ class WebTest:
                 put_link(name=data[1], url=data[2], new_window=True, scope='test_results').style('color:red')
             elif data[3] == 'Pass':
                 put_link(name=data[1], url=data[2], new_window=True, scope='test_results')
+                put_text('Pass!', scope='test_results')
 
     def update_client_bar(self, data):
         set_processbar('bar', data)
@@ -75,11 +81,9 @@ class WebTest:
 
 
 def main():
-
     test = WebTest()
-    test.choose_pages()
-    test.start_test()
-
+    p =test.choose_pages()
+    test.start_test(p)
 
 
 def online():

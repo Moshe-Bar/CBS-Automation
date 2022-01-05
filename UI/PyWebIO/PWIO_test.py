@@ -1,60 +1,25 @@
 import threading
 import time
-from multiprocessing import Queue, Process
+from multiprocessing import Queue, Process, freeze_support
 import tornado
 
 import pywebio
 import urllib3.request
 
 from pywebio import start_server
+from pywebio.input import checkbox
 from pywebio.output import put_text, put_loading, put_processbar, set_processbar, put_markdown, put_file, put_table, \
     put_buttons, put_html, span, put_scrollable, put_scope, put_grid, put_collapse
 
-import warnings
+#################import warnings
 
 # from selenium import webdriver
 
-warnings.filterwarnings("error")
+###########warnings.filterwarnings("error")
 
 from pywebio.session import register_thread, run_async, run_asyncio_coroutine
 
 from Utility.TestUtility import TestUtility
-
-
-def timer(q_list):
-    # await timer2()
-    TestUtility.test(shared_data=q_list[0], progress_status=q_list[1], end_flag=q_list[2])
-
-
-def timer2(q_list):
-    i = 0
-    while True:
-        time.sleep(2)
-        print(i)
-        put_text(f'timer2: {i}')
-        i += 1
-
-
-def main():
-    q_list = (Queue(), Queue(), Queue())
-    # run_asyncio_coroutine(timer(q_list))
-    # run_async(timer(q_list))
-    # await timer2()
-    # run_async(timer2())
-    # print('try starting thread..')
-    #
-    t1 = Process(target=timer, args=(q_list,))
-
-    t2 = threading.Thread(target=timer2)
-    t1.start()
-    print('thread is running')
-
-    # register_thread(t1)
-    register_thread(t2)
-
-    t2.start()
-    t1.join()
-    t2.join()
 
 
 def offline():
@@ -70,12 +35,45 @@ def offline():
     else:
         return False
 
+def f_5(a,b,c,d,e):
+    print(a+b+c+d+e)
 
-if __name__ == '__main__':
-    cdn = True
-    if offline():
-        cdn = False
-    start_server(applications=main,auto_open_webbrowser=True, port=8080, cdn=False)
+def main():
+    data = (Queue(), Queue(), Queue())
+    pages = TestUtility.get_he_pages()
+    visible = True
+    s = {'q1':Queue(), 'q2':Queue(), 'q3':Queue(), 'pages':[1,2,3], 'visible':visible}
+    print(*s.values())
+    p = Process(target=f_5, args=(*s.values(),))
+    p.start()
+    p.join()
+    # test_proc = Process(target=TestUtility.test, args=(*data,pages,visible))
+    ##test_proc = Process(target=TestUtility.test, args=(*s,))
+    # self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share, self.test_proc))
+    # pywebio.session.register_thread(self.test_thread)
+    # pywebio.session.register_thread(self.observer_thread)
+
+    # observer_thread.start()
+    ##test_proc.start()
+    # observer_thread.join()
+    ##test_proc.join()
+
+    # op = {'label': 'first', 'value': 1, "selected": True}, {'label': 'second', 'value': 2, "selected": True}
+    # op = list(op)
+    # ch = checkbox(options=op)
+    # print(ch)
+
+
+if  __name__ == '__main__':
+    freeze_support()
+    main()
+
+
+# if __name__ == '__main__':
+#     cdn = True
+#     if offline():
+#         cdn = False
+#     start_server(applications=main, auto_open_webbrowser=True, port=10012)
 
     # except RuntimeWarning:
     #     import ipdb
