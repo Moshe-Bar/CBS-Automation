@@ -7,7 +7,7 @@ import urllib3
 # from pywebio import start_server
 from pywebio.input import checkbox, input_group, actions
 from pywebio.output import put_text, put_processbar, put_link, put_scrollable, put_scope, OutputPosition, \
-    set_processbar, use_scope, put_html
+    set_processbar, use_scope, put_html, put_file
 
 from pywebio.pin import put_checkbox, put_input
 
@@ -21,6 +21,7 @@ class WebTest:
         self.data_share = {'data':Queue(),'progress': Queue(), 'end_flag':Queue()}
         self.test_proc = None
         self.observer_thread = None
+        self.test_key = time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())
 
     def set_test_progress(self):
         put_scope('global')
@@ -60,9 +61,9 @@ class WebTest:
                 self.start_button.update({"disabled": False})
                 self.stop_button.update({"disabled": True})
                 self.results_button.update({"disabled": False})
-                self.stop_tset()
+                self.stop_test()
             elif req['cmd'] == 'Test Results':
-                self.get_test_results()
+                self.get_test_results(key=self.test_key)
                 break
 
 
@@ -78,7 +79,7 @@ class WebTest:
         self.set_test_progress()
 
     def start_test(self):
-        self.test_proc = Process(target=TestUtility.test, args=(*self.data_share.values(), self.chosen_pages, True))
+        self.test_proc = Process(target=TestUtility.test, args=(*self.data_share.values(), self.chosen_pages, True,self.test_key))
         self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share.values(), self.test_proc))
 
         pywebio.session.register_thread(self.observer_thread)
@@ -121,17 +122,22 @@ class WebTest:
             self.update_client_bar(progress.get())
         print('leaving observer')
 
-    def get_test_results(self, key=None):
+    def get_test_results(self, key):
         with use_scope('global', clear=True):
-            # put_scrollable(put_scope(name='test_results'),height=350, keep_bottom=True)
-            data, file_path = TestUtility.get_test_result(log_key='test_results')
+            put_scrollable(put_scope(name='test_results'),height=350, keep_bottom=True)
+            data, file_path = TestUtility.get_test_result(log_key=key)
             put_html(data,scope='test_results')
+            put_file(label='results as html',name='results.html',content=data.encode('utf-8'))
+            pdf_data = TestUtility.get_test_result_as_pdf(key)
+            put_file(label='results as pdf', name='results.pdf', content=pdf_data)
+
         # self.go_to_test_results(key='test_results')
 
-    def stop_tset(self):
+    def stop_test(self):
         self.data_share.get('data').put('test was canceled by the user')
         self.data_share.get('end_flag').put('canceled by user')
-
+        while self.test_proc.is_alive():
+            time.sleep(1)
         print('stop test called and finished')
 
     def go_to_test_results(self,key):

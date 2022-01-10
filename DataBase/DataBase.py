@@ -1,13 +1,15 @@
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
+import pdfkit
+
 
 import sys
 import json
 from enum import Enum
 
-
 ####,encoding="utf-8"
 ROOT_PATH = sys.path[1]
+
 
 class DataBase:
     @classmethod
@@ -25,14 +27,14 @@ class DataBase:
             print(e)
             print('database file did not read', e)
         links = list(set(links))
-        excluded = ('/search/','/Surveys/', '/Documents/', '/publications/')
-        links = list(filter(lambda x: all(s not in x.url for s in excluded),links))
+        excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
+        links = list(filter(lambda x: all(s not in x.url for s in excluded), links))
         links.sort(key=lambda x: x.name)
         return links
 
     @classmethod
     def get_CBS_he_links_db(cls):
-        #todo
+        # todo
         pass
 
     @classmethod
@@ -54,7 +56,7 @@ class DataBase:
     @classmethod
     def get_CBS_he_pages(cls):
         links = cls.get_CBS_he_links()  # the links only saved locally
-        pages =[SubjectPage(link, link.name, i+1) for i,link in enumerate(links)]
+        pages = [SubjectPage(link, link.name, i + 1) for i, link in enumerate(links)]
 
         # pages = list(map(lambda link:SubjectPage(link, link.name,),links))
         # pages = [SubjectPage(link, link.name,) for i,link in links]
@@ -65,7 +67,6 @@ class DataBase:
         links = cls.get_CBS_en_links()
         pages = [SubjectPage(link, link.name) for link in links]
         return pages
-
 
     @classmethod
     def save_test_result(cls, test_key, page: SubjectPage):
@@ -86,13 +87,24 @@ class DataBase:
 
     @classmethod
     def get_test_result(cls, file_key):
+
         file_name = file_key
         try:
             path = ROOT_PATH + '\\TestData\\logs'
             file = path + '\\' + file_name + '.html'
+
             with open(file, 'r', encoding='utf-8') as f:
                 data = f.read()
-            f.close()
+                f.close()
+
+            # with open(file, 'w', encoding='utf-8') as f:
+            #     f.write(head + data + tail)
+            #     f.close()
+            #
+            # with open(file, 'r', encoding='utf-8') as f:
+            #     data = f.read()
+            #     f.close()
+
             return data, file
         except Exception as e:
             print('exception in db reading file content')
@@ -106,6 +118,15 @@ class DataBase:
         sum += 'Tested: ' + str(summary[3]) + '<br>'
         sum += 'Total error pages: ' + str(summary[4]) + '</h1>'
         file_name = file_key
+        head = '''<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Title</title>
+        </head>
+        <body>'''
+        tail = '</body></html>'
+
         try:
             path = ROOT_PATH + '\\TestData\\logs'
             file = path + '\\' + file_name + '.html'
@@ -113,7 +134,7 @@ class DataBase:
                 content = f.read()
                 f.close()
             with open(file, 'w', encoding='utf-8') as f:
-                f.write(sum + '<br>' + content)
+                f.write(head + sum + '<br>' + content+ tail)
             f.close()
         except Exception as e:
             print('exception in db writing summery')
@@ -132,6 +153,14 @@ class DataBase:
             data = json.load(file)
             file.close()
         return data['driver_path']
+
+    @classmethod
+    def get_pdf_test_result(cls, file_key):
+        data,file_path = cls.get_test_result(file_key)
+        # data,is_success = pdfkit.from_file('test.html', 'out.pdf')
+        data = pdfkit.from_string(data)
+        return data
+
 
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
@@ -156,11 +185,7 @@ class Links(Enum):
     CONFERENCES_AND_SEMINARS_XPATH = DataBase.load_xpath('CONFERENCES_AND_SEMINARS_XPATH')  # new
     VIDEOS_LINKS_XPATH = DataBase.load_xpath('VIDEOS_LINKS_XPATH')  # new
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
-    PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH') # new
-
-
-
-
+    PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
 # import sqlite3
 # import sys

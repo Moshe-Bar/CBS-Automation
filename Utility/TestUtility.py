@@ -194,7 +194,7 @@ class TestUtility:
     # visible func
     @classmethod
     def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
-             pages_: list, session_visible:bool=True):
+             pages_: list, session_visible:bool=True,test_key=time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())):
 
         if pages_ is None:
             try:
@@ -272,12 +272,11 @@ class TestUtility:
                         break
                 except TimeoutException:
                     print("Timed out waiting for page to load: {}".format(page.name))
-                    DataBase.save_test_result('test_results', page)
+                    DataBase.save_test_result(test_key, page)
                     continue
                 except NoSuchWindowException:
                     page.stats_part.errors.append("couldn't find root element")
-                    page.isChecked = False
-                    DataBase.save_test_result('test_results', page)
+                    DataBase.save_test_result(test_key, page)
                     continue
                 summary[3] += 1
                 if len(page.get_errors()) > 0:
@@ -288,7 +287,7 @@ class TestUtility:
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
                     # error_pages.append((page.name, page.link.url, page.error_to_str()))
-                    DataBase.save_test_result('test_results', page)
+                    DataBase.save_test_result(test_key, page)
                     summary[4] += 1
                 else:
                     shared_data.put(('link', page.name, page.link.url, 'Pass'))
@@ -319,8 +318,8 @@ class TestUtility:
             print('test ended on: ' + current_time)
             shared_data.put(('test', 'test ended on: ' + current_time))
             # outer_signals.monitor_data.emit('test ended on: ' + current_time)
-            DataBase.save_test_result('test_results', page)
-            DataBase.save_summary_result('test_results', summary)
+            DataBase.save_test_result(test_key, page)
+            DataBase.save_summary_result(test_key, summary)
 
     @classmethod
     def test_with_events(cls, working: threading.Event(), shared_data: Queue = Queue(),
@@ -532,3 +531,8 @@ class TestUtility:
     def get_test_result(cls, log_key):
         file_key = log_key
         return DataBase.get_test_result(file_key=file_key)
+
+    @classmethod
+    def get_test_result_as_pdf(cls, log_key):
+        file_key = log_key
+        return DataBase.get_pdf_test_result(file_key=file_key)
