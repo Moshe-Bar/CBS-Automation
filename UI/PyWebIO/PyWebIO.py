@@ -23,20 +23,14 @@ class WebTest:
     def set_test_progress(self):
         put_scrollable(put_scope('test_results'), height=350, keep_bottom=True, position=OutputPosition.BOTTOM)
         put_processbar('bar').style("height='50px'")
-        put_input('a', type='button', value=0)
+        # put_input('a', type='button', value=0)
 
     def choose_pages(self):
         pages = list(map(lambda page: {'label': page.name, 'value': page.id, "selected": True}, self.pages_list))
-        # put_scrollable(put_scope('pages'))
-        # height=350)
-        # ig = input_group()
+
         self.chosen_pages = checkbox(label='Chose_pages', options=pages,
                             other_html_attrs={'style': 'overflow-y: scroll; height:400px;'}
                             )
-        # chosen_pages = put_checkbox(name='ch', options=pages)
-        # chosen_pages = put_checkbox(name='pages_checkbox',label='Choose pages to test:', options=pages,scope='pages')
-        # return list(filter(lambda x: x.id in pages_id, self.pages_list))
-
 
     def start_test(self):
         self.set_test_progress()
@@ -80,6 +74,9 @@ class WebTest:
         if not progress.empty():
             self.update_client_bar(progress.get())
         print('leaving observer')
+
+    def get_test_results(self, key):
+        data, file_path = TestUtility.get_test_result(log_key=key)
 
 
 def main():
