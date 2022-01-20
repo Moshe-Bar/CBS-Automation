@@ -2,7 +2,6 @@ from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 import pdfkit
 
-
 import sys
 import json
 from enum import Enum
@@ -134,7 +133,7 @@ class DataBase:
                 content = f.read()
                 f.close()
             with open(file, 'w', encoding='utf-8') as f:
-                f.write(head + sum + '<br>' + content+ tail)
+                f.write(head + sum + '<br>' + content + tail)
             f.close()
         except Exception as e:
             print('exception in db writing summery')
@@ -156,9 +155,13 @@ class DataBase:
 
     @classmethod
     def get_pdf_test_result(cls, file_key):
-        data,file_path = cls.get_test_result(file_key)
-        # data,is_success = pdfkit.from_file('test.html', 'out.pdf')
-        data = pdfkit.from_string(data)
+        data, file_path = cls.get_test_result(file_key)
+
+        path = ROOT_PATH + '\\Resources\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+
+        config = pdfkit.configuration(wkhtmltopdf=path)
+
+        data = pdfkit.from_string(data,configuration=config)
         return data
 
 
@@ -187,50 +190,57 @@ class Links(Enum):
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
-# import sqlite3
-# import sys
-#
-#
-# class DB:
-#     def __init__(self):
-#         self.path = sys.path[1]+"\\DL\\DB\\"
-#         self.__db = sqlite3.connect(self.path + 'pagesDB')
-#         self.__cursor = self.__db.cursor()
-#
-#     def get_he_links(self):
-#         self.__cursor.execute("SELECT * FROM addresses")
-#         data = self.__cursor.fetchall()
-#         return data
-#
-#     def get_wp_ids(self):
-#         self.__cursor.execute("SELECT * FROM WPARTS")
-#         data = self.__cursor.fetchall()
-#         return data
-#
-#     def save_test_result(self, row_data):
-#         insert = "INSERT INTO TEST_RESULT VALUES ({},{},{},{},{});"
-#         self.__cursor.executescript(insert.format(*row_data))
-#         self.__cursor.fetchall()
-#
-#     def load_test_data(self, test_key):
-#         pass
-#
-#     def load_error_details(self):
-#         self.__cursor.execute("SELECT * FROM ERRORS")
-#         data = self.__cursor.fetchall()
-#         return data
-#
-#     def add_new_test(self,details):
-#         insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});"
-#         self.__cursor.executescript(insert.format(*details))
-#         self.__cursor.fetchall()
+
+import sqlite3
+import sys
+
+
+class DB:
+    def __init__(self):
+        self.path = ROOT_PATH + "\\DataBase\\MainDB"
+        self.__db = sqlite3.connect(self.path)
+        self.__cursor = self.__db.cursor()
+
+    def get_he_subject_pages(self):
+        self.__cursor.execute("SELECT * FROM HEBREW_PAGES")
+        data = self.__cursor.fetchall()
+        return data
+
+    def get_wp_ids(self):
+        self.__cursor.execute("SELECT * FROM WPARTS")
+        data = self.__cursor.fetchall()
+        return data
+
+    def save_test_result(self, error_data):
+        insert = "INSERT INTO TEST_RESULTS VALUES ({},{},{},{},{});".format(*error_data)
+        self.__cursor.executescript(insert)
+        self.__cursor.fetchall()
+
+    def load_test_data(self, test_key):
+        pass
+
+    def load_error_details(self):
+        self.__cursor.execute("SELECT * FROM ERRORS")
+        data = self.__cursor.fetchall()
+        return data
+
+    def add_new_test(self, details):
+        insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});".format(*details)
+        self.__cursor.executescript(insert)
+        self.__cursor.fetchall()
+
+    def __del__(self):
+        self.__cursor.close()
+        self.__db.close()
+
 
 # x = DB()
-# x.save_test_result([0,1,2,3,4])
+# # print(x.get_he_subject_pages())
+# x.add_new_test([0, 1, 2, 3])
 # print(sys.path[1]+"\\DL\\DB\\")
 # driver = TestUtility.get_sessions()[0]
 # driver.get('https://getsharex.com/')
-
+#
 # print(Links.ROOT_XPATH.value)
 # summ = [1,2,3,4,5]
 # path = '02_Jun_2021_10.48.50'

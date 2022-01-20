@@ -1,8 +1,11 @@
 import datetime
+import os
 import sys
 import threading
 import time
 from multiprocessing import Queue
+
+from win32com.client import Dispatch
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchWindowException, \
@@ -51,8 +54,27 @@ class TestUtility:
         return pages
 
     @classmethod
+    def _check_chrome_version(cls):
+        paths = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                 r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]
+        path = list(filter(lambda x: os.path.isfile(x),paths))[0]
+        parser = Dispatch("Scripting.FileSystemObject")
+        try:
+            version = parser.GetFileVersion(path)
+            version = version.split('.')[0]
+        except Exception:
+            print('chrome version is unknown')
+            return None
+        return version
+        
+    @classmethod
     def create_web_driver(cls, withUI=True):
         try:
+            ver = cls._check_chrome_version()
+            if ver is None:
+                raise Exception
+            # if ver >
+
             driver_service = Service(Links.CHROME_DRIVER.value)
             if not withUI:
                 options = webdriver.ChromeOptions()
@@ -62,7 +84,11 @@ class TestUtility:
                 # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
 
             else:
-                driver = webdriver.Chrome(service=driver_service)
+                try:
+                    driver = webdriver.Chrome(service=driver_service)
+                except WebDriverException as e:
+                    print('session not created')
+                    raise e
                 # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
             path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
@@ -536,3 +562,17 @@ class TestUtility:
     def get_test_result_as_pdf(cls, log_key):
         file_key = log_key
         return DataBase.get_pdf_test_result(file_key=file_key)
+
+
+
+
+paths = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                 r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]
+path = list(filter(lambda x: os.path.isfile(x),paths))[0]
+parser = Dispatch("Scripting.FileSystemObject")
+try:
+    version = parser.GetFileVersion(path)
+    version = version.split('.')[0]
+    print(version)
+except Exception:
+    print('chrome version is unknown')
