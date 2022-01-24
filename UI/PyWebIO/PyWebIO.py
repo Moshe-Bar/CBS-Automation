@@ -107,6 +107,7 @@ class WebTest:
         set_processbar('bar', data)
 
     def observe_test(self, data: Queue, progress: Queue, end_flag: Queue, test_proc: Process):
+
         while test_proc.is_alive() and end_flag.empty():
             if not data.empty():
                 self.update_client_data(data.get())
@@ -137,6 +138,7 @@ class WebTest:
         self.data_share.get('data').put('test was canceled by the user')
         self.data_share.get('end_flag').put('canceled by user')
         while self.test_proc.is_alive():
+            self.test_proc.close()
             time.sleep(1)
         print('stop test called and finished')
 

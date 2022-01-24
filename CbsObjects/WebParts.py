@@ -1,5 +1,24 @@
+from enum import Enum
+
 from CbsObjects.dev import Component
 from CbsObjects.WebPartLine import WebPartLine
+
+class Type(Enum):
+    SUMMARY =0
+    ST_MOMENTS =1
+    TOP_BOX=2
+    GEO_ZONE=3
+    COMPARISONS=4
+    STATISTICAL=5
+    SUB_SUBJECTS=6
+    PRESS_RELEASES=7
+    TABLES_MAPS=8
+    ADDITIONAL_LINKS=9
+    EX_PARTS=10
+    TOOLS_DB=11
+    PUBLICATIONS=12
+    PRESENTATIONS=13
+
 
 
 class WebPart():
