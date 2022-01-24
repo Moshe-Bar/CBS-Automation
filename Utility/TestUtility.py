@@ -7,21 +7,16 @@ from multiprocessing import Queue
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, TimeoutException, NoSuchWindowException, \
     StaleElementReferenceException
-from selenium.webdriver.support import expected_conditions as EC
-
-# # from Objects.CbsPageUtility import CbsPageUtility
-# import asyncio
-
-# from concurrent.futures import ThreadPoolExecutor
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
-# from UI.Qt_GUI import WorkerSignals
 from DataBase.DataBase import DataBase, Links
+from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
 
 
 class TestProperties():
@@ -37,12 +32,12 @@ class TestProperties():
 class TestUtility:
 
     @classmethod
-    def get_sessions(cls, amount=1, timeout=2, isViseble=True):
+    def get_sessions(cls, amount=1, isViseble=True):
         if amount == 1:
-            return cls.create_web_driver(timeout, isViseble)
+            return cls.create_web_driver(isViseble)
         sessions = []
         for i in range(amount):
-            sessions.append(cls.create_web_driver(timeout, isViseble))
+            sessions.append(cls.create_web_driver(isViseble))
         return sessions
 
     @classmethod
@@ -55,21 +50,20 @@ class TestUtility:
         pages = DataBase.get_CBS_en_pages()
         return pages
 
-
     @classmethod
-    def create_web_driver(cls, wait_time=5, withUI=True):
+    def create_web_driver(cls, withUI=True):
         try:
+            driver_service = Service(Links.CHROME_DRIVER.value)
             if not withUI:
                 options = webdriver.ChromeOptions()
-                options.add_argument("headless")
-                # options.add_argument('--disable-gpu')
-                driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
+                options.headless(True)
+                # # options.add_argument('--disable-gpu')
+                driver = webdriver.Chrome(service=driver_service, chrome_options=options)
+                # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
 
             else:
-                driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
-
-            # driver.implicitly_wait(wait_time)
-            # driver.implicitly_wait(10)
+                driver = webdriver.Chrome(service=driver_service)
+                # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
             path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
             driver.get(path)
@@ -167,23 +161,17 @@ class TestUtility:
     @classmethod
     def testPage_(cls, page: SubjectPage, main_element):
 
-
         WebPartUtility.set_summary(page=page, session=main_element)
 
-
         WebPartUtility.set_heb_statistical(page=page, session=main_element)
-
 
         WebPartUtility.set_extra_parts(page=page, root_element=main_element)
 
         WebPartUtility.set_top_box(page=page, session=main_element)
 
-
         WebPartUtility.set_sub_subjects(page=page, session=main_element)
 
-
         WebPartUtility.set_press_releases(page=page, session=main_element)
-
 
         WebPartUtility.set_tables_and_charts(page=page, session=main_element)
 
@@ -191,30 +179,24 @@ class TestUtility:
 
         WebPartUtility.set_publications(page=page, session=main_element)
 
-
         WebPartUtility.set_geographic_zone(page=page, session=main_element)
 
         WebPartUtility.set_international_comparisons(page=page, session=main_element)
 
-
         WebPartUtility.set_more_links(page=page, session=main_element)
 
+        WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)  # TODO
 
-        WebPartUtility.set_conferences_and_seminars(page=page, session=main_element)#TODO
+        WebPartUtility.set_videos_links(page=page, session=main_element)  # TODO
 
-        WebPartUtility.set_videos_links(page=page, session=main_element)#TODO
-
-
-        WebPartUtility.set_pictures_links(page=page, session=main_element)#TODO
-
-
+        WebPartUtility.set_pictures_links(page=page, session=main_element)  # TODO
 
     # visible func
     @classmethod
     def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
-             pages=None, session_visible=True):
+             pages_: list, session_visible:bool=True,test_key=time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())):
 
-        if pages is None:
+        if pages_ is None:
             try:
                 pages = cls.get_he_pages()
             except Exception as e:
@@ -223,26 +205,32 @@ class TestUtility:
                 end_flag.put('error in loading pages, test is closed')
                 raise e
 
+        elif type(pages_[0])==type(1):
+            pages = list(filter(lambda x: x.id in pages_,cls.get_he_pages()))
+        else:
+            print('no action needed')
+            print('type page elem: '+str(type(pages_[0]))+' type int: '+str(type(1)))
+            pages = pages_
+
         # status flow
-        shared_data.put(('text','initializing test environment...'))
+        shared_data.put(('text', 'initializing test environment...'))
         print('initializing test environment...')
         t = time.localtime()
         current_time = time.strftime("%H:%M:%S", t)
-        shared_data.put(('text','test started on: ' + str(current_time)))
+        shared_data.put(('text', 'test started on: ' + str(current_time)))
         print('test started on: ' + str(current_time))
 
         try:
             session = cls.get_sessions(isViseble=session_visible)  # default as synchronous test - one instance session
         except Exception as e:
             print('error loading sessions, test is closed')
-            shared_data.put(('text','error loading sessions, test is closed'))
+            shared_data.put(('text', 'error loading sessions, test is closed'))
             end_flag.put('error loading sessions, test is closed')
             raise e
 
-
         pages_size = len(pages)
         print('num pages', str(len(pages)))
-        shared_data.put(('text','num pages: ' + str(pages_size)))
+        shared_data.put(('text', 'num pages: ' + str(pages_size)))
 
         summary = []
         summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
@@ -258,14 +246,14 @@ class TestUtility:
                     return
                     # raise Exception('test canceled')
                     # outside canceled
-                percents = (float(i + 1) / pages_size) *100
+                percents = (float(i + 1) / pages_size)
                 progress_status.put(percents)
                 print(str("%.1f" % percents) + '%')
                 try:
                     session.get(page.link.url)
 
                 except WebDriverException as e:
-                    print(e)
+                    print('exception while trying to get page: {}'.format(page.name))
                 try:
                     main_element = WebDriverWait(session, 10).until(
                         EC.presence_of_element_located((By.XPATH, ROOT_ELEMENT))
@@ -284,31 +272,30 @@ class TestUtility:
                         break
                 except TimeoutException:
                     print("Timed out waiting for page to load: {}".format(page.name))
-                    DataBase.save_test_result('test_results', page)
+                    DataBase.save_test_result(test_key, page)
                     continue
                 except NoSuchWindowException:
                     page.stats_part.errors.append("couldn't find root element")
-                    page.isChecked = False
-                    DataBase.save_test_result('test_results', page)
+                    DataBase.save_test_result(test_key, page)
                     continue
                 summary[3] += 1
                 if len(page.get_errors()) > 0:
                     # print(page.name, page.link.url)
                     print(page.error_to_str())
-                    shared_data.put(('link',page.name,page.link.url))
-                    shared_data.put(('text',page.error_to_str() ))
+                    shared_data.put(('link', page.name, page.link.url, 'Fail'))
+                    shared_data.put(('text', page.error_to_str()))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
                     # error_pages.append((page.name, page.link.url, page.error_to_str()))
-                    DataBase.save_test_result('test_results', page)
+                    DataBase.save_test_result(test_key, page)
                     summary[4] += 1
                 else:
-                    shared_data.put(('link', page.name, page.link.url))
+                    shared_data.put(('link', page.name, page.link.url, 'Pass'))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
                     # outer_signals.monitor_data.emit(str(200))
         except NoSuchWindowException as e:
             print('Main test stopped due to unexpected  session close')
-            shared_data.put(('text','Main test stopped due to unexpected  session close'))
+            shared_data.put(('text', 'Main test stopped due to unexpected  session close'))
             # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
             end_flag.put('unexpected  session close')
             # outer_signals.finished.emit()
@@ -329,10 +316,10 @@ class TestUtility:
             current_time = time.strftime("%H:%M:%S", t)
             # str(time.time() - start_time)
             print('test ended on: ' + current_time)
-            shared_data.put(('test','test ended on: ' + current_time))
+            shared_data.put(('test', 'test ended on: ' + current_time))
             # outer_signals.monitor_data.emit('test ended on: ' + current_time)
-            DataBase.save_test_result('test_results', page)
-            DataBase.save_summary_result('test_results', summary)
+            DataBase.save_test_result(test_key, page)
+            DataBase.save_summary_result(test_key, summary)
 
     @classmethod
     def test_with_events(cls, working: threading.Event(), shared_data: Queue = Queue(),
@@ -427,7 +414,13 @@ class TestUtility:
             pages_collection = pages
         # set up session for test
         try:
-            session = cls.get_sessions()  # default as synchronous test - one instance session
+            session = cls.get_sessions()
+        except WebDriverException as e:
+            print('error loading sessions, test is closed')
+            outer_signals.status.emit(0)
+            outer_signals.error.emit(('error loading sessions, test is closed', 'nothing was checked'))
+            outer_signals.finished.emit()
+            raise e
         except Exception as e:
             print('error loading sessions, test is closed')
             outer_signals.status.emit(0)
@@ -463,7 +456,7 @@ class TestUtility:
                     return
 
                 percents = (float(i + 1) / pages_size) * 100
-                outer_signals.status.emit(percents)
+                outer_signals.status.emit(percents * 100)
                 print(str("%.1f" % percents) + '%')
 
                 session.get(page.link.url)
@@ -539,4 +532,7 @@ class TestUtility:
         file_key = log_key
         return DataBase.get_test_result(file_key=file_key)
 
-
+    @classmethod
+    def get_test_result_as_pdf(cls, log_key):
+        file_key = log_key
+        return DataBase.get_pdf_test_result(file_key=file_key)

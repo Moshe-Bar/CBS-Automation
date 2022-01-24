@@ -1,11 +1,11 @@
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, ToolsAndDB, Summary, TopBox, \
-    PressReleases, TablesAndMaps, ExParts, Publications, GeographicZone, InternationalComparisons
+    PressReleases, TablesAndMaps, ExParts, Publications, GeographicZone, InternationalComparisons, Presentations
 
 
 class SubjectPage:
 
-    def __init__(self, pageLink: CbsLink, pageName):
+    def __init__(self, pageLink: CbsLink, pageName,id=None):
         self.link = pageLink
         self.name = pageName
         self.level = None
@@ -24,12 +24,13 @@ class SubjectPage:
             'extra_error_parts': ExParts(),
             'publications': Publications(),
             'geographic_zone': GeographicZone(),
-            'international_comparisons':InternationalComparisons()
+            'international_comparisons':InternationalComparisons(),
+            'presentations':Presentations()
         }
         self.inside_links = []
         self.dom = None
         self.isChecked = None
-        self.id = None
+        self.id = id
 
     @property
     def stats_part(self):
@@ -81,6 +82,10 @@ class SubjectPage:
     def international_comparisons(self):
         return self.__web_parts['international_comparisons']
 
+    @property
+    def presentations(self):
+        return self.__web_parts['presentations']
+
     def isCorrect(self):
         return len(self.get_errors()) == 0
 
@@ -102,12 +107,6 @@ class SubjectPage:
         return '\n'.join(errors)
         # return '\n'.join([web_part.error_to_str() for web_part in self.__web_parts.values()])
 
-    def __iter__(self):
-        return iter(self.inside_links)
-
-    def __next__(self):
-        return next(self.inside_links)
-
     def get_level(self):
         return self.level
 
@@ -121,26 +120,5 @@ class SubjectPage:
         return len(self.inside_links)
 
     def __str__(self):
-        return self.name
+        return 'Name: {}, ID: {}'.format(self.name,self.id)
 
-#
-# web_parts = {'stats_part': Statisticals(),
-#              'sub_subjects': SubSubjects(),
-#              'tools_and_db': ToolsAndDB(),
-#              'more_links': MoreLinks(),
-#              'summary': Summary(),
-#              'top_box': TopBox(),
-#              'press_releases': PressReleases(),
-#              'tables_and_charts': TablesAndMaps(),
-#              'extra_error_parts': ExParts()
-#              }
-# web_parts['stats_part'].errors.append('stats_part')
-# web_parts['sub_subjects'].errors.append('sub_subjects')
-# web_parts['tools_and_db'].errors.append('tools_and_db')
-# web_parts['more_links'].errors.append('more_links')
-# web_parts['summary'].errors.append('summary')
-# web_parts['top_box'].errors.append('top_box')
-# web_parts['press_releases'].errors.append('press_releases')
-# web_parts['tables_and_charts'].errors.append('tables_and_charts')
-# web_parts['extra_error_parts'].errors.append('extra_error_parts')
-# print('\n'.join(str(web_part.get_errors()) for web_part in web_parts.values()))

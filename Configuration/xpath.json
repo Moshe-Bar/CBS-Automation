@@ -17,7 +17,8 @@
       "MORE_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox' ][1]",
       "CONFERENCES_AND_SEMINARS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][2]",
       "VIDEOS_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][3]",
-      "PICTURES_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][4]"
+      "PICTURES_LINKS_XPATH": "/div[@class='leftColumn']/div[@class='generalBox'][4]",
+      "PRESENTATIONS_XPATH": "/div[@class='rightColumn']/div[@class='generalBox removeMSWebpart'][5]"
     }
   ]
 }

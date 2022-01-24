@@ -6,7 +6,7 @@ import certifi
 # import ssl
 ##########
 from urllib.error import URLError
-
+from itertools import cycle
 import urllib3
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
@@ -25,7 +25,17 @@ from DataBase.DataBase import Links
 
 import urllib.request
 
+class ConnectionPool:
+    def __init__(self):
+        self.pool = [urllib3.PoolManager(ca_certs=certifi.where(),maxsize=100, block=True) for i in range(20)]
+        self.iterator = cycle(self.pool) # cycle iterator for reuse connections
+
+    def request(self,method,url,redirect):
+        return next(self.iterator).request(method=method,url=url,redirect=redirect)
+
 HTTPS = urllib3.PoolManager(ca_certs=certifi.where())
+# HTTPS = urllib3.PoolManager(ca_certs=certifi.where(),maxsize=100, block=True)
+
 # CERT_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 CBS_HOME_PAGE_NAME = 'דף הבית'
 CBS_404_TEXTS = ['מתנצלים, הדף לא נמצא', 'Sorry, the page is not found']
@@ -133,7 +143,6 @@ class WebPartUtility:
             errors = [error + ' ' for error in errors]
             page.stats_part.errors.extend(errors)
             log_test += 1
-            # page.stats_part.links.extend(links)
 
             # *****************************************************************************************************************
         try:
@@ -448,52 +457,6 @@ class WebPartUtility:
         # paragraphs test
         paragraphs = root_element.find_elements(By.XPATH, "./div[4]/p")
 
-        # images test
-        # links test
-        # images = session.find_element(By.XPATH,"./div[2]/div/img")
-        # links = session.find_elements(By.XPATH, Links.SUMMARY_XPATH.value + "//a")
-        # check text is exist
-        #     if paragraph == '':
-        #         page.summary.errors.append('no text')
-
-        # test images
-        # if len(images) > 0:
-        #     counter = 0
-        #     for i, img in enumerate(images):
-        #         cur_link = CbsLink(img.get_attribute('src'))
-        #         PageUtility.set_link_status(cur_link)
-        #         page.summary.images.append(cur_link)
-        #         if not cur_link.status_code == 200:
-        #             counter += 1
-        #
-        #     if counter > 1:
-        #         page.summary.errors.append('{} images are broken'.format(counter))
-        #     elif counter == 1:
-        #         page.summary.errors.append('{} image is broken'.format(counter))
-        #
-        #     # test links
-        #     if len(links) > 0:
-        #         counter = 0
-        #         for i, url in enumerate(links):
-        #             cur_link = CbsLink(url.get_attribute('href'))
-        #             PageUtility.set_link_status(cur_link)
-        #             page.summary.links.append(cur_link)
-        #             if not cur_link.status_code == 200:
-        #                 counter += 1
-        #
-        #         if counter > 1:
-        #             page.summary.errors.append('{} links is broken'.format(counter))
-        #         elif counter == 1:
-        #             page.summary.errors.append('{} link is broken'.format(counter))
-        #
-        # except TimeoutException:
-        #     pass
-        # except NoSuchElementException:
-        #     print("summary couldn't be found")
-        # except Exception as e:
-        #     print('exception in summary test')
-        # return
-
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
         print('tables-and-charts test in: {}'.format(page.name))
@@ -521,9 +484,6 @@ class WebPartUtility:
             print('no title in tables and charts')
             page.tables_and_charts.errors.append('no title')
             return
-        except TypeError as e:
-            print('exception, xpath is not recognized')
-            return
         except Exception:
             print('not recognized exception in tables and charts')
             return
@@ -533,24 +493,18 @@ class WebPartUtility:
         # images check
         images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a/img")
 
-        # for li in li_elements:
-        #     div = li.find_elements(By.XPATH, ".//div//div")
-        #     pic_url = CbsLink(div[0].find_element(By.XPATH, ".//a//img").get_attribute('src'))
-        #     link_url = CbsLink(div[0].find_element(By.XPATH, ".//a").get_attribute('href'))
-        #     name = div[0].text
-        #     date = div[1].text
-        #     web_part_lines.append(WebPartLine(link_url, pic_url, date, name))
-        #
-        # cls.check_lines(web_part_lines, page.tables_and_charts.errors)
-        #
-        # except NoSuchElementException as e:
-        #     page.tables_and_charts.errors.append('not found any links')
-        # except TimeoutException as e:
-        #     page.tables_and_charts.errors.append('not found any links')
-        # except TypeError as e:
-        #     print('exception, xpath is not recognized')
-        # except Exception as e:
-        #     print('not recognized exception in tables and charts: {}'.format(e))
+        if not links:
+            page.tables_and_charts.errors.append('links are missing')
+        else:
+            links, errors = PageUtility.set_url_links(links)
+            page.tables_and_charts.errors.extend(errors)
+
+            if not images:
+                page.tables_and_charts.errors.append('icons are missing')
+            else:
+                images, errors = PageUtility.set_url_links(images,attrib='src')
+                errors = [error + ' ' for error in errors]
+                page.tables_and_charts.errors.extend(errors)
 
         # last link check
         try:
@@ -558,23 +512,11 @@ class WebPartUtility:
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
-                raise Exception('last link is broken')
+                page.tables_and_charts.errors.append('last link is broken')
 
         except Exception as e:
-            page.tables_and_charts.errors.append('to all charts link is broken')
+            page.tables_and_charts.errors.append('to all charts link is missing')
             print('exception in set_tables_and_charts: {}'.format(e))
-
-    @classmethod
-    def check_lines(cls, web_part_lines: [WebPartLine], errors: [str]):
-        for web_part_line in web_part_lines:
-            link_url = web_part_line.url
-            pic_url = web_part_line.pic
-            PageUtility.set_link_status(link_url)
-            PageUtility.set_link_status(pic_url)
-            if not link_url.status_code == 200:
-                errors.append('url link is broken')
-            if not pic_url.status_code == 200:
-                errors.append('image url link is broken')
 
     @classmethod
     def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
@@ -583,6 +525,7 @@ class WebPartUtility:
         # check if the element located
         root_element, error = cls.get_main_element('GEOGRAPHIC_ZONE_XPATH', session)
         if root_element is None:
+            print('geographic zone not exist in {}'.format(page.name))
             if error == 'chrome session error':
                 raise Exception('chrome session error')
             return
@@ -594,9 +537,9 @@ class WebPartUtility:
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
                 page.geographic_zone.errors.append('link is broken')
-            else:
-                print('link is ok')
-            print('status: ', link.status_code)
+            # else:
+            #     print('link is ok')
+            # print('status: ', link.status_code)
         except NoSuchElementException as e:
             page.geographic_zone.errors.append('no link in geographic zone')
             print('no geographic_zone', e)
@@ -615,27 +558,25 @@ class WebPartUtility:
     def set_international_comparisons(cls, page: SubjectPage, session: webdriver.Chrome):
         print('international-comparisons test in: {}'.format(page.name))
 
-        try:
-            main_element = session.find_element(By.XPATH, Links.INTERNATIONAL_COMPARISONS_XPATH.value)
-        except NoSuchElementException as e:
-            return
-        except TimeoutException as e:
-            return
-        except Exception as e:
-            print('not recognized exception in international comparisons', e)
+        # check if the element located
+        root_element, error = cls.get_main_element('INTERNATIONAL_COMPARISONS_XPATH', session)
+        if root_element is None:
+            print('geographic zone not exist in {}'.format(page.name))
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
             return
 
         # check link status
         try:
-            main_link = main_element.find_element(by=By.XPATH, value="./div/a").get_attribute('href')
-
-            link = CbsLink(url=main_link)
+            # a = main_element.find_element(by=By.XPATH, value="./div/a").get_attribute('href')
+            a = root_element.find_element(By.XPATH, './div/a').get_attribute('href')
+            link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
                 page.international_comparisons.errors.append('link is broken')
-            else:
-                print('link is ok')
-            print('status: ', link.status_code)
+            # else:
+            #     print('link is ok')
+            # print('status: ', link.status_code)
         except NoSuchElementException as e:
             page.international_comparisons.errors.append('no link')
             print('no international_comparisons', e)
@@ -658,6 +599,13 @@ class WebPartUtility:
     @classmethod
     def set_videos_links(cls, page, session):
         print('video-links test in: {}'.format(page.name))
+        # check if the element located
+        root_element, error = cls.get_main_element('HEBREW_STATS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('stats  not tested in: ', page.name, ', {}'.format(error))
+            return
         print('in developing process')
 
     @classmethod
@@ -666,10 +614,52 @@ class WebPartUtility:
         print('in developing process')
 
     @classmethod
-    def set_slideshows(cls, page, session):
-        #todo
-        pass
+    def set_presentations(cls, page, session):
+        print('slideshows test in: {}'.format(page.name))
 
+        root_element, error = cls.get_main_element('PRESENTATIONS_XPATH', session)
+        if root_element is None:
+            if error == 'chrome session error':
+                raise Exception('chrome session error')
+            print('presentations  not tested in: ', page.name, ', {}'.format(error))
+            return
+
+        # title check
+        try:
+            title = root_element.find_element(By.XPATH, "./h2/span")
+            title = title.text
+            if not title == 'מצגות':
+                print('title in stats is: ', title)
+                page.presentations.errors.append('title not correct')
+        except NoSuchElementException:
+            page.presentations.errors.append('title not correct')
+            print('stats not contain any title: ', page.name)
+            return
+
+        # inside elements test
+        links = root_element.find_elements(By.XPATH, "./div/ul/li/div/div/a")
+        images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div/img")
+
+        if len(images) == 0:
+            page.presentations.errors.append('images content is missing')
+        else:
+            images, errors = PageUtility.set_url_links(images, attrib='src')
+            # errors = [error + ' in Statistical image' for error in errors]
+            page.presentations.errors.extend(errors)
+
+        if len(links) == 0:
+            page.presentations.errors.append('links content is missing')
+        else:
+            links, errors = PageUtility.set_url_links(links)
+            errors = [error + ' ' for error in errors]
+            page.presentations.errors.extend(errors)
+
+        # *****************************************************************************************************************
+        try:
+            to_all_link = root_element.find_element(By.XPATH, "./div/a")
+        except NoSuchElementException:
+            page.presentations.errors.append('link to all massages is missing')
+            return
 
 class PageUtility:
 
@@ -686,6 +676,7 @@ class PageUtility:
 
     @classmethod
     def set_link_status(cls, link: CbsLink):
+        resp = None
         try:
             resp = HTTPS.request('GET', link.url, redirect=True)
             link.status_code = resp.status
@@ -703,20 +694,24 @@ class PageUtility:
                 link.status_code = 200
             else:
                 link.status_code = 404
+            return
         except Exception as e:
             print('set link status func unknown exception', e)
             link.status_code = 408
             return
+        finally:
+            # case everything went well - still need to check default error page of CBS
+            # and link.url.endswith('.aspx')
+            if resp and link.status_code == 200 and link.type == 'page':
+                # print('inside deep check: ')
+                # print(link.url)
+                content = resp.data.decode('utf-8')
+                resp.release_conn()
+                # print('content: ', content)
+                cls.check_for_cbs_error_page(content, link)
+                return
 
-        # case everything went well - still need to check default error page of CBS
-        # and link.url.endswith('.aspx')
-        if link.status_code == 200 and link.type == 'page':
-            # print('inside deep check: ')
-            # print(link.url)
-            content = resp.data.decode('utf-8')
-            # print('content: ', content)
-            cls.check_for_cbs_error_page(content, link)
-            return
+
 
     @classmethod
     def link_state(cls, element, attrib, link_list, errors, iteration):
