@@ -12,6 +12,12 @@ class Error:
     def __repr__(self):
         return [self.test_id, self.page_id, self.wp_type, self.type, self.index]
 
+    def str_list(self):
+        return [str(self.test_id), str(self.page_id), str(self.wp_type), str(self.type), str(self.index)]
+
+    def __str__(self):
+        return 'test_id:{} page_id:{} wp_type:{} error_type:{} index{}'.format(*self.str_list())
+
 
 class Type(Enum):
     TITLE_NOT_CORRECT = 0
@@ -26,3 +32,6 @@ class Type(Enum):
     MISSING_LINKS=9
     TO_ALL_MASSAGES_IS_BROKEN = 10
     NO_CONTENT = 11
+    NO_LINK = 12
+    MISSING_ICONS = 13
+    NO_IMAGE = 14

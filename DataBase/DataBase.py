@@ -1,4 +1,5 @@
 from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Error import Error
 from CbsObjects.Pages.SubjectPage import SubjectPage
 import pdfkit
 
@@ -9,6 +10,60 @@ from enum import Enum
 ####,encoding="utf-8"
 ROOT_PATH = sys.path[1]
 
+
+import sqlite3
+import sys
+
+
+class DB:
+    def __init__(self):
+        self.path = ROOT_PATH + "\\DataBase\\MainDB"
+        self.__db = sqlite3.connect(self.path)
+        self.__cursor = self.__db.cursor()
+
+    def get_he_subject_pages(self):
+        self.__cursor.execute("SELECT * FROM HEBREW_PAGES")
+        data = self.__cursor.fetchall()
+        return data
+
+    def get_wp_ids(self):
+        self.__cursor.execute("SELECT * FROM WPARTS")
+        data = self.__cursor.fetchall()
+        return data
+
+    def save_test_result(self, error_data:Error):
+        insert = "INSERT INTO TEST_RESULTS VALUES ({},{},{},{},{});".format(*repr(error_data))
+        self.__cursor.executescript(insert)
+        self.__cursor.fetchall()
+        print('new error line was added successfully')
+
+    def save_test_results(self, errors):
+        e = [err.str_list() for err in errors]
+        self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);",e)
+
+        self.__cursor.fetchall()
+        print('new {} errors was added successfully to db'.format(len(errors)))
+
+    def load_test_data(self, test_key):
+        pass
+
+    def load_error_details(self):
+        self.__cursor.execute("SELECT * FROM ERRORS")
+        data = self.__cursor.fetchall()
+        return data
+
+    def add_new_test(self, details):
+        insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});".format(*details)
+        self.__cursor.executescript(insert)
+        self.__cursor.fetchall()
+
+    def __del__(self):
+        self.__cursor.close()
+        self.__db.close()
+
+
+
+db = DB()
 
 class DataBase:
     @classmethod
@@ -67,21 +122,33 @@ class DataBase:
         pages = [SubjectPage(link, link.name) for link in links]
         return pages
 
+    # @classmethod
+    # def save_test_result(cls, test_key, page: SubjectPage):
+    #     try:
+    #         path = ROOT_PATH + '\\TestData\\logs'
+    #         file = path + '\\' + test_key + '.html'
+    #         with open(file, 'a', encoding='utf-8') as f:
+    #             style = 'style={color:red; font-size: large; }'
+    #             page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,
+    #                                                                                                         page.link.url,
+    #                                                                                                         page.name)
+    #             errors = ('<h1 {}>' + str(page.error_to_str()) + '</h1><br>').format(style)
+    #             f.write(page_link + errors)
+    #         f.close()
+    #     except Exception as e:
+    #         print('exception in db')
+    #         raise e
+
     @classmethod
     def save_test_result(cls, test_key, page: SubjectPage):
         try:
-            path = ROOT_PATH + '\\TestData\\logs'
-            file = path + '\\' + test_key + '.html'
-            with open(file, 'a', encoding='utf-8') as f:
-                style = 'style={color:red; font-size: large; }'
-                page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,
-                                                                                                            page.link.url,
-                                                                                                            page.name)
-                errors = ('<h1 {}>' + str(page.error_to_str()) + '</h1><br>').format(style)
-                f.write(page_link + errors)
-            f.close()
+            errors = page.get_errors()
+            for error in errors:
+                error.test_id = test_key
+            db.save_test_results(errors)
+
         except Exception as e:
-            print('exception in db')
+            print('exception in db new db insertion')
             raise e
 
     @classmethod
@@ -191,47 +258,6 @@ class Links(Enum):
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
 
-import sqlite3
-import sys
-
-
-class DB:
-    def __init__(self):
-        self.path = ROOT_PATH + "\\DataBase\\MainDB"
-        self.__db = sqlite3.connect(self.path)
-        self.__cursor = self.__db.cursor()
-
-    def get_he_subject_pages(self):
-        self.__cursor.execute("SELECT * FROM HEBREW_PAGES")
-        data = self.__cursor.fetchall()
-        return data
-
-    def get_wp_ids(self):
-        self.__cursor.execute("SELECT * FROM WPARTS")
-        data = self.__cursor.fetchall()
-        return data
-
-    def save_test_result(self, error_data):
-        insert = "INSERT INTO TEST_RESULTS VALUES ({},{},{},{},{});".format(*error_data)
-        self.__cursor.executescript(insert)
-        self.__cursor.fetchall()
-
-    def load_test_data(self, test_key):
-        pass
-
-    def load_error_details(self):
-        self.__cursor.execute("SELECT * FROM ERRORS")
-        data = self.__cursor.fetchall()
-        return data
-
-    def add_new_test(self, details):
-        insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});".format(*details)
-        self.__cursor.executescript(insert)
-        self.__cursor.fetchall()
-
-    def __del__(self):
-        self.__cursor.close()
-        self.__db.close()
 
 
 # x = DB()

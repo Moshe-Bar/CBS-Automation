@@ -1,5 +1,6 @@
 from enum import Enum
 
+from CbsObjects.Error import Error
 from CbsObjects.dev import Component
 from CbsObjects.WebPartLine import WebPartLine
 
@@ -25,7 +26,7 @@ class WebPart():
     def __init__(self):
         self.title = None
         self.components = [Component]
-        self.errors = []
+        self.errors = [Error]
         self.images = []
         self.links = []
         self.lines = [WebPartLine]
@@ -34,7 +35,7 @@ class WebPart():
         return self.errors
 
     def error_to_str(self):
-        return ', '.join(self.errors)
+        return [repr(error) for error in self.errors]
 
 
 # תקציר בראש הדף

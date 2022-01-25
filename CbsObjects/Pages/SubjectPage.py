@@ -1,4 +1,5 @@
 from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Error import Error
 from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, ToolsAndDB, Summary, TopBox, \
     PressReleases, TablesAndMaps, ExParts, Publications, GeographicZone, InternationalComparisons, Presentations
 
@@ -93,18 +94,25 @@ class SubjectPage:
         errors = []
         for web_part in self.__web_parts.values():
             err = web_part.get_errors()
-            if len(err) > 0:
-                errors.append(err)
+            for e in err:
+                e.page_id = self.id
+                errors.append(e)
+            # if len(err) > 0:
+            #     errors.append(err)
         return errors
         # return [web_part.get_errors() for web_part in self.__web_parts.values()]
 
     def error_to_str(self):
-        errors = []
-        for web_part in self.__web_parts.values():
-            err = web_part.get_errors()
-            if len(err) > 0:
-                errors.append(web_part.error_to_str())
-        return '\n'.join(errors)
+        s=''
+        for e in self.get_errors():
+            s = s + ', ' + str(e)
+        return s
+        # errors = []
+        # for web_part in self.__web_parts.values():
+        #     err = web_part.get_errors()
+        #     if len(err) > 0:
+        #         errors.append(web_part.error_to_str())
+        # return '\n'.join(errors)
         # return '\n'.join([web_part.error_to_str() for web_part in self.__web_parts.values()])
 
     def get_level(self):

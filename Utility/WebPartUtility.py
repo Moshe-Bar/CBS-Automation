@@ -1040,6 +1040,7 @@ class WebPartUtility_:
 
     @classmethod
     def set_publications(cls, page: SubjectPage, session: webdriver.Chrome):
+        type = WpType.PUBLICATIONS.value
         print('publications test in: {}'.format(page.name))
 
         # check if the element located
@@ -1096,6 +1097,7 @@ class WebPartUtility_:
 
     @classmethod
     def set_extra_parts(cls, page: SubjectPage, root_element):
+        type = WpType.EX_PARTS.value
         print('extra-parts test in: {}'.format(page.name))
 
         # check if left element located
@@ -1105,7 +1107,7 @@ class WebPartUtility_:
                 raise Exception('chrome session error')
             return
         else:
-            page.extra_error_parts.errors.append('left side of the page contains wrong web parts')
+            page.extra_error_parts.errors.append(Error(error_type=ErrorType.WRONG_WP_ON_LEFT_SIDE.value,wp_type=type))
 
         # check if right element located
         right_element, error = cls.get_main_element('RIGHT_EXTRA_PARTS_XPATH', root_element)
@@ -1115,10 +1117,11 @@ class WebPartUtility_:
                 raise Exception('chrome session error')
             return
         else:
-            page.extra_error_parts.errors.append('right side of the page contains wrong web parts')
+            page.extra_error_parts.errors.append(Error(error_type=ErrorType.WRONG_WP_ON_RIGHT_SIDE.value,wp_type=type))
 
     @classmethod
     def set_tools_and_db(cls, page: SubjectPage, session):
+        type = WpType.TOOLS_DB.value
         print('tools-and-db test in: {}'.format(page.name))
 
         # check if the element located
@@ -1136,9 +1139,9 @@ class WebPartUtility_:
             title = title.text
             if not title == 'כלים ומאגרי נתונים':
                 # print('title in tadb is: ', title)
-                page.tools_and_db.errors.append('title not correct')
+                page.tools_and_db.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
         except NoSuchElementException:
-            page.tools_and_db.errors.append('title not correct')
+            page.tools_and_db.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
             print('tools_db not contain any title: ', page.name)
 
         # image test
@@ -1147,12 +1150,12 @@ class WebPartUtility_:
             image = CbsLink(url=image.get_attribute('src'))
             PageUtility.set_link_status(image)
             if not image.status_code == 200:
-                page.tools_and_db.errors.append('image is broken')
+                page.tools_and_db.errors.append(Error(error_type=ErrorType.BROKEN_IMAGE_LINK.value,wp_type=type))
 
         except NoSuchElementException:
-            page.tools_and_db.errors.append('no image')
+            page.tools_and_db.errors.append(Error(error_type=ErrorType.NO_IMAGE.value,wp_type=type))
         except TimeoutException:
-            page.tools_and_db.errors.append('no image')
+            page.tools_and_db.errors.append(Error(error_type=ErrorType.NO_IMAGE.value,wp_type=type))
         except Exception as e:
             print('exception in tools and DB')
             raise e
@@ -1163,12 +1166,12 @@ class WebPartUtility_:
             link = CbsLink(link.get_attribute('href'))
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
-                page.tools_and_db.errors.append('link is broken')
+                page.tools_and_db.errors.append(Error(error_type=ErrorType.BROKEN_LINK.value,wp_type=type))
 
         except NoSuchElementException:
-            page.tools_and_db.errors.append('no link')
+            page.tools_and_db.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
         except TimeoutException:
-            page.tools_and_db.errors.append('no link')
+            page.tools_and_db.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
         except Exception as e:
             print('exception in tools and DB')
             raise e
@@ -1176,6 +1179,7 @@ class WebPartUtility_:
 
     @classmethod
     def set_summary(cls, page: SubjectPage, session: webdriver):
+
         print('summary test in: {}'.format(page.name))
         # summary = session.find_element_by_xpath(Links.SUMMARY_XPATH.value)
         # check if the element located
@@ -1189,6 +1193,7 @@ class WebPartUtility_:
 
     @classmethod
     def set_tables_and_charts(cls, page: SubjectPage, session: webdriver):
+        type = WpType.TABLES_MAPS.value
         print('tables-and-charts test in: {}'.format(page.name))
 
         # check if the element located
@@ -1203,16 +1208,16 @@ class WebPartUtility_:
 
             title = root_element.find_element(By.XPATH, "./h2/span").text
             if not title == 'לוחות ותרשימים':
-                page.tables_and_charts.errors.append('title is not correct')
+                page.tables_and_charts.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
                 print(title)
 
         except NoSuchElementException as e:
             print('no title in tables and charts')
-            page.tables_and_charts.errors.append('no title')
+            page.tables_and_charts.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
             return
         except TimeoutException as e:
             print('no title in tables and charts')
-            page.tables_and_charts.errors.append('no title')
+            page.tables_and_charts.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
             return
         except Exception:
             print('not recognized exception in tables and charts')
@@ -1224,13 +1229,13 @@ class WebPartUtility_:
         images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div[1]/a/img")
 
         if not links:
-            page.tables_and_charts.errors.append('links are missing')
+            page.tables_and_charts.errors.append(Error(error_type=ErrorType.MISSING_LINKS.value,wp_type=type))
         else:
             links, errors = PageUtility.set_url_links(links)
             page.tables_and_charts.errors.extend(errors)
 
             if not images:
-                page.tables_and_charts.errors.append('icons are missing')
+                page.tables_and_charts.errors.append(Error(error_type=ErrorType.MISSING_ICONS.value,wp_type=type))
             else:
                 images, errors = PageUtility.set_url_links(images,attrib='src')
                 errors = [error + ' ' for error in errors]
@@ -1242,14 +1247,15 @@ class WebPartUtility_:
             to_all_maps = CbsLink(to_all_maps.get_attribute('href'))
             PageUtility.set_link_status(to_all_maps)
             if not to_all_maps.status_code == 200:
-                page.tables_and_charts.errors.append('last link is broken')
+                page.tables_and_charts.errors.append(Error(error_type=ErrorType.TO_ALL_MASSAGES_IS_BROKEN.value,wp_type=type))
 
         except Exception as e:
-            page.tables_and_charts.errors.append('to all charts link is missing')
+            page.tables_and_charts.errors.append(Error(error_type=ErrorType.TO_ALL_MASSAGES_IS_MISSING.value,wp_type=type))
             print('exception in set_tables_and_charts: {}'.format(e))
 
     @classmethod
     def set_geographic_zone(cls, page: SubjectPage, session: webdriver):
+        type = WpType.GEO_ZONE.value
         print('geographic-zone test in: {}'.format(page.name))
 
         # check if the element located
@@ -1266,26 +1272,27 @@ class WebPartUtility_:
             link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
-                page.geographic_zone.errors.append('link is broken')
+                page.geographic_zone.errors.append(Error(error_type=ErrorType.BROKEN_LINK.value,wp_type=type))
             # else:
             #     print('link is ok')
             # print('status: ', link.status_code)
         except NoSuchElementException as e:
-            page.geographic_zone.errors.append('no link in geographic zone')
+            page.geographic_zone.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
             print('no geographic_zone', e)
             return
         except TimeoutException as e:
-            page.geographic_zone.errors.append('no link in geographic zone')
+            page.geographic_zone.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
             print('no geographic_zone', e)
             return
 
         except Exception as e:
-            page.geographic_zone.errors.append('no link in geographic zone')
+            page.geographic_zone.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
             print('not recognized exception in geographic_zone', e)
             return
 
     @classmethod
     def set_international_comparisons(cls, page: SubjectPage, session: webdriver.Chrome):
+        type = WpType.COMPARISONS.value
         print('international-comparisons test in: {}'.format(page.name))
 
         # check if the element located
@@ -1303,21 +1310,21 @@ class WebPartUtility_:
             link = CbsLink(url=a)
             PageUtility.set_link_status(link)
             if not link.status_code == 200:
-                page.international_comparisons.errors.append('link is broken')
+                page.international_comparisons.errors.append(Error(error_type=ErrorType.BROKEN_LINK.value,wp_type=type))
             # else:
             #     print('link is ok')
             # print('status: ', link.status_code)
         except NoSuchElementException as e:
-            page.international_comparisons.errors.append('no link')
+            page.international_comparisons.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
             print('no international_comparisons', e)
             return
         except TimeoutException as e:
-            page.international_comparisons.errors.append('no link')
+            page.international_comparisons.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
             print('no international_comparisons', e)
             return
 
         except Exception as e:
-            page.international_comparisons.errors.append('no link')
+            page.international_comparisons.errors.append(Error(error_type=ErrorType.NO_LINK.value,wp_type=type))
             print('not recognized exception in international_comparisons', e)
             return
 
@@ -1334,7 +1341,7 @@ class WebPartUtility_:
         if root_element is None:
             if error == 'chrome session error':
                 raise Exception('chrome session error')
-            print('stats  not tested in: ', page.name, ', {}'.format(error))
+            print('video_links  not tested in: ', page.name, ', {}'.format(error))
             return
         print('in developing process')
 
@@ -1345,6 +1352,7 @@ class WebPartUtility_:
 
     @classmethod
     def set_presentations(cls, page, session):
+        type =WpType.PRESENTATIONS.value
         print('slideshows test in: {}'.format(page.name))
 
         root_element, error = cls.get_main_element('PRESENTATIONS_XPATH', session)
@@ -1360,9 +1368,9 @@ class WebPartUtility_:
             title = title.text
             if not title == 'מצגות':
                 print('title in stats is: ', title)
-                page.presentations.errors.append('title not correct')
+                page.presentations.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
         except NoSuchElementException:
-            page.presentations.errors.append('title not correct')
+            page.presentations.errors.append(Error(error_type=ErrorType.TITLE_NOT_CORRECT.value,wp_type=type))
             print('stats not contain any title: ', page.name)
             return
 
@@ -1371,14 +1379,14 @@ class WebPartUtility_:
         images = root_element.find_elements(By.XPATH, "./div/ul/li/div/div/img")
 
         if len(images) == 0:
-            page.presentations.errors.append('images content is missing')
+            page.presentations.errors.append(Error(error_type=ErrorType.NO_CONTENT.value,wp_type=type))
         else:
             images, errors = PageUtility.set_url_links(images, attrib='src')
             # errors = [error + ' in Statistical image' for error in errors]
             page.presentations.errors.extend(errors)
 
         if len(links) == 0:
-            page.presentations.errors.append('links content is missing')
+            page.presentations.errors.append(Error(error_type=ErrorType.NO_CONTENT.value,wp_type=type))
         else:
             links, errors = PageUtility.set_url_links(links)
             errors = [error + ' ' for error in errors]
@@ -1388,5 +1396,5 @@ class WebPartUtility_:
         try:
             to_all_link = root_element.find_element(By.XPATH, "./div/a")
         except NoSuchElementException:
-            page.presentations.errors.append('link to all massages is missing')
+            page.presentations.errors.append(Error(error_type=ErrorType.TO_ALL_MASSAGES_IS_MISSING.value,wp_type=type))
             return
