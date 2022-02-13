@@ -21,6 +21,7 @@ from CbsObjects.Pages.SubjectPage import SubjectPage
 from DataBase.DataBase import DataBase, Links
 from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
 
+import uuid
 
 class TestProperties():
     def __init__(self, shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
@@ -33,6 +34,12 @@ class TestProperties():
 
 
 class TestUtility:
+    @classmethod
+    def generate_test_key(cls):
+        print(uuid.uuid4())
+        print(uuid.uuid4())
+        print(uuid.uuid4())
+
 
     @classmethod
     def get_sessions(cls, amount=1, isViseble=True):
@@ -57,7 +64,7 @@ class TestUtility:
     def _check_chrome_version(cls):
         paths = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",
                  r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]
-        path = list(filter(lambda x: os.path.isfile(x),paths))[0]
+        path = list(filter(lambda x: os.path.isfile(x), paths))[0]
         parser = Dispatch("Scripting.FileSystemObject")
         try:
             version = parser.GetFileVersion(path)
@@ -66,7 +73,7 @@ class TestUtility:
             print('chrome version is unknown')
             return None
         return version
-        
+
     @classmethod
     def create_web_driver(cls, withUI=True):
         try:
@@ -220,7 +227,7 @@ class TestUtility:
     # visible func
     @classmethod
     def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
-             pages_: list, session_visible:bool=True,test_key=time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())):
+             pages_: list, session_visible: bool = True, test_key=time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())):
 
         if pages_ is None:
             try:
@@ -231,11 +238,11 @@ class TestUtility:
                 end_flag.put('error in loading pages, test is closed')
                 raise e
 
-        elif type(pages_[0])==type(1):
-            pages = list(filter(lambda x: x.id in pages_,cls.get_he_pages()))
+        elif type(pages_[0]) == type(1):
+            pages = list(filter(lambda x: x.id in pages_, cls.get_he_pages()))
         else:
             print('no action needed')
-            print('type page elem: '+str(type(pages_[0]))+' type int: '+str(type(1)))
+            print('type page elem: ' + str(type(pages_[0])) + ' type int: ' + str(type(1)))
             pages = pages_
 
         # status flow
@@ -564,11 +571,12 @@ class TestUtility:
         return DataBase.get_pdf_test_result(file_key=file_key)
 
 
+TestUtility.generate_test_key()
 
-
+# for browser version match with the automation driver
 paths = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-                 r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]
-path = list(filter(lambda x: os.path.isfile(x),paths))[0]
+         r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]
+path = list(filter(lambda x: os.path.isfile(x), paths))[0]
 parser = Dispatch("Scripting.FileSystemObject")
 try:
     version = parser.GetFileVersion(path)

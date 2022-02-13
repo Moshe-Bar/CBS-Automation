@@ -37,8 +37,8 @@ class Type(Enum):
     NO_IMAGE = 14
 
 
-x = Error(1, 1)
-y = Error(1, 1)
-z = Error(1, 1)
-print(x,y,z)
+# x = Error(1, 1)
+# y = Error(1, 1)
+# z = Error(1, 1)
+# print(x,y,z)
 

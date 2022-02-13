@@ -10,7 +10,6 @@ from enum import Enum
 ####,encoding="utf-8"
 ROOT_PATH = sys.path[1]
 
-
 import sqlite3
 import sys
 
@@ -18,11 +17,11 @@ import sys
 class DB:
     def __init__(self):
         self.path = ROOT_PATH + "\\DataBase\\MainDB"
-        self.__db = sqlite3.connect(self.path,check_same_thread=False)
+        self.__db = sqlite3.connect(self.path, check_same_thread=False)
         self.__cursor = self.__db.cursor()
 
     def get_he_subject_pages(self):
-        self.__cursor.execute("SELECT * FROM HEBREW_PAGES")
+        self.__cursor.execute("SELECT * FROM PAGES")
         data = self.__cursor.fetchall()
         return data
 
@@ -38,9 +37,12 @@ class DB:
     #     print('new error line was added successfully')
 
     def save_test_results(self, errors):
-        print(str(errors))
+        # print(str(errors))
         e = [err.str_list() for err in errors]
-        self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);",e)
+        # for test
+        for i in e:
+            print('Error: ',i)
+        self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);", e)
 
         self.__cursor.fetchall()
         print('new {} errors was added successfully to db'.format(len(errors)))
@@ -63,37 +65,17 @@ class DB:
         self.__db.close()
 
 
-
 db = DB()
 
-class DataBase:
-    # @classmethod
-    # def get_CBS_he_links(cls):
-    #     links = []
-    #     try:
-    #         with open(ROOT_PATH + '\\DataBase\\heb_pages_links.txt', 'r', encoding="utf-8") as f:
-    #             for line in f:
-    #                 li = line.split()
-    #                 cbs_link = CbsLink(li[0])
-    #                 cbs_link.name = ' '.join(li[1:])
-    #                 links.append(cbs_link)
-    #             f.close()
-    #     except Exception as e:
-    #         print(e)
-    #         print('database file did not read', e)
-    #     links = list(set(links))
-    #     excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
-    #     links = list(filter(lambda x: all(s not in x.url for s in excluded), links))
-    #     links.sort(key=lambda x: x.name)
-    #     return links
 
+class DataBase:
     @classmethod
     def get_CBS_he_links(cls):
         cbs_links = []
         try:
             links = db.get_he_subject_pages()
             for link in links:
-                cbs_links.append(CbsLink(page_name=link[0],url=link[1]))
+                cbs_links.append(CbsLink(page_name=link[0], url=link[1]))
         except Exception as e:
             print(e)
             print('database file did not read', e)
@@ -245,7 +227,7 @@ class DataBase:
 
         config = pdfkit.configuration(wkhtmltopdf=path)
 
-        data = pdfkit.from_string(data,configuration=config)
+        data = pdfkit.from_string(data, configuration=config)
         return data
 
 
@@ -273,9 +255,6 @@ class Links(Enum):
     VIDEOS_LINKS_XPATH = DataBase.load_xpath('VIDEOS_LINKS_XPATH')  # new
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
-
-
-
 
 # x = DB()
 # # print(x.get_he_subject_pages())
