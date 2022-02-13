@@ -18,7 +18,7 @@ import sys
 class DB:
     def __init__(self):
         self.path = ROOT_PATH + "\\DataBase\\MainDB"
-        self.__db = sqlite3.connect(self.path)
+        self.__db = sqlite3.connect(self.path,check_same_thread=False)
         self.__cursor = self.__db.cursor()
 
     def get_he_subject_pages(self):
@@ -31,13 +31,14 @@ class DB:
         data = self.__cursor.fetchall()
         return data
 
-    def save_test_result(self, error_data:Error):
-        insert = "INSERT INTO TEST_RESULTS VALUES ({},{},{},{},{});".format(*repr(error_data))
-        self.__cursor.executescript(insert)
-        self.__cursor.fetchall()
-        print('new error line was added successfully')
+    # def save_test_result(self, error_data:Error):
+    #     insert = "INSERT INTO TEST_RESULTS VALUES ({},{},{},{},{});".format(*repr(error_data))
+    #     self.__cursor.executescript(insert)
+    #     self.__cursor.fetchall()
+    #     print('new error line was added successfully')
 
     def save_test_results(self, errors):
+        print(str(errors))
         e = [err.str_list() for err in errors]
         self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);",e)
 
@@ -66,23 +67,39 @@ class DB:
 db = DB()
 
 class DataBase:
+    # @classmethod
+    # def get_CBS_he_links(cls):
+    #     links = []
+    #     try:
+    #         with open(ROOT_PATH + '\\DataBase\\heb_pages_links.txt', 'r', encoding="utf-8") as f:
+    #             for line in f:
+    #                 li = line.split()
+    #                 cbs_link = CbsLink(li[0])
+    #                 cbs_link.name = ' '.join(li[1:])
+    #                 links.append(cbs_link)
+    #             f.close()
+    #     except Exception as e:
+    #         print(e)
+    #         print('database file did not read', e)
+    #     links = list(set(links))
+    #     excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
+    #     links = list(filter(lambda x: all(s not in x.url for s in excluded), links))
+    #     links.sort(key=lambda x: x.name)
+    #     return links
+
     @classmethod
     def get_CBS_he_links(cls):
-        links = []
+        cbs_links = []
         try:
-            with open(ROOT_PATH + '\\DataBase\\heb_pages_links.txt', 'r', encoding="utf-8") as f:
-                for line in f:
-                    li = line.split()
-                    cbs_link = CbsLink(li[0])
-                    cbs_link.name = ' '.join(li[1:])
-                    links.append(cbs_link)
-                f.close()
+            links = db.get_he_subject_pages()
+            for link in links:
+                cbs_links.append(CbsLink(page_name=link[0],url=link[1]))
         except Exception as e:
             print(e)
             print('database file did not read', e)
-        links = list(set(links))
+        cbs_links = list(set(cbs_links))
         excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
-        links = list(filter(lambda x: all(s not in x.url for s in excluded), links))
+        links = list(filter(lambda x: all(s not in x.url for s in excluded), cbs_links))
         links.sort(key=lambda x: x.name)
         return links
 

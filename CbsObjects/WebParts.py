@@ -26,7 +26,7 @@ class WebPart():
     def __init__(self):
         self.title = None
         self.components = [Component]
-        self.errors = [Error]
+        self.errors = []
         self.images = []
         self.links = []
         self.lines = [WebPartLine]
@@ -35,7 +35,10 @@ class WebPart():
         return self.errors
 
     def error_to_str(self):
-        return [repr(error) for error in self.errors]
+        s=''
+        for e in self.errors:
+            s = s + ', ' + str(e)
+        return s
 
 
 # תקציר בראש הדף
