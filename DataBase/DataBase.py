@@ -49,17 +49,27 @@ class DB:
         self.__cursor.executescript(insert)
         self.__cursor.fetchall()
 
-    def update_new_pages(self, pages):
+    def __update_new_pages(self, pages):
 
-        index = 397
-        en_pages = []
+        index = 400
+        insert = "INSERT INTO PAGES VALUES (?,?,?,?);"
+
         for page in pages:
-            en_pages.append([page.name, page.url, index, 'EN'])
+            p = [page.name, page.url, index, 'EN']
+            if not p[0]:
+                p[0] = p[1].split('/')[-1].split('.')[0]
+            # en_pages.append(p)
             index += 1
-        self.__cursor.executemany("INSERT INTO PAGES VALUES (?,?,?,?);", en_pages)
+            try:
+                self.__cursor.execute(insert, p)
+                self.__db.commit()
+            except Exception as e:
+                print(e)
+                print('not inserted: ',p[0],p[1])
 
-        self.__cursor.fetchall()
-        print('all pages was inserted')
+        # self.__cursor.executemany("INSERT INTO PAGES VALUES (?,?,?,?);", en_pages)
+        #
+        # self.__cursor.fetchall()
         # insert = "INSERT INTO PAGES VALUES ({},{},{},{});".format(*details)
         # self.__cursor.executescript(insert)
         # self.__cursor.fetchall()
@@ -238,11 +248,15 @@ class Links(Enum):
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
-
+# #######
 links = list(set(DataBase.get_CBS_en_links()))
-# links = links.sort()
+
 print(links)
 db.update_new_pages(links)
+###########
+
+# st =  'https://www.cbs.gov.il/en/subjects/Pages/Index-of-Compactness-of-Municipalities-and-Local-Councils.aspx'
+# print(st.split('/')[-1].split('.')[0])
 # x = DB()
 # # print(x.get_he_subject_pages())
 # x.add_new_test([0, 1, 2, 3])
