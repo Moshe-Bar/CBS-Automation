@@ -25,23 +25,12 @@ class DB:
         data = self.__cursor.fetchall()
         return data
 
-    def get_wp_ids(self):
-        self.__cursor.execute("SELECT * FROM WPARTS")
-        data = self.__cursor.fetchall()
-        return data
-
-    # def save_test_result(self, error_data:Error):
-    #     insert = "INSERT INTO TEST_RESULTS VALUES ({},{},{},{},{});".format(*repr(error_data))
-    #     self.__cursor.executescript(insert)
-    #     self.__cursor.fetchall()
-    #     print('new error line was added successfully')
-
     def save_test_results(self, errors):
         # print(str(errors))
         e = [err.str_list() for err in errors]
         # for test
         for i in e:
-            print('Error: ',i)
+            print('Error: ', i)
         self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);", e)
 
         self.__cursor.fetchall()
@@ -59,6 +48,21 @@ class DB:
         insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});".format(*details)
         self.__cursor.executescript(insert)
         self.__cursor.fetchall()
+
+    def update_new_pages(self, pages):
+
+        index = 397
+        en_pages = []
+        for page in pages:
+            en_pages.append([page.name, page.url, index, 'EN'])
+            index += 1
+        self.__cursor.executemany("INSERT INTO PAGES VALUES (?,?,?,?);", en_pages)
+
+        self.__cursor.fetchall()
+        print('all pages was inserted')
+        # insert = "INSERT INTO PAGES VALUES ({},{},{},{});".format(*details)
+        # self.__cursor.executescript(insert)
+        # self.__cursor.fetchall()
 
     def __del__(self):
         self.__cursor.close()
@@ -84,11 +88,6 @@ class DataBase:
         links = list(filter(lambda x: all(s not in x.url for s in excluded), cbs_links))
         links.sort(key=lambda x: x.name)
         return links
-
-    @classmethod
-    def get_CBS_he_links_db(cls):
-        # todo
-        pass
 
     @classmethod
     def get_CBS_en_links(cls):
@@ -120,23 +119,6 @@ class DataBase:
         links = cls.get_CBS_en_links()
         pages = [SubjectPage(link, link.name) for link in links]
         return pages
-
-    # @classmethod
-    # def save_test_result(cls, test_key, page: SubjectPage):
-    #     try:
-    #         path = ROOT_PATH + '\\TestData\\logs'
-    #         file = path + '\\' + test_key + '.html'
-    #         with open(file, 'a', encoding='utf-8') as f:
-    #             style = 'style={color:red; font-size: large; }'
-    #             page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,
-    #                                                                                                         page.link.url,
-    #                                                                                                         page.name)
-    #             errors = ('<h1 {}>' + str(page.error_to_str()) + '</h1><br>').format(style)
-    #             f.write(page_link + errors)
-    #         f.close()
-    #     except Exception as e:
-    #         print('exception in db')
-    #         raise e
 
     @classmethod
     def save_test_result(cls, test_key, page: SubjectPage):
@@ -256,6 +238,11 @@ class Links(Enum):
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
+
+links = list(set(DataBase.get_CBS_en_links()))
+# links = links.sort()
+print(links)
+db.update_new_pages(links)
 # x = DB()
 # # print(x.get_he_subject_pages())
 # x.add_new_test([0, 1, 2, 3])
@@ -268,3 +255,21 @@ class Links(Enum):
 # path = '02_Jun_2021_10.48.50'
 # DataBase.save_summary_result(file_key=path,summery=summ)
 # print(DataBase.get_CBS_he_pages()[30])
+
+
+# @classmethod
+# def save_test_result(cls, test_key, page: SubjectPage):
+#     try:
+#         path = ROOT_PATH + '\\TestData\\logs'
+#         file = path + '\\' + test_key + '.html'
+#         with open(file, 'a', encoding='utf-8') as f:
+#             style = 'style={color:red; font-size: large; }'
+#             page_link = '<h1 {}><a style="color:red" href="{}" target="_blank" >{}</a></h1><br>'.format(style,
+#                                                                                                         page.link.url,
+#                                                                                                         page.name)
+#             errors = ('<h1 {}>' + str(page.error_to_str()) + '</h1><br>').format(style)
+#             f.write(page_link + errors)
+#         f.close()
+#     except Exception as e:
+#         print('exception in db')
+#         raise e
