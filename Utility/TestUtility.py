@@ -18,10 +18,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
+from CbsObjects.TestDetails import TestDetails
 from DataBase.DataBase import DataBase, Links
 from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
-
-import uuid
 
 class TestProperties():
     def __init__(self, shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
@@ -34,13 +33,6 @@ class TestProperties():
 
 
 class TestUtility:
-    @classmethod
-    def generate_test_key(cls):
-        print(uuid.uuid4())
-        print(uuid.uuid4())
-        print(uuid.uuid4())
-
-
     @classmethod
     def get_sessions(cls, amount=1, isViseble=True):
         if amount == 1:
@@ -227,7 +219,7 @@ class TestUtility:
     # visible func
     @classmethod
     def test(cls, shared_data: Queue, progress_status: Queue, end_flag: Queue,
-             pages_: list, session_visible: bool = True, test_key=time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())):
+             pages_: list, session_visible: bool = True):
 
         if pages_ is None:
             try:
@@ -244,14 +236,17 @@ class TestUtility:
             print('no action needed')
             print('type page elem: ' + str(type(pages_[0])) + ' type int: ' + str(type(1)))
             pages = pages_
+        page_ids = [page.id for page in pages]
+        test_details = TestDetails(candidates=page_ids)
+        test_details.started()
 
         # status flow
         shared_data.put(('text', 'initializing test environment...'))
         print('initializing test environment...')
-        t = time.localtime()
-        current_time = time.strftime("%H:%M:%S", t)
-        shared_data.put(('text', 'test started on: ' + str(current_time)))
-        print('test started on: ' + str(current_time))
+        # t = time.localtime()
+        # current_time = time.strftime("%H:%M:%S", t)
+        shared_data.put(('text', 'test started on: ' + test_details.start_time()))
+        print('test started on: ' + test_details.start_time())
 
         try:
             session = cls.get_sessions(isViseble=session_visible)  # default as synchronous test - one instance session
@@ -267,13 +262,15 @@ class TestUtility:
 
         summary = []
         summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
-        summary.append(str(current_time))  # test start time
-        summary.append(str(pages_size))  # number of chosen pages for test
+        summary.append(test_details.start_time())  # test start time
+        summary.append(len(test_details.candidates())) # number of chosen pages for test
         summary.append(0)  # counter for checked pages
         summary.append(0)  # counter for error pages
 
         try:
+            DataBase.init_new_test(test_details)
             for i, page in enumerate(pages):
+
                 if end_flag.qsize() > 0:
                     print('test aborted due to user request:  {}'.format(end_flag.get()))
                     return
@@ -305,11 +302,11 @@ class TestUtility:
                         break
                 except TimeoutException:
                     print("Timed out waiting for page to load: {}".format(page.name))
-                    DataBase.save_test_result(test_key, page)
+                    DataBase.save_test_result(test_details.key(), page)
                     continue
                 except NoSuchWindowException:
                     page.stats_part.errors.append("couldn't find root element")
-                    DataBase.save_test_result(test_key, page)
+                    DataBase.save_test_result(test_details.key(), page)
                     continue
                 summary[3] += 1
                 if len(page.get_errors()) > 0:
@@ -320,12 +317,13 @@ class TestUtility:
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
                     # error_pages.append((page.name, page.link.url, page.error_to_str()))
-                    DataBase.save_test_result(test_key, page)
+                    DataBase.save_test_result(test_details.key(), page)
                     summary[4] += 1
                 else:
                     shared_data.put(('link', page.name, page.link.url, 'Pass'))
                     # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
                     # outer_signals.monitor_data.emit(str(200))
+                test_details.add_scanned_page(page.id)
         except NoSuchWindowException as e:
             print('Main test stopped due to unexpected  session close')
             shared_data.put(('text', 'Main test stopped due to unexpected  session close'))
@@ -343,6 +341,7 @@ class TestUtility:
             raise e
         finally:
             session.close()
+            test_details.ended()
             end_flag.put('session close')
             # outer_signals.finished.emit()
             t = time.localtime()
@@ -351,8 +350,8 @@ class TestUtility:
             print('test ended on: ' + current_time)
             shared_data.put(('test', 'test ended on: ' + current_time))
             # outer_signals.monitor_data.emit('test ended on: ' + current_time)
-            DataBase.save_test_result(test_key, page)
-            DataBase.save_summary_result(test_key, summary)
+            DataBase.save_test_result(test_details.key(), page)
+            DataBase.save_summary_result(test_details.key(), summary)
 
     @classmethod
     def test_with_events(cls, working: threading.Event(), shared_data: Queue = Queue(),
@@ -571,7 +570,7 @@ class TestUtility:
         return DataBase.get_pdf_test_result(file_key=file_key)
 
 
-TestUtility.generate_test_key()
+
 
 # for browser version match with the automation driver
 paths = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",

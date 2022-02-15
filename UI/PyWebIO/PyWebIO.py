@@ -21,7 +21,7 @@ class WebTest:
         self.data_share = {'data':Queue(),'progress': Queue(), 'end_flag':Queue()}
         self.test_proc = None
         self.observer_thread = None
-        self.test_key = time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())
+        # self.test_key = time.strftime("%d_%b_%Y_%H.%M.%S", time.gmtime())
 
     def set_test_progress(self):
         put_scope('global')
@@ -79,7 +79,7 @@ class WebTest:
         self.set_test_progress()
 
     def start_test(self):
-        self.test_proc = Process(target=TestUtility.test, args=(*self.data_share.values(), self.chosen_pages, True,self.test_key))
+        self.test_proc = Process(target=TestUtility.test, args=(*self.data_share.values(), self.chosen_pages, True))
         self.observer_thread = threading.Thread(target=self.observe_test, args=(*self.data_share.values(), self.test_proc))
 
         pywebio.session.register_thread(self.observer_thread)
@@ -138,8 +138,9 @@ class WebTest:
         self.data_share.get('data').put('test was canceled by the user')
         self.data_share.get('end_flag').put('canceled by user')
         while self.test_proc.is_alive():
+            self.test_proc.terminate()
             self.test_proc.close()
-            time.sleep(1)
+            # time.sleep(1)
         print('stop test called and finished')
 
     def go_to_test_results(self,key):

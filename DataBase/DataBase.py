@@ -8,6 +8,8 @@ import json
 from enum import Enum
 
 ####,encoding="utf-8"
+from CbsObjects.TestDetails import TestDetails
+
 ROOT_PATH = sys.path[1]
 
 import sqlite3
@@ -21,20 +23,27 @@ class DB:
         self.__cursor = self.__db.cursor()
 
     def get_he_subject_pages(self):
-        self.__cursor.execute("SELECT * FROM PAGES")
+        self.__cursor.execute("SELECT * FROM PAGES WHERE lang='HE' ")
         data = self.__cursor.fetchall()
         return data
 
     def save_test_results(self, errors):
         # print(str(errors))
-        e = [err.str_list() for err in errors]
+        # e = [err.str_list() for err in errors]
         # for test
-        for i in e:
-            print('Error: ', i)
-        self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);", e)
-
-        self.__cursor.fetchall()
+        # for i in e:
+        #     print('Error: ', i)
+        insert="INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);"
+        for i in errors:
+            self.__cursor.execute(insert,i.to_list())
+            self.__db.commit()
+        # self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);", e)
+        #
+        # self.__cursor.fetchall()
+        print('--------------------------------------------------------------')
         print('new {} errors was added successfully to db'.format(len(errors)))
+        print('--------------------------------------------------------------')
+
 
     def load_test_data(self, test_key):
         pass
@@ -44,10 +53,10 @@ class DB:
         data = self.__cursor.fetchall()
         return data
 
-    def add_new_test(self, details):
-        insert = "INSERT INTO TEST_DETAILS VALUES ({},{},{},{});".format(*details)
-        self.__cursor.executescript(insert)
-        self.__cursor.fetchall()
+    def add_new_test(self, details:TestDetails):
+        insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?);"
+        self.__cursor.execute(insert,details.to_list())
+        self.__db.commit()
 
     def __update_new_pages(self, pages):
 
@@ -222,6 +231,10 @@ class DataBase:
         data = pdfkit.from_string(data, configuration=config)
         return data
 
+    @classmethod
+    def init_new_test(cls,test_details):
+        db.add_new_test(test_details)
+
 
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
@@ -249,10 +262,10 @@ class Links(Enum):
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
 # #######
-links = list(set(DataBase.get_CBS_en_links()))
-
-print(links)
-db.update_new_pages(links)
+# links = list(set(DataBase.get_CBS_en_links()))
+#
+# print(links)
+# db.update_new_pages(links)
 ###########
 
 # st =  'https://www.cbs.gov.il/en/subjects/Pages/Index-of-Compactness-of-Municipalities-and-Local-Councils.aspx'
