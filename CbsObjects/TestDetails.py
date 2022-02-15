@@ -3,19 +3,19 @@ import uuid
 
 
 class TestDetails:
-    def __init__(self,candidates):
+    def __init__(self,candidates:list):
         self.__id = str(uuid.uuid4())
         self.__candidate_pages = candidates
-        self.__scanned_pages=set()
+        self.__scanned_pages=[]
         self.__start_time = None
         self.__end_time = None
 
     def add_scanned_page(self,page_id):
-        self.__scanned_pages.add(page_id)
+        self.__scanned_pages.append(page_id)
 
     def started(self):
         if self.__start_time is None:
-            self.__start_time=time.strftime('%d/%m/%Y_%H:%M:%S')
+            self.__start_time=time.strftime('%d/%m/%Y %H:%M:%S')
 
     def ended(self):
         if self.__end_time is None:

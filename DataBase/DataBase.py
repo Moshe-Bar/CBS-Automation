@@ -28,18 +28,11 @@ class DB:
         return data
 
     def save_test_results(self, errors):
-        # print(str(errors))
-        # e = [err.str_list() for err in errors]
-        # for test
-        # for i in e:
-        #     print('Error: ', i)
+
         insert="INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);"
         for i in errors:
             self.__cursor.execute(insert,i.to_list())
-            self.__db.commit()
-        # self.__cursor.executemany("INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);", e)
-        #
-        # self.__cursor.fetchall()
+        self.__db.commit()
         print('--------------------------------------------------------------')
         print('new {} errors was added successfully to db'.format(len(errors)))
         print('--------------------------------------------------------------')
