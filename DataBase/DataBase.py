@@ -20,10 +20,16 @@ class DB:
     def __init__(self):
         self.path = ROOT_PATH + "\\DataBase\\MainDB"
         self.__db = sqlite3.connect(self.path, check_same_thread=False)
-        self.__cursor = self.__db.cursor()
+        self.__cursor = self.__db.cursor()\
+
+    def load_errors_dic(self):
+        pass
+    
+    def load_web_parts_dic(self):
+        pass
 
     def get_he_subject_pages(self):
-        self.__cursor.execute("SELECT * FROM PAGES WHERE lang='HE' ")
+        self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
         data = self.__cursor.fetchall()
         return data
 
@@ -47,14 +53,14 @@ class DB:
         return data
 
     def add_new_test(self, details:TestDetails):
-        insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?);"
+        insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?,?,?);"
         self.__cursor.execute(insert,details.to_list())
         self.__db.commit()
 
     def __update_new_pages(self, pages):
 
         index = 400
-        insert = "INSERT INTO PAGES VALUES (?,?,?,?);"
+        insert = "INSERT INTO PAGES_DIC VALUES (?,?,?,?);"
 
         for page in pages:
             p = [page.name, page.url, index, 'EN']
@@ -293,3 +299,4 @@ class Links(Enum):
 #     except Exception as e:
 #         print('exception in db')
 #         raise e
+

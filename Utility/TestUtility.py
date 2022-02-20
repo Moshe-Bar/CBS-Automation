@@ -238,8 +238,8 @@ class TestUtility:
         print('initializing test environment...')
         # t = time.localtime()
         # current_time = time.strftime("%H:%M:%S", t)
-        shared_data.put(('text', 'test started on: ' + test_details.start_time()))
-        print('test started on: ' + test_details.start_time())
+        shared_data.put(('text', 'test started on: ' + test_details.start_date()))
+        print('test started on: ' + test_details.start_date())
 
         try:
             session = cls.get_sessions(isViseble=session_visible)  # default as synchronous test - one instance session
@@ -255,8 +255,8 @@ class TestUtility:
 
         summary = []
         summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
-        summary.append(test_details.start_time())  # test start time
-        summary.append(len(test_details.candidates())) # number of chosen pages for test
+        summary.append(test_details.start_date())  # test start time
+        summary.append(len(test_details.candidates()))  # number of chosen pages for test
         summary.append(0)  # counter for checked pages
         summary.append(0)  # counter for error pages
 
@@ -358,8 +358,6 @@ class TestUtility:
         return DataBase.get_pdf_test_result(file_key=file_key)
 
 
-
-
 # for browser version match with the automation driver
 paths = [r"C:\Program Files\Google\Chrome\Application\chrome.exe",
          r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]
@@ -371,8 +369,6 @@ try:
     print(version)
 except Exception:
     print('chrome version is unknown')
-
-
 
 # class TestProperties():
 #     def __init__(self, shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
