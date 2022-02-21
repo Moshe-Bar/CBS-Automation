@@ -238,8 +238,9 @@ class TestUtility:
         print('initializing test environment...')
         # t = time.localtime()
         # current_time = time.strftime("%H:%M:%S", t)
-        shared_data.put(('text', 'test started on: ' + test_details.start_date()))
-        print('test started on: ' + test_details.start_date())
+        date, time = test_details.start_date()
+        shared_data.put(('text', 'test started on: ' + date + ' ' + time))
+        print('test started on: ' +  date +' '+ time)
 
         try:
             session = cls.get_sessions(isViseble=session_visible)  # default as synchronous test - one instance session
@@ -253,12 +254,12 @@ class TestUtility:
         print('num pages', str(len(pages)))
         shared_data.put(('text', 'num pages: ' + str(pages_size)))
 
-        summary = []
-        summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
-        summary.append(test_details.start_date())  # test start time
-        summary.append(len(test_details.candidates()))  # number of chosen pages for test
-        summary.append(0)  # counter for checked pages
-        summary.append(0)  # counter for error pages
+        # summary = []
+        # summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
+        # summary.append(test_details.start_date())  # test start time
+        # summary.append(len(test_details.candidates()))  # number of chosen pages for test
+        # summary.append(0)  # counter for checked pages
+        # summary.append(0)  # counter for error pages
 
         try:
             DataBase.init_new_test(test_details)
@@ -303,7 +304,7 @@ class TestUtility:
                     page.stats_part.errors.append("couldn't find root element")
                     DataBase.save_test_result(test_details.key(), page)
                     continue
-                summary[3] += 1
+                # summary[3] += 1
                 if len(page.get_errors()) > 0:
                     # print(page.name, page.link.url)
                     print(page.error_to_str())
@@ -313,39 +314,32 @@ class TestUtility:
                     # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
                     # error_pages.append((page.name, page.link.url, page.error_to_str()))
                     DataBase.save_test_result(test_details.key(), page)
-                    summary[4] += 1
+                    # summary[4] += 1
                 else:
                     shared_data.put(('link', page.name, page.link.url, 'Pass'))
 
                 test_details.add_scanned_page(page.id)
         except NoSuchWindowException as e:
             print('Main test stopped due to unexpected  session close')
-            shared_data.put(('text', 'Main test stopped due to unexpected  session close'))
-            # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
+            shared_data.put(('text', 'Main test stopped due to unexpected  session close'))           # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
             end_flag.put('unexpected  session close')
-            # outer_signals.finished.emit()
             raise e
+
         except Exception as e:
             print('main process stopped due to exception: ' + str(e))
             shared_data.put(('text', 'main process stopped due to exception: ' + str(e)))
-            # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
             end_flag.put('unexpected  session close')
-            # outer_signals.monitor_data.emit('main process stopped due to exception: ' + str(e))
-            # outer_signals.finished.emit()
             raise e
+
         finally:
             session.close()
             test_details.ended()
             end_flag.put('session close')
-            # outer_signals.finished.emit()
-            t = time.localtime()
-            current_time = time.strftime("%H:%M:%S", t)
-            # str(time.time() - start_time)
-            print('test ended on: ' + current_time)
-            shared_data.put(('test', 'test ended on: ' + current_time))
-            # outer_signals.monitor_data.emit('test ended on: ' + current_time)
+            end_date,end_time = test_details.end_date()
+            print('test ended on: ' + end_time)
+            shared_data.put(('test', 'test ended on: ' + end_time))
             DataBase.save_test_result(test_details.key(), page)
-            DataBase.save_summary_result(test_details.key(), summary)
+            # DataBase.save_summary_result(test_details.key(), summary)
 
     @classmethod
     def get_test_result(cls, log_key):

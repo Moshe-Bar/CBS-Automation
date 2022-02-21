@@ -14,9 +14,9 @@ class TestDetails:
 
     def add_scanned_page(self, page_id):
         if not self.__candidate_pages.get(page_id) is None:
-            self.__scanned_pages.update(self.__candidate_pages.pop(page_id))
+            self.__scanned_pages.update({page_id:self.__candidate_pages.pop(page_id)})
         else:
-            raise Exception('Can not insert tested page ,the page not exist in candidates for test')
+            raise Exception('Can not insert tested page ,the page is not exist in candidates for test')
 
     def started(self):
         if not self.__start_date is None:
@@ -57,6 +57,12 @@ class TestDetails:
         return self.__candidate_pages
 
     def key(self):
+        return self.__id
+
+    def scanned(self):
+        return self.__scanned_pages
+
+    def ID(self):
         return self.__id
 
 

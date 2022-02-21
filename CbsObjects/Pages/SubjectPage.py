@@ -1,18 +1,17 @@
 from CbsObjects.CbsLink import CbsLink
-from CbsObjects.Error import Error
 from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, ToolsAndDB, Summary, TopBox, \
     PressReleases, TablesAndMaps, ExParts, Publications, GeographicZone, InternationalComparisons, Presentations
 
 
 class SubjectPage:
 
-    def __init__(self, pageLink: CbsLink, pageName,id=None):
+    def __init__(self, pageLink:CbsLink, pageName,id=None,lang=None):
         self.link = pageLink
         self.name = pageName
         self.level = None
         self.parent = None
         self.children = []
-        self.lang = None
+        self.lang = lang
         self.__web_parts = {
             'stats_part': Statisticals(),
             'sub_subjects': SubSubjects(),
@@ -129,4 +128,10 @@ class SubjectPage:
 
     def __str__(self):
         return 'Name: {}, ID: {}'.format(self.name,self.id)
+
+    def __eq__(self, other):
+        return __eq__(self.link,other.link)
+
+    def __hash__(self):
+        return hash(self.name)
 

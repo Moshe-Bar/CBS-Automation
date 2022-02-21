@@ -1,3 +1,6 @@
+import itertools
+import operator
+
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Error import Error
 from CbsObjects.Pages.SubjectPage import SubjectPage
@@ -20,41 +23,46 @@ class DB:
     def __init__(self):
         self.path = ROOT_PATH + "\\DataBase\\MainDB"
         self.__db = sqlite3.connect(self.path, check_same_thread=False)
-        self.__cursor = self.__db.cursor()\
+        self.__cursor = self.__db.cursor()
 
-    def load_errors_dic(self):
-        pass
-    
     def load_web_parts_dic(self):
-        pass
+        self.__cursor.execute("SELECT * FROM WEB_PARTS_DIC ")
+        data = self.__cursor.fetchall()
+        return data
 
-    def get_he_subject_pages(self):
+    def load_he_subject_pages_dic(self):
         self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
         data = self.__cursor.fetchall()
         return data
 
-    def save_test_results(self, errors):
+    def load_en_subject_pages_dic(self):
+        self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='EN' ")
+        data = self.__cursor.fetchall()
+        return data
 
-        insert="INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);"
+    def save_test_results(self, errors):
+        insert = "INSERT INTO TEST_RESULTS VALUES (?,?,?,?,?);"
         for i in errors:
-            self.__cursor.execute(insert,i.to_list())
+            self.__cursor.execute(insert, i.to_list())
         self.__db.commit()
         print('--------------------------------------------------------------')
         print('new {} errors was added successfully to db'.format(len(errors)))
         print('--------------------------------------------------------------')
 
-
     def load_test_data(self, test_key):
-        pass
-
-    def load_error_details(self):
-        self.__cursor.execute("SELECT * FROM ERRORS")
+        select = "SELECT * FROM TEST_RESULTS WHERE test_id=? "
+        self.__cursor.execute(select, (test_key,))
         data = self.__cursor.fetchall()
         return data
 
-    def add_new_test(self, details:TestDetails):
+    def load_errors_dic(self):
+        self.__cursor.execute("SELECT * FROM ERRORS_DIC")
+        data = self.__cursor.fetchall()
+        return data
+
+    def add_new_test(self, details: TestDetails):
         insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?,?,?);"
-        self.__cursor.execute(insert,details.to_list())
+        self.__cursor.execute(insert, details.to_list())
         self.__db.commit()
 
     def __update_new_pages(self, pages):
@@ -65,7 +73,7 @@ class DB:
         for page in pages:
             p = [page.name, page.url, index, 'EN']
             if not p[0]:
-                p[0] = p[1].split('/')[-1].split('.')[0]
+                p[0] = list(p[1].split('/'))[-1].split('.')[0]
             # en_pages.append(p)
             index += 1
             try:
@@ -73,14 +81,7 @@ class DB:
                 self.__db.commit()
             except Exception as e:
                 print(e)
-                print('not inserted: ',p[0],p[1])
-
-        # self.__cursor.executemany("INSERT INTO PAGES VALUES (?,?,?,?);", en_pages)
-        #
-        # self.__cursor.fetchall()
-        # insert = "INSERT INTO PAGES VALUES ({},{},{},{});".format(*details)
-        # self.__cursor.executescript(insert)
-        # self.__cursor.fetchall()
+                print('not inserted: ', p[0], p[1])
 
     def __del__(self):
         self.__cursor.close()
@@ -92,50 +93,37 @@ db = DB()
 
 class DataBase:
     @classmethod
-    def get_CBS_he_links(cls):
-        cbs_links = []
-        try:
-            links = db.get_he_subject_pages()
-            for link in links:
-                cbs_links.append(CbsLink(page_name=link[0], url=link[1]))
-        except Exception as e:
-            print(e)
-            print('database file did not read', e)
-        cbs_links = list(set(cbs_links))
-        excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
-        links = list(filter(lambda x: all(s not in x.url for s in excluded), cbs_links))
-        links.sort(key=lambda x: x.name)
-        return links
-
-    @classmethod
-    def get_CBS_en_links(cls):
-        links = []
-        try:
-            with open(ROOT_PATH + '\\DataBase\\en_pages_links.txt', 'r', encoding="utf-8") as f:
-                for line in f:
-                    li = line.split()
-                    cbs_link = CbsLink(li[0])
-                    cbs_link.name = ' '.join(li[1:])
-                    links.append(cbs_link)
-                f.close()
-        except Exception as e:
-            print(e)
-            print('database file did not read', e)
-        return links
-
-    @classmethod
     def get_CBS_he_pages(cls):
-        links = cls.get_CBS_he_links()  # the links only saved locally
-        pages = [SubjectPage(link, link.name, i + 1) for i, link in enumerate(links)]
-
-        # pages = list(map(lambda link:SubjectPage(link, link.name,),links))
-        # pages = [SubjectPage(link, link.name,) for i,link in links]
+        pages = []
+        try:
+            raw_pages = db.load_he_subject_pages_dic()
+            for page in raw_pages:
+                link = CbsLink(page_name=page[0], url=page[1])
+                pages.append(SubjectPage(link, page[0], id=page[2], lang=page[3]))
+        except Exception as e:
+            print('database exception, can not load pages dict', e)
+            raise e
+        pages = list(set(pages))
+        excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
+        pages = list(filter(lambda x: all(s not in x.link.url for s in excluded), pages))
+        pages.sort(key=lambda x: x.name)
         return pages
 
     @classmethod
     def get_CBS_en_pages(cls):
-        links = cls.get_CBS_en_links()
-        pages = [SubjectPage(link, link.name) for link in links]
+        pages = []
+        try:
+            raw_pages = db.load_en_subject_pages_dic()
+            for page in raw_pages:
+                link = CbsLink(page_name=page[0], url=page[1])
+                pages.append(SubjectPage(link, page[0], id=page[2], lang=page[3]))
+        except Exception as e:
+            print('database exception, can not load pages dict', e)
+            raise e
+        pages = list(set(pages))
+        excluded = ('/search/', '/Surveys/', '/Documents/', '/publications/')
+        pages = list(filter(lambda x: all(s not in x.link.url for s in excluded), pages))
+        pages.sort(key=lambda x: x.name)
         return pages
 
     @classmethod
@@ -151,58 +139,11 @@ class DataBase:
             raise e
 
     @classmethod
-    def get_test_result(cls, file_key):
-
-        file_name = file_key
+    def get_test_result(cls, test_key):
         try:
-            path = ROOT_PATH + '\\TestData\\logs'
-            file = path + '\\' + file_name + '.html'
-
-            with open(file, 'r', encoding='utf-8') as f:
-                data = f.read()
-                f.close()
-
-            # with open(file, 'w', encoding='utf-8') as f:
-            #     f.write(head + data + tail)
-            #     f.close()
-            #
-            # with open(file, 'r', encoding='utf-8') as f:
-            #     data = f.read()
-            #     f.close()
-
-            return data, file
+            return db.load_test_data(test_key)
         except Exception as e:
-            print('exception in db reading file content')
-            raise e
-
-    @classmethod
-    def save_summary_result(cls, file_key, summary):
-        sum = '<h1 style="color:black" style={color:red; font-size: large; }>Test started on: ' + str(
-            summary[0]) + ' ' + str(summary[1]) + '<br>'
-        sum += 'Total pages: ' + str(summary[2]) + '<br>'
-        sum += 'Tested: ' + str(summary[3]) + '<br>'
-        sum += 'Total error pages: ' + str(summary[4]) + '</h1>'
-        file_name = file_key
-        head = '''<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Title</title>
-        </head>
-        <body>'''
-        tail = '</body></html>'
-
-        try:
-            path = ROOT_PATH + '\\TestData\\logs'
-            file = path + '\\' + file_name + '.html'
-            with open(file, 'r', encoding='utf-8') as f:
-                content = f.read()
-                f.close()
-            with open(file, 'w', encoding='utf-8') as f:
-                f.write(head + sum + '<br>' + content + tail)
-            f.close()
-        except Exception as e:
-            print('exception in db writing summery')
+            print("exception in db, couldn't load test results")
             raise e
 
     @classmethod
@@ -221,7 +162,7 @@ class DataBase:
 
     @classmethod
     def get_pdf_test_result(cls, file_key):
-        data, file_path = cls.get_test_result(file_key)
+        data = cls.get_test_result(file_key)
 
         path = ROOT_PATH + '\\Resources\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 
@@ -231,7 +172,7 @@ class DataBase:
         return data
 
     @classmethod
-    def init_new_test(cls,test_details):
+    def init_new_test(cls, test_details):
         db.add_new_test(test_details)
 
 
@@ -259,6 +200,32 @@ class Links(Enum):
     VIDEOS_LINKS_XPATH = DataBase.load_xpath('VIDEOS_LINKS_XPATH')  # new
     PICTURES_LINKS_XPATH = DataBase.load_xpath('PICTURES_LINKS_XPATH')  # new
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
+
+
+# data = db.execute('''select * from TEST_RESULTS where test_id='e38a2bb4-c8e5-4261-83c0-6612ec748df2' ''')
+# it = itertools.groupby(data, operator.itemgetter(1))
+# for page_id, errors in it:
+#     print(str(page_id) + ':...')
+#     for detail in errors:
+#         print(detail)
+
+# print(list(itertools.groupby(data, operator.itemgetter(1))))
+
+# import itertools
+# import operator
+#
+# L = [('grape', 100), ('grape', 3), ('apple', 15), ('apple', 10),
+#      ('apple', 4), ('banana', 3)]
+#
+# def accumulate(l):
+#     it = itertools.groupby(l, operator.itemgetter(0))
+#     for key, subiter in it:
+#        yield key, sum(item[1] for item in subiter)
+#
+# print(list(accumulate(L)))
+# # [('grape', 103), ('apple', 29), ('banana', 3)]
+# data_list = db.load_test_data('f1b5e5c0-1f21-4daf-afb7-b8aedb58a8ed')
+# print(data_list)
 
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))
@@ -300,3 +267,32 @@ class Links(Enum):
 #         print('exception in db')
 #         raise e
 
+# @classmethod
+#     def save_summary_result(cls, file_key, summary):
+#         sum = '<h1 style="color:black" style={color:red; font-size: large; }>Test started on: ' + str(
+#             summary[0]) + ' ' + str(summary[1]) + '<br>'
+#         sum += 'Total pages: ' + str(summary[2]) + '<br>'
+#         sum += 'Tested: ' + str(summary[3]) + '<br>'
+#         sum += 'Total error pages: ' + str(summary[4]) + '</h1>'
+#         file_name = file_key
+#         head = '''<!DOCTYPE html>
+#         <html lang="en">
+#         <head>
+#             <meta charset="UTF-8">
+#             <title>Title</title>
+#         </head>
+#         <body>'''
+#         tail = '</body></html>'
+#
+#         try:
+#             path = ROOT_PATH + '\\TestData\\logs'
+#             file = path + '\\' + file_name + '.html'
+#             with open(file, 'r', encoding='utf-8') as f:
+#                 content = f.read()
+#                 f.close()
+#             with open(file, 'w', encoding='utf-8') as f:
+#                 f.write(head + sum + '<br>' + content + tail)
+#             f.close()
+#         except Exception as e:
+#             print('exception in db writing summery')
+#             raise e
