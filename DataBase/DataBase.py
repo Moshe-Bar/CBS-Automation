@@ -2,6 +2,7 @@ import itertools
 import operator
 
 from CbsObjects.CbsLink import CbsLink
+from CbsObjects.Converter import Converter
 from CbsObjects.Error import Error
 from CbsObjects.Pages.SubjectPage import SubjectPage
 import pdfkit
@@ -127,7 +128,7 @@ class DataBase:
         return pages
 
     @classmethod
-    def save_test_result(cls, test_key, page: SubjectPage):
+    def save_test_results(cls, test_key, page: SubjectPage):
         try:
             errors = page.get_errors()
             for error in errors:
@@ -139,7 +140,7 @@ class DataBase:
             raise e
 
     @classmethod
-    def get_test_result(cls, test_key):
+    def get_test_results(cls, test_key):
         try:
             return db.load_test_data(test_key)
         except Exception as e:
@@ -161,15 +162,9 @@ class DataBase:
         return data['driver_path']
 
     @classmethod
-    def get_pdf_test_result(cls, file_key):
-        data = cls.get_test_result(file_key)
-
-        path = ROOT_PATH + '\\Resources\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-
-        config = pdfkit.configuration(wkhtmltopdf=path)
-
-        data = pdfkit.from_string(data, configuration=config)
-        return data
+    def get_pdf_test_results(cls, test_ID):
+        data = cls.get_test_results(test_ID)
+        return Converter.to_pdf(data)
 
     @classmethod
     def init_new_test(cls, test_details):
@@ -202,31 +197,12 @@ class Links(Enum):
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
 
-# data = db.execute('''select * from TEST_RESULTS where test_id='e38a2bb4-c8e5-4261-83c0-6612ec748df2' ''')
-# it = itertools.groupby(data, operator.itemgetter(1))
-# for page_id, errors in it:
-#     print(str(page_id) + ':...')
-#     for detail in errors:
-#         print(detail)
 
-# print(list(itertools.groupby(data, operator.itemgetter(1))))
-
-# import itertools
-# import operator
-#
-# L = [('grape', 100), ('grape', 3), ('apple', 15), ('apple', 10),
-#      ('apple', 4), ('banana', 3)]
-#
-# def accumulate(l):
-#     it = itertools.groupby(l, operator.itemgetter(0))
-#     for key, subiter in it:
-#        yield key, sum(item[1] for item in subiter)
-#
-# print(list(accumulate(L)))
-# # [('grape', 103), ('apple', 29), ('banana', 3)]
-# data_list = db.load_test_data('f1b5e5c0-1f21-4daf-afb7-b8aedb58a8ed')
-# print(data_list)
-
+data = DataBase.get_pdf_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
+file = ROOT_PATH + '\\DataBase\\to_pdf.pdf'
+with open(file,'wb') as f:
+    f.write(bytes(data))
+    f.close()
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))
 #

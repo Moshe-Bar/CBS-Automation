@@ -90,12 +90,12 @@
                         break
                 except TimeoutException:
                     print("Timed out waiting for page to load: {}".format(page.name))
-                    DataBase.save_test_result(test_, page)
+                    DataBase.save_test_results(test_, page)
                     continue
                 except NoSuchWindowException:
                     page.stats_part.errors.append("couldn't find root element")
                     page.isChecked = False
-                    DataBase.save_test_result(test_key, page)
+                    DataBase.save_test_results(test_key, page)
                     continue
                 summary[3] += 1
                 if len(page.get_errors()) > 0:
@@ -104,7 +104,7 @@
                     outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
                     outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
                     error_pages.append((page.name, page.link.url, page.error_to_str()))
-                    DataBase.save_test_result(test_key, page)
+                    DataBase.save_test_results(test_key, page)
                     summary[4] += 1
                 else:
                     outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': False}))
@@ -127,5 +127,5 @@
             # str(time.time() - start_time)
             print('test ended on: ' + current_time)
             outer_signals.monitor_data.emit('test ended on: ' + current_time)
-            DataBase.save_test_result(test_key, page)
+            DataBase.save_test_results(test_key, page)
             DataBase.save_summary_result(test_key, summary)
