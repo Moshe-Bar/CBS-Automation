@@ -170,6 +170,11 @@ class DataBase:
     def init_new_test(cls, test_details):
         db.add_new_test(test_details)
 
+    @classmethod
+    def get_excel_test_results(cls, test_ID):
+        data = cls.get_test_results(test_ID)
+        Converter.to_excel(data)
+
 
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
@@ -198,11 +203,11 @@ class Links(Enum):
 
 
 
-data = DataBase.get_pdf_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
-file = ROOT_PATH + '\\DataBase\\to_pdf.pdf'
-with open(file,'wb') as f:
-    f.write(bytes(data))
-    f.close()
+DataBase.get_excel_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
+# file = ROOT_PATH + '\\DataBase\\to_pdf.pdf'
+# with open(file,'wb') as f:
+#     f.write(bytes(data))
+#     f.close()
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))
 #

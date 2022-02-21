@@ -57,14 +57,37 @@ class Converter:
 
     @classmethod
     def to_excel(cls, errors: []):
+        if not errors:
+            return None
+
         workbook = Workbook()
+
         sheet = workbook.active
-        c1 = sheet.cell(row=1,column=1)
-        # Anytime you modify the Workbook object
-        # or its sheets and cells, the spreadsheet
-        # file will not be saved until you call
-        # the save() workbook method.
-        workbook.save(filename="sample.xlsx")
+        sheet.merge_cells('A1:H4')
+        sheet.cell(row=1, column=1).value = cls.__report_details()
+        current_row =5
+        it_by_test_id = itertools.groupby(errors, operator.itemgetter(0))
+        for test_id, errors_by_test_id in it_by_test_id:
+            # test id value
+            sheet.merge_cells('A{}:F{}'.format(current_row,current_row+2))
+            top_left_cell = sheet['A{}'.format(current_row)]
+            top_left_cell.value = cls.__test_details(test_id)
+            # sheet.cell(current_row, column=1).value = cls.__test_details(test_id)
+            current_row += 3
+
+            it_by_page_id = itertools.groupby(errors_by_test_id, operator.itemgetter(1))
+            for page_id, errors_ in it_by_page_id:
+                # page id value
+                sheet.merge_cells('A{}:F{}'.format(current_row,current_row+1))
+                top_left_cell = sheet['A{}'.format(current_row)]
+                top_left_cell.value =  cls.__page_details(page_id)
+                # sheet.cell(current_row, column=1).value = cls.__page_details(page_id)
+                current_row += 2
+
+                # errors details loop
+                for err in errors_:
+                    sheet.append(err)
+        workbook.save(filename=ROOT_PATH+'\\DataBase\\{}'.format("sample.xlsx"))
 
     @classmethod
     def __test_details(cls,test_id):
