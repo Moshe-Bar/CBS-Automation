@@ -1,23 +1,21 @@
-import itertools
-import operator
-
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Converter import Converter
-from CbsObjects.Error import Error
 from CbsObjects.Pages.SubjectPage import SubjectPage
-import pdfkit
+from enum import Enum
 
 import sys
 import json
-from enum import Enum
+import sqlite3
 
 ####,encoding="utf-8"
 from CbsObjects.TestDetails import TestDetails
 
 ROOT_PATH = sys.path[1]
 
-import sqlite3
-import sys
+ERROR_TYPE_DIC = None
+WEP_PART_TYPE_DIC = None
+HE_SUBJECT_PAGES_DIC = None
+TESTS_DETAILS_DIC = None
 
 
 class DB:
@@ -26,15 +24,7 @@ class DB:
         self.__db = sqlite3.connect(self.path, check_same_thread=False)
         self.__cursor = self.__db.cursor()
 
-    def load_web_parts_dic(self):
-        self.__cursor.execute("SELECT * FROM WEB_PARTS_DIC ")
-        data = self.__cursor.fetchall()
-        return data
 
-    def load_he_subject_pages_dic(self):
-        self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
-        data = self.__cursor.fetchall()
-        return data
 
     def load_en_subject_pages_dic(self):
         self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='EN' ")
@@ -56,10 +46,7 @@ class DB:
         data = self.__cursor.fetchall()
         return data
 
-    def load_errors_dic(self):
-        self.__cursor.execute("SELECT * FROM ERRORS_DIC")
-        data = self.__cursor.fetchall()
-        return data
+
 
     def add_new_test(self, details: TestDetails):
         insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?,?,?);"
@@ -88,6 +75,25 @@ class DB:
         self.__cursor.close()
         self.__db.close()
 
+    def load_tests_details_dic(self):
+        self.__cursor.execute("SELECT * FROM TEST_DETAILS")
+        data = self.__cursor.fetchall()
+        return data
+
+    def load_errors_dic(self):
+        self.__cursor.execute("SELECT * FROM ERRORS_DIC")
+        data = self.__cursor.fetchall()
+        return data
+
+    def load_web_parts_dic(self):
+        self.__cursor.execute("SELECT * FROM WEB_PARTS_DIC")
+        data = self.__cursor.fetchall()
+        return data
+
+    def load_he_subject_pages_dic(self):
+        self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
+        data = self.__cursor.fetchall()
+        return data
 
 db = DB()
 
@@ -175,6 +181,44 @@ class DataBase:
         data = cls.get_test_results(test_ID)
         Converter.to_excel(data)
 
+    @classmethod
+    def load_wpart_dic(cls):
+        try:
+            return db.load_web_parts_dic()
+        except Exception as e:
+            print("exception in db, couldn't load web parts dictionary")
+            raise e
+
+    @classmethod
+    def load_he_pages_dic(cls):
+        try:
+            return db.load_he_subject_pages_dic()
+        except Exception as e:
+            print("exception in db, couldn't load hebrew subject pages dictionary")
+            raise e
+
+    @classmethod
+    def load_tests_details_dic(cls):
+        try:
+            return db.load_tests_details_dic()
+        except Exception as e:
+            print("exception in db, couldn't load tests details dictionary")
+            raise e
+
+    @classmethod
+    def load_error_dic(cls):
+        try:
+            return db.load_errors_dic()
+        except Exception as e:
+            print("exception in db, couldn't load errors details dictionary")
+            raise e
+
+
+class DicData(Enum):
+    ERROR_TYPE_DIC = DataBase.load_error_dic()
+    WEP_PART_TYPE_DIC = DataBase.load_wpart_dic()
+    HE_SUBJECT_PAGES_DIC = DataBase.load_he_pages_dic()
+    TESTS_DETAILS_DIC = DataBase.load_tests_details_dic()
 
 class Links(Enum):
     CBS_HOME_PAGE_HE = 'https://www.cbs.gov.il/he/Pages/default.aspx'
@@ -202,12 +246,8 @@ class Links(Enum):
     PRESENTATIONS_XPATH = DataBase.load_xpath('PRESENTATIONS_XPATH')  # new
 
 
-
-DataBase.get_excel_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
-# file = ROOT_PATH + '\\DataBase\\to_pdf.pdf'
-# with open(file,'wb') as f:
-#     f.write(bytes(data))
-#     f.close()
+# DataBase.get_excel_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
+# print(DataBase.load_wpart_dic())
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))
 #
