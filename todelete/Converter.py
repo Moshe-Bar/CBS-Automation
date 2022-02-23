@@ -21,16 +21,14 @@ TEMPLATE = '''<!DOCTYPE html>
 '''
 
 
-
-
-
 class Converter:
     @classmethod
     def error_to_details(cls, error: Error):
         code_list = error.to_list()
+        # error_details = DicData.ERROR_TYPE_DIC.value
 
     @classmethod
-    def to_html(cls,errors:[]):
+    def to_html(cls, errors: []):
         pass
 
     @classmethod
@@ -68,11 +66,11 @@ class Converter:
         sheet = workbook.active
         sheet.merge_cells('A1:H4')
         sheet.cell(row=1, column=1).value = cls.__report_details()
-        current_row =5
+        current_row = 5
         it_by_test_id = itertools.groupby(errors, operator.itemgetter(0))
         for test_id, errors_by_test_id in it_by_test_id:
             # test id value
-            sheet.merge_cells('A{}:F{}'.format(current_row,current_row+2))
+            sheet.merge_cells('A{}:F{}'.format(current_row, current_row + 2))
             top_left_cell = sheet['A{}'.format(current_row)]
             top_left_cell.value = cls.__test_details(test_id)
             # sheet.cell(current_row, column=1).value = cls.__test_details(test_id)
@@ -81,7 +79,7 @@ class Converter:
             it_by_page_id = itertools.groupby(errors_by_test_id, operator.itemgetter(1))
             for page_id, errors_ in it_by_page_id:
                 # page id value
-                sheet.merge_cells('A{}:F{}'.format(current_row,current_row+1))
+                sheet.merge_cells('A{}:F{}'.format(current_row, current_row + 1))
                 top_left_cell = sheet['A{}'.format(current_row)]
                 top_left_cell.value = cls.__page_details(page_id)
                 # sheet.cell(current_row, column=1).value = cls.__page_details(page_id)
@@ -93,11 +91,11 @@ class Converter:
                     # sheet.append(err)
                     top_left_cell = sheet['A{}'.format(current_row)]
                     top_left_cell.value = str(err)
-                    current_row+=1
-        workbook.save(filename=ROOT_PATH+'\\DataBase\\{}'.format("sample.xlsx"))
+                    current_row += 1
+        workbook.save(filename=ROOT_PATH + '\\DataBase\\{}'.format("sample.xlsx"))
 
     @classmethod
-    def __html_test_details(cls,test_id):
+    def __html_test_details(cls, test_id):
         return '<h2>{}</h2>\n'.format(test_id)
 
     @classmethod
@@ -123,4 +121,3 @@ class Converter:
     @classmethod
     def __test_details(cls, test_id):
         return str(test_id)
-

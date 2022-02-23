@@ -19,7 +19,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from CbsObjects.TestDetails import TestDetails
-from DataBase.DataBase import DataBase, Links
+from DataBase.DataBase import DataBase, Links, Converter
 from Utility.Connectivity import Connectivity
 from Utility.WebPartUtility import WebPartUtility, ROOT_ELEMENT
 
@@ -236,8 +236,7 @@ class TestUtility:
         # status flow
         shared_data.put(('text', 'initializing test environment...'))
         print('initializing test environment...')
-        # t = time.localtime()
-        # current_time = time.strftime("%H:%M:%S", t)
+
         date, time = test_details.start_date()
         shared_data.put(('text', 'test started on: ' + date + ' ' + time))
         print('test started on: ' +  date +' '+ time)
@@ -254,12 +253,7 @@ class TestUtility:
         print('num pages', str(len(pages)))
         shared_data.put(('text', 'num pages: ' + str(pages_size)))
 
-        # summary = []
-        # summary.append(datetime.date.today().strftime('%d.%m.%y'))  # date
-        # summary.append(test_details.start_date())  # test start time
-        # summary.append(len(test_details.candidates()))  # number of chosen pages for test
-        # summary.append(0)  # counter for checked pages
-        # summary.append(0)  # counter for error pages
+
 
         try:
             DataBase.init_new_test(test_details)
@@ -298,22 +292,28 @@ class TestUtility:
                         break
                 except TimeoutException:
                     print("Timed out waiting for page to load: {}".format(page.name))
-                    DataBase.save_test_result(test_details.key(), page)
+                    DataBase.save_test_results(page.get_errors())
                     continue
                 except NoSuchWindowException:
                     page.stats_part.errors.append("couldn't find root element")
-                    DataBase.save_test_result(test_details.key(), page)
+                    DataBase.save_test_results(page.get_errors())
                     continue
                 # summary[3] += 1
                 if len(page.get_errors()) > 0:
                     # print(page.name, page.link.url)
+                    for error in page.get_errors():
+                        error.test_id = test_details.key()
+                        error.page_id = page.id
+                    page_errors = page.get_errors()
+
+
                     print(page.error_to_str())
                     shared_data.put(('link', page.name, page.link.url, 'Fail'))
-                    shared_data.put(('text', page.error_to_str()))
-                    # outer_signals.page_info.emit(str({'name': page.name, 'url': page.link.url, 'error': True}))
-                    # outer_signals.monitor_data.emit(str(page.error_to_str().replace('\n', '<br>')))
-                    # error_pages.append((page.name, page.link.url, page.error_to_str()))
-                    DataBase.save_test_result(test_details.key(), page)
+                    error_description = ''
+                    for err in page_errors:
+                        error_description += Converter.error_to_short_str(err) + '\n'
+                    shared_data.put(('text', error_description ))
+                    DataBase.save_test_results(page_errors)
                     # summary[4] += 1
                 else:
                     shared_data.put(('link', page.name, page.link.url, 'Pass'))
@@ -323,33 +323,51 @@ class TestUtility:
             print('Main test stopped due to unexpected  session close')
             shared_data.put(('text', 'Main test stopped due to unexpected  session close'))           # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
             end_flag.put('unexpected  session close')
+
+            session.close()
+            test_details.ended()
+            end_flag.put('session closed')
+            end_date, end_time = test_details.end_date()
+            print('test ended on: ' + end_date + ' ' + end_time)
+            shared_data.put(('test', 'test ended on: ' + end_date + ' ' + end_time))
+            # DataBase.save_test_results(test_details.key(), page.get_errors())
+            DataBase.add_test_details(test_details)
+
             raise e
 
         except Exception as e:
             print('main process stopped due to exception: ' + str(e))
             shared_data.put(('text', 'main process stopped due to exception: ' + str(e)))
             end_flag.put('unexpected  session close')
+
+            session.close()
+            test_details.ended()
+            end_flag.put('session closed')
+            end_date, end_time = test_details.end_date()
+            print('test ended on: ' + end_date + ' ' + end_time)
+            shared_data.put(('test', 'test ended on: ' + end_date + ' ' + end_time))
+            # DataBase.save_test_results(test_details.key(), page.get_errors())
+            DataBase.add_test_details(test_details)
+
             raise e
 
         finally:
             session.close()
             test_details.ended()
-            end_flag.put('session close')
+            end_flag.put('session closed')
             end_date,end_time = test_details.end_date()
-            print('test ended on: ' + end_time)
-            shared_data.put(('test', 'test ended on: ' + end_time))
-            DataBase.save_test_result(test_details.key(), page)
-            # DataBase.save_summary_result(test_details.key(), summary)
+            print('test ended on: ' +end_date+' '+ end_time)
+            shared_data.put(('test', 'test ended on: ' +end_date+' '+ end_time))
+            # DataBase.save_test_results(test_details.key(), page.get_errors())
+            DataBase.add_test_details(test_details)
 
     @classmethod
-    def get_test_result(cls, log_key):
-        file_key = log_key
-        return DataBase.get_test_result(file_key=file_key)
+    def get_test_results(cls, test_key):
+        return DataBase.get_test_results(test_key)
 
     @classmethod
-    def get_test_result_as_pdf(cls, log_key):
-        file_key = log_key
-        return DataBase.get_pdf_test_result(file_key=file_key)
+    def get_test_result_as_pdf(cls, test_key):
+        return DataBase.get_pdf_test_results(test_key)
 
 
 # for browser version match with the automation driver
@@ -364,11 +382,3 @@ try:
 except Exception:
     print('chrome version is unknown')
 
-# class TestProperties():
-#     def __init__(self, shared_data: Queue = Queue(), progress_status: Queue = Queue(), end_flag: Queue = Queue(),
-#                  pages=None, session_visible=True):
-#         self.session_visible = session_visible
-#         self.shared_data = shared_data
-#         self.progress_status = progress_status
-#         self.end_flag = end_flag
-#         self.pages = pages
