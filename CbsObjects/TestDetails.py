@@ -4,17 +4,19 @@ import uuid
 class TestDetails:
     def __init__(self, candidates: list):
         self.__id = str(uuid.uuid4())
-        it = iter(candidates)
-        self.__candidate_pages = dict(zip(it,range(len(candidates))))
-        self.__scanned_pages = dict()
+        # it = iter(candidates)
+        # self.__candidate_pages = dict(zip(it,range(len(candidates))))
+        # self.__scanned_pages = dict()
+        self.__candidate_pages = set(candidates)
+        self.__scanned_pages = {-1}
         self.__start_date = None
         self.__start_time = None
         self.__end_date = None
         self.__end_time = None
 
     def add_scanned_page(self, page_id):
-        if not self.__candidate_pages.get(page_id) is None:
-            self.__scanned_pages.update({page_id:self.__candidate_pages.pop(page_id)})
+        if page_id in self.__candidate_pages:
+            self.__scanned_pages.add(page_id)
         else:
             raise Exception('Can not insert tested page ,the page is not exist in candidates for test')
 
@@ -49,9 +51,7 @@ class TestDetails:
         return self.__start_date, self.__start_time
 
     def end_date(self):
-        if not self.__start_date:
-            raise Exception('end date was not initialized')
-        return self.__end_date, self.__end_time
+        return self.__end_date
 
     def candidates(self):
         return self.__candidate_pages
@@ -64,5 +64,11 @@ class TestDetails:
 
     def ID(self):
         return self.__id
+
+    def end_time(self):
+        return self.__end_time
+
+    def end_date_time(self):
+        return self.__end_date, self.__end_time
 
 

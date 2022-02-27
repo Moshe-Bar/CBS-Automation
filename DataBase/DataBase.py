@@ -9,7 +9,6 @@ import sqlite3
 ####,encoding="utf-8"
 from CbsObjects.TestDetails import TestDetails
 
-
 ROOT_PATH = sys.path[1]
 
 ERROR_TYPE_DIC = None
@@ -70,6 +69,7 @@ class DB:
     def load_tests_details_dic(self):
         self.__cursor.execute("SELECT * FROM TEST_DETAILS")
         data = self.__cursor.fetchall()
+
         return data
 
     def load_errors_dic(self):
@@ -85,11 +85,45 @@ class DB:
     def load_he_subject_pages_dic(self):
         self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
         data = self.__cursor.fetchall()
+        return data[0:6]
+
+    def load_he_subject_pages_dic_temp(self):
+        self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
+        data = self.__cursor.fetchall()
         return data
 
     def __del__(self):
         self.__cursor.close()
         self.__db.close()
+
+    def update_test_details(self, details: TestDetails):
+        select = "SELECT * FROM TEST_DETAILS WHERE test_id=?"
+        self.__cursor.execute(select,(details.key(),))
+        test_row = self.__cursor.fetchall()
+        if len(test_row):  # if test details is in database
+            update = '''UPDATE TEST_DETAILS 
+            SET
+            end_date=?,
+            end_time=?,
+            scanned=?
+            WHERE
+            test_id = ?;'''
+            self.__cursor.execute(update, (str(details.end_date()), str(details.end_time()), str(details.scanned()),str(details.key())))
+            self.__db.commit()
+        else:
+            raise Exception('There is no test-id {} in database, can not update test details'.format(details.key()))
+
+
+    def exist(self):
+        select = "SELECT * FROM TEST_DETAILS WHERE test_id='00f80ee7-1ff3-45f4-80e0-94fd70404a27'"
+        self.__cursor.execute(select)
+        details = self.__cursor.fetchall()
+        if len(details):  # update candidates
+            scanned: str = details[0][6]
+            str_ids = scanned.replace('}', '').replace('{', '').split(',')
+            s = map(lambda id:int(id),str_ids)
+            r = set(s)
+            print(r)
 
 
 db = DB()
@@ -177,8 +211,8 @@ class DataBase:
     @classmethod
     def load_wpart_dic(cls):
         try:
-            w_parts =  db.load_web_parts_dic()
-            return dict([(wp_id,(name,real_name)) for wp_id,name,real_name in w_parts])
+            w_parts = db.load_web_parts_dic()
+            return dict([(wp_id, (name, real_name)) for wp_id, name, real_name in w_parts])
         except Exception as e:
             print("exception in db, couldn't load web parts dictionary")
             raise e
@@ -213,7 +247,7 @@ class DataBase:
 
     @classmethod
     def add_test_details(cls, test_details):
-        pass
+        db.update_test_details(test_details)
 
 
 class DicData(Enum):
@@ -255,7 +289,6 @@ from openpyxl import Workbook
 import pdfkit
 from CbsObjects.Error import Error
 
-
 PDF_PATH = ROOT_PATH + '\\Resources\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 PDF_CONFIG = pdfkit.configuration(wkhtmltopdf=PDF_PATH)
 TEMPLATE = '''<!DOCTYPE html>
@@ -270,11 +303,11 @@ TEMPLATE = '''<!DOCTYPE html>
 
 class Converter:
     @classmethod
-    def error_to_short_str(cls,error:Error):
+    def error_to_short_str(cls, error: Error):
         details = cls.error_to_details(error)
         result = str(details[2]) + ': ' + str(details[3])
         if details[4]:
-            result = result +  ' at object {}'.format(details[4])
+            result = result + ' at object {}'.format(details[4])
         return result
 
     @classmethod
@@ -282,7 +315,7 @@ class Converter:
         page_name = DicData.HE_SUBJECT_PAGES_DIC.value.get(error.page_id)[0]
         web_part_description = DicData.WEP_PART_TYPE_DIC.value.get(error.wp_type)[1]
         error_description = DicData.ERROR_TYPE_DIC.value.get(error.type)
-        return [error.test_id,page_name,web_part_description,error_description,error.index]
+        return [error.test_id, page_name, web_part_description, error_description, error.index]
 
     @classmethod
     def to_html(cls, errors: []):
@@ -380,18 +413,10 @@ class Converter:
         return str(test_id)
 
 
-
-
-
-
-
-
-
-
-
+db.exist()
 
 # DataBase.get_excel_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
-print(DataBase.load_wpart_dic())
+# print(DataBase.load_wpart_dic())
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))
 #
@@ -461,3 +486,24 @@ print(DataBase.load_wpart_dic())
 #         except Exception as e:
 #             print('exception in db writing summery')
 #             raise e
+
+#     scanned_as_str = details.to_list()[]
+        #     scanned_list = scanned_as_str.replace('}', '').replace('{', '').split(',')
+        #     scanned_as_int = map(lambda id: int(id), scanned_list)
+        #     scanned_set = set(scanned_as_int)
+        #     scanned_set.
+        #
+        # select = "SELECT * FROM TEST_DETAILS WHERE test_id='?'"
+        # self.__cursor.execute(select, details.key())
+        # details = self.__cursor.fetchall()
+        # if len(details):  # update candidates
+        #     scanned = details[0][6]
+        #     scanned = set(scanned)
+        #
+        # exist = '''IF EXISTS ( SELECT 1 FROM TEST_DETAILS WHERE test_id = '?')
+        #         BEGIN
+        #             SELECT * FROM TEST_DETAILS WHERE test_id='? '
+        #         END'''
+        # insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?,?,?);"
+        # self.__cursor.execute(insert, details.to_list())
+        # self.__db.commit()

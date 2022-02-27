@@ -219,7 +219,7 @@ class TestUtility:
                 pages = cls.get_he_pages()
             except Exception as e:
                 print('error in loading pages, test is closed')
-                shared_data.put('error in loading pages, test is closed')
+                shared_data.put(('text','error in loading pages, test is closed'))
                 end_flag.put('error in loading pages, test is closed')
                 raise e
 
@@ -232,6 +232,8 @@ class TestUtility:
         page_ids = [page.id for page in pages]
         test_details = TestDetails(candidates=page_ids)
         test_details.started()
+
+        shared_data.put(('key',test_details.key()))
 
         # status flow
         shared_data.put(('text', 'initializing test environment...'))
@@ -319,6 +321,7 @@ class TestUtility:
                     shared_data.put(('link', page.name, page.link.url, 'Pass'))
 
                 test_details.add_scanned_page(page.id)
+                DataBase.add_test_details(test_details)
         except NoSuchWindowException as e:
             print('Main test stopped due to unexpected  session close')
             shared_data.put(('text', 'Main test stopped due to unexpected  session close'))           # outer_signals.monitor_data.emit('Main test stopped due to unexpected  session close')
@@ -327,7 +330,7 @@ class TestUtility:
             session.close()
             test_details.ended()
             end_flag.put('session closed')
-            end_date, end_time = test_details.end_date()
+            end_date, end_time = test_details.end_date_time()
             print('test ended on: ' + end_date + ' ' + end_time)
             shared_data.put(('test', 'test ended on: ' + end_date + ' ' + end_time))
             # DataBase.save_test_results(test_details.key(), page.get_errors())
@@ -343,7 +346,7 @@ class TestUtility:
             session.close()
             test_details.ended()
             end_flag.put('session closed')
-            end_date, end_time = test_details.end_date()
+            end_date, end_time = test_details.end_date_time()
             print('test ended on: ' + end_date + ' ' + end_time)
             shared_data.put(('test', 'test ended on: ' + end_date + ' ' + end_time))
             # DataBase.save_test_results(test_details.key(), page.get_errors())
@@ -355,7 +358,7 @@ class TestUtility:
             session.close()
             test_details.ended()
             end_flag.put('session closed')
-            end_date,end_time = test_details.end_date()
+            end_date,end_time = test_details.end_date_time()
             print('test ended on: ' +end_date+' '+ end_time)
             shared_data.put(('test', 'test ended on: ' +end_date+' '+ end_time))
             # DataBase.save_test_results(test_details.key(), page.get_errors())
