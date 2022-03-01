@@ -117,6 +117,7 @@ class WebTest:
                 self.update_client_bar(progress.get())
         while test_proc.is_alive():
             test_proc.terminate()
+            # test_proc.close()
             test_proc.join()
 
         if not data.empty():
@@ -129,27 +130,31 @@ class WebTest:
     def get_test_results(self, key):
         with use_scope('global', clear=True):
             put_scrollable(put_scope(name='test_results'), height=350, keep_bottom=True)
-            data = TestUtility.get_test_results(key)
+            data = TestUtility.get_test_results_as_html(key)
             put_html(data, scope='test_results')
             put_file(label='results as html', name='results.html', content=data.encode('utf-8'))
             pdf_data = TestUtility.get_test_result_as_pdf(key)
+            excel_data = TestUtility.get_test_results_as_excel(key)
             put_file(label='results as pdf', name='results.pdf', content=pdf_data)
+            put_file(label='results as excel', name='results.xlsx', content=pdf_data)
 
         # self.go_to_test_results(key='test_results')
+
     def end_test(self):
         self.start_button.update({"disabled": False})
         self.stop_button.update({"disabled": True})
         self.results_button.update({"disabled": False})
 
     def stop_test(self):
-        self.end_test()
+
         self.data_share.get('data').put('test was canceled by the user')
         self.data_share.get('end_flag').put('canceled by user')
         while self.test_proc.is_alive():
             self.test_proc.terminate()
             self.test_proc.join()
-            # self.test_proc.close()
-            # time.sleep(1)
+        self.end_test()
+        # self.test_proc.close()
+        # time.sleep(1)
 
     def go_to_test_results(self, key):
         pass

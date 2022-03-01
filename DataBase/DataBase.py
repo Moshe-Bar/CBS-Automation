@@ -1,3 +1,5 @@
+from openpyxl.styles import Font
+
 from CbsObjects.CbsLink import CbsLink
 from CbsObjects.Pages.SubjectPage import SubjectPage
 from enum import Enum
@@ -85,7 +87,8 @@ class DB:
     def load_he_subject_pages_dic(self):
         self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
         data = self.__cursor.fetchall()
-        return data[0:6]
+        # return data[0:6]
+        return data
 
     def load_he_subject_pages_dic_temp(self):
         self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
@@ -200,13 +203,18 @@ class DataBase:
         return Converter.to_pdf(data)
 
     @classmethod
+    def get_html_test_results(cls, test_ID):
+        data = cls.get_test_results(test_ID)
+        return Converter.to_html(data)
+
+    @classmethod
     def init_new_test(cls, test_details):
         db.add_new_test(test_details)
 
     @classmethod
     def get_excel_test_results(cls, test_ID):
         data = cls.get_test_results(test_ID)
-        Converter.to_excel(data)
+        return Converter.to_excel(data)
 
     @classmethod
     def load_wpart_dic(cls):
@@ -248,6 +256,8 @@ class DataBase:
     @classmethod
     def add_test_details(cls, test_details):
         db.update_test_details(test_details)
+
+
 
 
 class DicData(Enum):
@@ -318,8 +328,30 @@ class Converter:
         return [error.test_id, page_name, web_part_description, error_description, error.index]
 
     @classmethod
+    def tuple_error_to_details(cls, err):
+        page_name = DicData.HE_SUBJECT_PAGES_DIC.value.get(err[1])[0]
+        web_part_description = DicData.WEP_PART_TYPE_DIC.value.get(err[2])[1]
+        error_description = DicData.ERROR_TYPE_DIC.value.get(err[3])
+        return [err[0], page_name, web_part_description, error_description, err[4]]
+
+    @classmethod
     def to_html(cls, errors: []):
-        pass
+        if not errors:
+            return None
+        data = TEMPLATE + cls.__html_report_details()
+
+        it_by_test_id = itertools.groupby(errors, operator.itemgetter(0))
+        for test_id, errors_by_test_id in it_by_test_id:
+            data = data + cls.__html_test_details(test_id)
+            it_by_page_id = itertools.groupby(errors_by_test_id, operator.itemgetter(1))
+            for page_id, errors_ in it_by_page_id:
+                data = data + cls.__html_page_details(page_id)
+                # errors details loop
+                for err in errors_:
+                    data = data + cls.__html_error_details(err)
+
+        data = data + "</body></html>"
+        return data
 
     @classmethod
     def to_pdf(cls, errors: []):
@@ -348,6 +380,30 @@ class Converter:
 
     @classmethod
     def to_excel(cls, errors: []):
+        if not errors:
+            return None
+
+        workbook = Workbook()
+
+        sheet = workbook.active
+        sheet.cell(row=1,column=1).value = 'PAGE'
+        sheet.cell(row=1,column=1).font = Font(size=18,bold=True)
+        sheet.cell(row=1,column=2).value = 'WEB PART'
+        sheet.cell(row=1,column=2).font = Font(size=18,bold=True)
+        sheet.cell(row=1,column=3).value = 'DESCRIPTION'
+        sheet.cell(row=1,column=3).font = Font(size=18,bold=True)
+        sheet.cell(row=1,column=4).value = 'LINE / LOCATION'
+        sheet.cell(row=1,column=4).font = Font(size=18,bold=True)
+
+        for e in errors:
+            err = cls.error_tuple_to_details(e)
+            sheet.append((err[1],err[2],err[3],err[4]))
+        # filename=ROOT_PATH + '\\DataBase\\{}'.format("sample_test.xlsx")
+        return workbook.save()
+        # return workbook
+
+    @classmethod
+    def to_excel_temp(cls, errors: []):
         if not errors:
             return None
 
@@ -390,11 +446,13 @@ class Converter:
 
     @classmethod
     def __html_page_details(cls, page_id):
-        return '<h3>{}</h3>\n'.format(page_id)
+        page_details = Converter.page_details(page_id)
+        return '<h3><a href={}>{}</a></h3>\n'.format(page_details[1],page_details[0])
 
     @classmethod
     def __html_error_details(cls, err):
-        return '<h4>{}</h4>\n'.format(err)
+        e = Converter.error_tuple_to_short_str(err)
+        return '<h4>{}</h4>\n'.format(e)
 
     @classmethod
     def __html_report_details(cls):
@@ -412,10 +470,34 @@ class Converter:
     def __test_details(cls, test_id):
         return str(test_id)
 
+    @classmethod
+    def page_details(cls, page_id):
+        return DicData.HE_SUBJECT_PAGES_DIC.value.get(page_id)
+
+    @classmethod
+    def error_tuple_to_short_str(cls, err):
+        details = cls.tuple_error_to_details(err)
+        result = str(details[2]) + ': ' + str(details[3])
+        if details[4]:
+            result = result + ' at object {}'.format(details[4])
+        return result
+
+    @classmethod
+    def error_tuple_to_details(cls, e):
+        if not DicData.HE_SUBJECT_PAGES_DIC.value.get(e[1]):
+            print('none type in: ', e[1])
+            print(DicData.HE_SUBJECT_PAGES_DIC.value)
+            return
+        print(type(DicData.HE_SUBJECT_PAGES_DIC.value.get(e[1])))
+        page_name = DicData.HE_SUBJECT_PAGES_DIC.value.get(e[1])[0]
+        web_part_description = DicData.WEP_PART_TYPE_DIC.value.get(e[2])[1]
+        error_description = DicData.ERROR_TYPE_DIC.value.get(e[3])
+        return [e[0], page_name, web_part_description, error_description, e[4]]
+
 
 db.exist()
 
-# DataBase.get_excel_test_results('''cda22bde-b903-4f37-8a4f-507fc9a1618e''')
+DataBase.get_excel_test_results('''0b0920b3-088a-43ab-9a6b-cbdf8bf2e293''')
 # print(DataBase.load_wpart_dic())
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))

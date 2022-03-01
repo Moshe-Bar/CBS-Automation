@@ -67,20 +67,18 @@ class TestUtility:
             # if ver >
 
             driver_service = Service(Links.CHROME_DRIVER.value)
+            options = webdriver.ChromeOptions()
+            driver = webdriver
             if not withUI:
-                options = webdriver.ChromeOptions()
                 options.headless(True)
                 # # options.add_argument('--disable-gpu')
-                driver = webdriver.Chrome(service=driver_service, chrome_options=options)
                 # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
-
             else:
                 try:
-                    driver = webdriver.Chrome(service=driver_service)
+                    driver = webdriver.Chrome(service=driver_service, chrome_options=options)
                 except WebDriverException as e:
                     print('session not created')
                     raise e
-                # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value)
 
             path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
             driver.get(path)
@@ -371,6 +369,14 @@ class TestUtility:
     @classmethod
     def get_test_result_as_pdf(cls, test_key):
         return DataBase.get_pdf_test_results(test_key)
+
+    @classmethod
+    def get_test_results_as_html(cls, key):
+        return DataBase.get_html_test_results(key)
+
+    @classmethod
+    def get_test_results_as_excel(cls, key):
+        return DataBase.get_excel_test_results(key)
 
 
 # for browser version match with the automation driver
