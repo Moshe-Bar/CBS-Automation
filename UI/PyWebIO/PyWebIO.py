@@ -146,7 +146,7 @@ class WebTest:
         self.results_button.update({"disabled": False})
 
     def stop_test(self):
-
+        self.end_test()
         self.data_share.get('data').put('test was canceled by the user')
         self.data_share.get('end_flag').put('canceled by user')
         while self.test_proc.is_alive():
