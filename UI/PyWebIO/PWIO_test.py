@@ -169,4 +169,6 @@ def online():
 
 if __name__ == '__main__':
     is_cdn = True if online() else False
-    pywebio.start_server(main, auto_open_webbrowser=True, port=8080, cdn=is_cdn)
+    pywebio.start_server(main,auto_open_webbrowser=True, port=8080, cdn=is_cdn)
+#     ,remote_access=True
+#     auto_open_webbrowser=True

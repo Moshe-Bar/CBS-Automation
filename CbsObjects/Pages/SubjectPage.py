@@ -5,13 +5,13 @@ from CbsObjects.WebParts import Statisticals, SubSubjects, MoreLinks, ToolsAndDB
 
 class SubjectPage:
 
-    def __init__(self, pageLink: CbsLink, pageName,id=None):
+    def __init__(self, pageLink:CbsLink, pageName,id=None,lang=None):
         self.link = pageLink
         self.name = pageName
         self.level = None
         self.parent = None
         self.children = []
-        self.lang = None
+        self.lang = lang
         self.__web_parts = {
             'stats_part': Statisticals(),
             'sub_subjects': SubSubjects(),
@@ -93,18 +93,25 @@ class SubjectPage:
         errors = []
         for web_part in self.__web_parts.values():
             err = web_part.get_errors()
-            if len(err) > 0:
-                errors.append(err)
+            for e in err:
+                e.page_id = self.id
+                errors.append(e)
+            # if len(err) > 0:
+            #     errors.append(err)
         return errors
         # return [web_part.get_errors() for web_part in self.__web_parts.values()]
 
     def error_to_str(self):
-        errors = []
-        for web_part in self.__web_parts.values():
-            err = web_part.get_errors()
-            if len(err) > 0:
-                errors.append(web_part.error_to_str())
-        return '\n'.join(errors)
+        s=''
+        for e in self.get_errors():
+            s = s + ', ' + str(e)
+        return s
+        # errors = []
+        # for web_part in self.__web_parts.values():
+        #     err = web_part.get_errors()
+        #     if len(err) > 0:
+        #         errors.append(web_part.error_to_str())
+        # return '\n'.join(errors)
         # return '\n'.join([web_part.error_to_str() for web_part in self.__web_parts.values()])
 
     def get_level(self):
@@ -121,4 +128,10 @@ class SubjectPage:
 
     def __str__(self):
         return 'Name: {}, ID: {}'.format(self.name,self.id)
+
+    def __eq__(self, other):
+        return __eq__(self.link,other.link)
+
+    def __hash__(self):
+        return hash(self.name)
 

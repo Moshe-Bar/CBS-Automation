@@ -1,0 +1,44 @@
+אוכלוסייה לפי מין https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%99%D7%9F.aspx
+['error: statistical - extra web part']
+אוכלוסייה לפי מצב משפחתי https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%9E%D7%A6%D7%91-%D7%9E%D7%A9%D7%A4%D7%97%D7%AA%D7%99.aspx
+['error: statistical - extra web part']
+אוכלוסייה ביישובים https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%91%D7%99%D7%99%D7%A9%D7%95%D7%91%D7%99%D7%9D.aspx
+['error: statistical - extra web part']
+אוכלוסייה במחוזות, בנפות ובאזורים טבעיים https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%91%D7%9E%D7%97%D7%95%D7%96%D7%95%D7%AA,-%D7%91%D7%A0%D7%A4%D7%95%D7%AA-%D7%95%D7%91%D7%90%D7%96%D7%95%D7%A8%D7%99%D7%9D-%D7%98%D7%91%D7%A2%D7%99%D7%99%D7%9D.aspx
+['error: statistical - extra web part']
+אוכלוסייה במטרופולינים https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%91%D7%9E%D7%98%D7%A8%D7%95%D7%A4%D7%95%D7%9C%D7%99%D7%A0%D7%99%D7%9D.aspx
+['error: statistical - extra web part']
+אוכלוסייה לפי צורת יישוב https://www.cbs.gov.il/he/subjects/Pages/%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%9C%D7%A4%D7%99-%D7%A6%D7%95%D7%A8%D7%AA-%D7%99%D7%99%D7%A9%D7%95%D7%91.aspx
+['error: statistical - extra web part']
+מדד חברתי-כלכלי https://www.cbs.gov.il/he/subjects/Pages/%D7%A8%D7%9E%D7%AA-%D7%97%D7%99%D7%99%D7%9D-%D7%9E%D7%93%D7%93-%D7%97%D7%91%D7%A8%D7%AA%D7%99-%D7%9B%D7%9C%D7%9B%D7%9C%D7%99-%D7%A9%D7%9C-%D7%94%D7%A8%D7%A9%D7%95%D7%99%D7%95%D7%AA-%D7%94%D7%9E%D7%A7%D7%95%D7%9E%D7%99%D7%95%D7%AA.aspx
+['images content is missing in Statistical', 'links content is missing in Statistical', 'link to all massages is missing in Statistical']
+תוצרת בעלי חיים https://www.cbs.gov.il/he/subjects/Pages/%D7%AA%D7%95%D7%A6%D7%A8%D7%AA-%D7%91%D7%A2%D7%9C%D7%99-%D7%97%D7%99%D7%99%D7%9D.aspx
+['error: statistical - extra web part']
+תוצרת צמחית https://www.cbs.gov.il/he/subjects/Pages/%D7%AA%D7%95%D7%A6%D7%A8%D7%AA-%D7%A6%D7%9E%D7%97%D7%99%D7%AA.aspx
+['error: statistical - extra web part']
+חשבונות המגזר הממשלתי לפי GFS https://www.cbs.gov.il/he/subjects/Pages/%D7%97%D7%A9%D7%91%D7%95%D7%A0%D7%95%D7%AA-%D7%94%D7%9E%D7%92%D7%96%D7%A8-%D7%94%D7%9E%D7%9E%D7%A9%D7%9C%D7%AA%D7%99-%D7%9C%D7%A4%D7%99--GFS.aspx
+['error: statistical - extra web part']
+חשבונות המגזר הממשלתי לפי SNA https://www.cbs.gov.il/he/subjects/Pages/%D7%97%D7%A9%D7%91%D7%95%D7%A0%D7%95%D7%AA-%D7%94%D7%9E%D7%92%D7%96%D7%A8-%D7%94%D7%9E%D7%9E%D7%A9%D7%9C%D7%AA%D7%99-%D7%9C%D7%A4%D7%99--SNA.aspx
+['error: statistical - extra web part']
+רווחת האוכלוסייה בישראל, 2013 https://www.cbs.gov.il/he/subjects/Pages/%D7%A8%D7%95%D7%95%D7%97%D7%AA-%D7%94%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%91%D7%99%D7%A9%D7%A8%D7%90%D7%9C-2013.aspx
+['error: statistical - extra web part']
+למידה לאורך החיים ושימוש בשפות, 2011 https://www.cbs.gov.il/he/subjects/Pages/-%D7%9C%D7%9E%D7%99%D7%93%D7%94-%D7%9C%D7%90%D7%95%D7%A8%D7%9A-%D7%94%D7%97%D7%99%D7%99%D7%9D-%D7%95%D7%A9%D7%99%D7%9E%D7%95%D7%A9-%D7%91%D7%A9%D7%A4%D7%95%D7%AA-2011.aspx
+['error: statistical - extra web part']
+בריאות ואורח חיים ושימוש במחשב ובאינטרנט, 2010 https://www.cbs.gov.il/he/subjects/Pages/%D7%91%D7%A8%D7%99%D7%90%D7%95%D7%AA-%D7%95%D7%90%D7%95%D7%A8%D7%97-%D7%97%D7%99%D7%99%D7%9D-%D7%95%D7%A9%D7%99%D7%9E%D7%95%D7%A9-%D7%91%D7%9E%D7%97%D7%A9%D7%91-%D7%95%D7%91%D7%90%D7%99%D7%A0%D7%98%D7%A8%D7%A0%D7%98-2010.aspx
+['error: statistical - extra web part']
+דתיות ומשפחתיות, 2009 https://www.cbs.gov.il/he/subjects/Pages/%D7%93%D7%AA%D7%99%D7%95%D7%AA-%D7%95%D7%9E%D7%A9%D7%A4%D7%97%D7%AA%D7%99%D7%95%D7%AA--2009.aspx
+['error: statistical - extra web part']
+מוביליות חברתית, 2008 https://www.cbs.gov.il/he/subjects/Pages/%D7%9E%D7%95%D7%91%D7%99%D7%9C%D7%99%D7%95%D7%AA-%D7%97%D7%91%D7%A8%D7%AA%D7%99%D7%AA-2008.aspx
+['error: statistical - extra web part']
+רווחת האוכלוסייה ועמדות כלפי שירותי ממשל, 2007 https://www.cbs.gov.il/he/subjects/Pages/%D7%A8%D7%95%D7%95%D7%97%D7%AA-%D7%94%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%95%D7%A2%D7%9E%D7%93%D7%95%D7%AA-%D7%9B%D7%9C%D7%A4%D7%99-%D7%A9%D7%99%D7%A8%D7%95%D7%AA%D7%99-%D7%9E%D7%9E%D7%A9%D7%9C-2007.aspx
+['error: statistical - extra web part']
+מטפלים ללא תמורה כספית, 2006 https://www.cbs.gov.il/he/subjects/Pages/%D7%9E%D7%98%D7%A4%D7%9C%D7%99%D7%9D-%D7%9C%D7%9C%D7%90-%D7%AA%D7%9E%D7%95%D7%A8%D7%94-%D7%9B%D7%A1%D7%A4%D7%99%D7%AA-2006.aspx
+['error: statistical - extra web part']
+השתתפות בכוח העבודה, 2005 https://www.cbs.gov.il/he/subjects/Pages/%D7%94%D7%A9%D7%AA%D7%AA%D7%A4%D7%95%D7%AA-%D7%91%D7%9B%D7%95%D7%97-%D7%94%D7%A2%D7%91%D7%95%D7%93%D7%94-2005.aspx
+['error: statistical - extra web part']
+סידורים לילדים והקשר לתעסוקת הורים, 2004 https://www.cbs.gov.il/he/subjects/Pages/%D7%A1%D7%99%D7%93%D7%95%D7%A8%D7%99%D7%9D-%D7%9C%D7%99%D7%9C%D7%93%D7%99%D7%9D-%D7%95%D7%94%D7%A7%D7%A9%D7%A8-%D7%9C%D7%AA%D7%A2%D7%A1%D7%95%D7%A7%D7%AA-%D7%94%D7%95%D7%A8%D7%99%D7%9D-2004.aspx
+['error: statistical - extra web part']
+מדידה של רווחת האוכלוסייה בישראל, 2003 https://www.cbs.gov.il/he/subjects/Pages/%D7%9E%D7%93%D7%99%D7%93%D7%94-%D7%A9%D7%9C-%D7%A8%D7%95%D7%95%D7%97%D7%AA-%D7%94%D7%90%D7%95%D7%9B%D7%9C%D7%95%D7%A1%D7%99%D7%99%D7%94-%D7%91%D7%99%D7%A9%D7%A8%D7%90%D7%9C-2003.aspx
+['error: statistical - extra web part']
+הסדרי פנסיה וחיסכון, 2002 https://www.cbs.gov.il/he/subjects/Pages/%D7%94%D7%A1%D7%93%D7%A8%D7%99-%D7%A4%D7%A0%D7%A1%D7%99%D7%94-%D7%95%D7%97%D7%99%D7%A1%D7%9B%D7%95%D7%9F--2002.aspx
+['error: statistical - extra web part']

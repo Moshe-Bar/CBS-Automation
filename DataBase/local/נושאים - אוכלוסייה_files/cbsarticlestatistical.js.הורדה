@@ -1,0 +1,95 @@
+/* קובץ זה משויך כעת לקובץ HTML בעל שם זהה והוא שואב ממנו תוכן. עד לביטול השיוך בין הקבצים, לא תוכל להעביר את הקובץ, למחוק אותו, לשנות את שמו או לבצע בו שינויים אחרים. */
+
+function DisplayTemplate_00ad2296bae94d17944baebe4d5eef04(ctx) {
+  var ms_outHtml=[];
+  var cachePreviousTemplateData = ctx['DisplayTemplateData'];
+  ctx['DisplayTemplateData'] = new Object();
+  DisplayTemplate_00ad2296bae94d17944baebe4d5eef04.DisplayTemplateData = ctx['DisplayTemplateData'];
+
+  ctx['DisplayTemplateData']['TemplateUrl']='~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsArticleStatistical.js';
+  ctx['DisplayTemplateData']['TemplateType']='Item';
+  ctx['DisplayTemplateData']['TargetControlType']=['Content Web Parts'];
+  this.DisplayTemplateData = ctx['DisplayTemplateData'];
+
+  ctx['DisplayTemplateData']['ManagedPropertyMapping']={'Title':['Title'], 'Path':['Path'], 'Description':['Description'], 'EditorOWSUSER':['EditorOWSUSER'], 'LastModifiedTime':['LastModifiedTime'], 'CollapsingStatus':['CollapsingStatus'], 'DocId':['DocId'], 'HitHighlightedSummary':['HitHighlightedSummary'], 'HitHighlightedProperties':['HitHighlightedProperties'], 'FileExtension':['FileExtension'], 'ViewsLifeTime':['ViewsLifeTime'], 'ParentLink':['ParentLink'], 'FileType':['FileType'], 'IsContainer':['IsContainer'], 'SecondaryFileExtension':['SecondaryFileExtension'], 'DisplayAuthor':['DisplayAuthor'], 'ServerRedirectedURL':['ServerRedirectedURL'], 'SectionNames':['SectionNames'], 'SectionIndexes':['SectionIndexes'], 'ServerRedirectedEmbedURL':['ServerRedirectedEmbedURL'], 'ServerRedirectedPreviewURL':['ServerRedirectedPreviewURL'], 'CbsDataPublishDateDateTime':['CbsDataPublishDateDateTime'], 'PublishingRollupImage':['PublishingRollupImage'], 'PublishingPageContentOWSHTML':['PublishingPageContentOWSHTML'], 'CbsPageSummaryOWSHTML':['CbsPageSummaryOWSHTML']};
+  var cachePreviousItemValuesFunction = ctx['ItemValues'];
+  ctx['ItemValues'] = function(slotOrPropName) {
+    return Srch.ValueInfo.getCachedCtxItemValue(ctx, slotOrPropName)
+};
+
+ms_outHtml.push('',''
+); 
+        if(!$isNull(ctx.CurrentItem) && !$isNull(ctx.ClientControl)){
+   			var newDate = new Date(ctx.CurrentItem.CbsDataPublishDateDateTime);
+   			newDate = newDate.getDate() + "/" + (newDate.getMonth()+1) + "/" + newDate.getFullYear().toString().substring(2,4);
+   			if(newDate == "1/1/70"){newDate = "" ;}
+			//newDate  = $getItemValue(ctx.CurrentItem,"ArticleStartDateDateTime");
+
+           var id = ctx.ClientControl.get_nextUniqueId();
+            var itemId = id + Srch.U.Ids.item;
+			var hoverId = id + Srch.U.Ids.hover;
+			var hoverUrl = "~sitecollection/_catalogs/masterpage/Display Templates/Search/Item_Default_HoverPanel.js";
+            $setResultItem(itemId, ctx.CurrentItem);
+			if(ctx.CurrentItem.IsContainer){
+				ctx.CurrentItem.csr_Icon = Srch.U.getFolderIconUrl();
+			}
+			ctx.currentItem_ShowHoverPanelCallback = Srch.U.getShowHoverPanelCallback(itemId, hoverId, hoverUrl);
+            ctx.currentItem_HideHoverPanelCallback = Srch.U.getHideHoverPanelCallback();
+            
+            
+            
+			var url = Srch.U.getHighlightedProperty(id, ctx.CurrentItem, "Path");
+	        var title = Srch.U.getHighlightedProperty(id, ctx.CurrentItem, "Title");
+	         if(ctx.CurrentItem.HitHighlightedProperties != null) {
+		        titleToShow = $(ctx.CurrentItem.HitHighlightedProperties);
+		        titleToShow = $(titleToShow)[0];
+		        titleToShow = $(titleToShow).html();
+		        }
+	        else{titleToShow = ctx.CurrentItem.Title;}
+	         contentToShow = ctx.CurrentItem.HitHighlightedSummary;
+	       if(contentToShow == null){
+	        	str = ctx.CurrentItem.CbsPageSummaryOWSHTML;
+	        	if(str == null){str = ctx.CurrentItem.PublishingPageContentOWSHTML;}
+	        	str = $(str).text();
+	        	contentToShow = str.substr(0, Math.min(200, str.lastIndexOf(" ")));
+	        	}
+
+				contentToShow = contentToShow.replace(/[^\w\s\></'פםןוטארקשדגכעיחלךףץתצמנהבסז,.?/!@$%^&*()_+~`|}{]/gi, '');
+
+	        $(".leftColumn .ms-WPBody").attr("style",'height:initial;')
+	        
+	        
+ms_outHtml.push(''
+,'		'
+,'		            <div class="ms-srch-item CbsArticle CbsArticleStatistical">'
+,'		       			'
+,'		       			<div class="pageItemImg">', ctx.CurrentItem.PublishingRollupImage ,'</div>'
+,'						'
+,'						 <div class="pageItemDate">', newDate  ,'</div>	'
+,'                        <div class="pageItemTitle">'
+,'						'
+,'							<a href="', ctx.CurrentItem.Path ,'">', titleToShow ,'</a>'
+,'						 </div>'
+,'						  <div class="pageItemSummary">', contentToShow  ,'</div>'
+,'					  	</div>'
+); 
+        } 
+ms_outHtml.push(''
+,'    '
+);
+
+  ctx['ItemValues'] = cachePreviousItemValuesFunction;
+  ctx['DisplayTemplateData'] = cachePreviousTemplateData;
+  return ms_outHtml.join('');
+}
+function RegisterTemplate_00ad2296bae94d17944baebe4d5eef04() {
+
+if ("undefined" != typeof (Srch) &&"undefined" != typeof (Srch.U) &&typeof(Srch.U.registerRenderTemplateByName) == "function") {
+  Srch.U.registerRenderTemplateByName("~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsArticleStatistical.js", DisplayTemplate_00ad2296bae94d17944baebe4d5eef04);
+}
+
+}
+RegisterTemplate_00ad2296bae94d17944baebe4d5eef04();
+if (typeof(RegisterModuleInit) == "function" && typeof(Srch.U.replaceUrlTokens) == "function") {
+  RegisterModuleInit(Srch.U.replaceUrlTokens("~sitecollection\u002f_catalogs\u002fmasterpage\u002fDisplay Templates\u002fContent Web Parts\u002fCbsArticleStatistical.js"), RegisterTemplate_00ad2296bae94d17944baebe4d5eef04);
+}
