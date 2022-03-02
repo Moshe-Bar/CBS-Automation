@@ -136,7 +136,7 @@ class WebTest:
             pdf_data = TestUtility.get_test_result_as_pdf(key)
             excel_data = TestUtility.get_test_results_as_excel(key)
             put_file(label='results as pdf', name='results.pdf', content=pdf_data)
-            put_file(label='results as excel', name='results.xlsx', content=pdf_data)
+            put_file(label='results as excel', name='results.xlsx', content=excel_data)
 
         # self.go_to_test_results(key='test_results')
 

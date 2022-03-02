@@ -1,3 +1,6 @@
+from io import BytesIO, StringIO
+from tempfile import NamedTemporaryFile
+
 from openpyxl.styles import Font
 
 from CbsObjects.CbsLink import CbsLink
@@ -12,6 +15,7 @@ import sqlite3
 from CbsObjects.TestDetails import TestDetails
 
 ROOT_PATH = sys.path[1]
+XCELL_PATH = ROOT_PATH + '\\DataBase\\{}'.format("test.xlsx")
 
 ERROR_TYPE_DIC = None
 WEP_PART_TYPE_DIC = None
@@ -101,7 +105,7 @@ class DB:
 
     def update_test_details(self, details: TestDetails):
         select = "SELECT * FROM TEST_DETAILS WHERE test_id=?"
-        self.__cursor.execute(select,(details.key(),))
+        self.__cursor.execute(select, (details.key(),))
         test_row = self.__cursor.fetchall()
         if len(test_row):  # if test details is in database
             update = '''UPDATE TEST_DETAILS 
@@ -111,11 +115,11 @@ class DB:
             scanned=?
             WHERE
             test_id = ?;'''
-            self.__cursor.execute(update, (str(details.end_date()), str(details.end_time()), str(details.scanned()),str(details.key())))
+            self.__cursor.execute(update, (
+            str(details.end_date()), str(details.end_time()), str(details.scanned()), str(details.key())))
             self.__db.commit()
         else:
             raise Exception('There is no test-id {} in database, can not update test details'.format(details.key()))
-
 
     def exist(self):
         select = "SELECT * FROM TEST_DETAILS WHERE test_id='00f80ee7-1ff3-45f4-80e0-94fd70404a27'"
@@ -124,9 +128,9 @@ class DB:
         if len(details):  # update candidates
             scanned: str = details[0][6]
             str_ids = scanned.replace('}', '').replace('{', '').split(',')
-            s = map(lambda id:int(id),str_ids)
+            s = map(lambda id: int(id), str_ids)
             r = set(s)
-            print(r)
+            # print(r)
 
 
 db = DB()
@@ -258,8 +262,6 @@ class DataBase:
         db.update_test_details(test_details)
 
 
-
-
 class DicData(Enum):
     ERROR_TYPE_DIC = DataBase.load_error_dic()
     WEP_PART_TYPE_DIC = DataBase.load_wpart_dic()
@@ -386,21 +388,25 @@ class Converter:
         workbook = Workbook()
 
         sheet = workbook.active
-        sheet.cell(row=1,column=1).value = 'PAGE'
-        sheet.cell(row=1,column=1).font = Font(size=18,bold=True)
-        sheet.cell(row=1,column=2).value = 'WEB PART'
-        sheet.cell(row=1,column=2).font = Font(size=18,bold=True)
-        sheet.cell(row=1,column=3).value = 'DESCRIPTION'
-        sheet.cell(row=1,column=3).font = Font(size=18,bold=True)
-        sheet.cell(row=1,column=4).value = 'LINE / LOCATION'
-        sheet.cell(row=1,column=4).font = Font(size=18,bold=True)
+        sheet.cell(row=1, column=1).value = 'PAGE'
+        sheet.cell(row=1, column=1).font = Font(size=18, bold=True)
+        sheet.cell(row=1, column=2).value = 'WEB PART'
+        sheet.cell(row=1, column=2).font = Font(size=18, bold=True)
+        sheet.cell(row=1, column=3).value = 'DESCRIPTION'
+        sheet.cell(row=1, column=3).font = Font(size=18, bold=True)
+        sheet.cell(row=1, column=4).value = 'LINE / LOCATION'
+        sheet.cell(row=1, column=4).font = Font(size=18, bold=True)
 
         for e in errors:
             err = cls.error_tuple_to_details(e)
-            sheet.append((err[1],err[2],err[3],err[4]))
-        # filename=ROOT_PATH + '\\DataBase\\{}'.format("sample_test.xlsx")
-        return workbook.save()
-        # return workbook
+            sheet.append((err[1], err[2], err[3], err[4]))
+
+        workbook.save(XCELL_PATH)
+        # data = None
+        with open(XCELL_PATH, 'rb') as file:
+            data = file.read()
+            file.close()
+        return data
 
     @classmethod
     def to_excel_temp(cls, errors: []):
@@ -433,7 +439,7 @@ class Converter:
 
                 # errors details loop
                 for err in errors_:
-                    print(err)
+                    # print(err)
                     # sheet.append(err)
                     top_left_cell = sheet['A{}'.format(current_row)]
                     top_left_cell.value = str(err)
@@ -447,7 +453,7 @@ class Converter:
     @classmethod
     def __html_page_details(cls, page_id):
         page_details = Converter.page_details(page_id)
-        return '<h3><a href={}>{}</a></h3>\n'.format(page_details[1],page_details[0])
+        return '<h3><a href={}>{}</a></h3>\n'.format(page_details[1], page_details[0])
 
     @classmethod
     def __html_error_details(cls, err):
@@ -488,7 +494,7 @@ class Converter:
             print('none type in: ', e[1])
             print(DicData.HE_SUBJECT_PAGES_DIC.value)
             return
-        print(type(DicData.HE_SUBJECT_PAGES_DIC.value.get(e[1])))
+        # print(type(DicData.HE_SUBJECT_PAGES_DIC.value.get(e[1])))
         page_name = DicData.HE_SUBJECT_PAGES_DIC.value.get(e[1])[0]
         web_part_description = DicData.WEP_PART_TYPE_DIC.value.get(e[2])[1]
         error_description = DicData.ERROR_TYPE_DIC.value.get(e[3])
@@ -497,7 +503,7 @@ class Converter:
 
 db.exist()
 
-DataBase.get_excel_test_results('''0b0920b3-088a-43ab-9a6b-cbdf8bf2e293''')
+# print(DataBase.get_excel_test_results('''0b0920b3-088a-43ab-9a6b-cbdf8bf2e293'''))
 # print(DataBase.load_wpart_dic())
 # #######
 # links = list(set(DataBase.get_CBS_en_links()))
@@ -570,22 +576,22 @@ DataBase.get_excel_test_results('''0b0920b3-088a-43ab-9a6b-cbdf8bf2e293''')
 #             raise e
 
 #     scanned_as_str = details.to_list()[]
-        #     scanned_list = scanned_as_str.replace('}', '').replace('{', '').split(',')
-        #     scanned_as_int = map(lambda id: int(id), scanned_list)
-        #     scanned_set = set(scanned_as_int)
-        #     scanned_set.
-        #
-        # select = "SELECT * FROM TEST_DETAILS WHERE test_id='?'"
-        # self.__cursor.execute(select, details.key())
-        # details = self.__cursor.fetchall()
-        # if len(details):  # update candidates
-        #     scanned = details[0][6]
-        #     scanned = set(scanned)
-        #
-        # exist = '''IF EXISTS ( SELECT 1 FROM TEST_DETAILS WHERE test_id = '?')
-        #         BEGIN
-        #             SELECT * FROM TEST_DETAILS WHERE test_id='? '
-        #         END'''
-        # insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?,?,?);"
-        # self.__cursor.execute(insert, details.to_list())
-        # self.__db.commit()
+#     scanned_list = scanned_as_str.replace('}', '').replace('{', '').split(',')
+#     scanned_as_int = map(lambda id: int(id), scanned_list)
+#     scanned_set = set(scanned_as_int)
+#     scanned_set.
+#
+# select = "SELECT * FROM TEST_DETAILS WHERE test_id='?'"
+# self.__cursor.execute(select, details.key())
+# details = self.__cursor.fetchall()
+# if len(details):  # update candidates
+#     scanned = details[0][6]
+#     scanned = set(scanned)
+#
+# exist = '''IF EXISTS ( SELECT 1 FROM TEST_DETAILS WHERE test_id = '?')
+#         BEGIN
+#             SELECT * FROM TEST_DETAILS WHERE test_id='? '
+#         END'''
+# insert = "INSERT INTO TEST_DETAILS VALUES (?,?,?,?,?,?,?);"
+# self.__cursor.execute(insert, details.to_list())
+# self.__db.commit()
