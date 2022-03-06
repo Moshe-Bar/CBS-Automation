@@ -48,23 +48,22 @@ class WebTest:
         }
         while True:
             req = input_group('Test control buttons', [
-                actions(name='cmd', buttons=[self.start_button, self.stop_button, self.results_button])],
-                              validate=lambda input: ('msg', 'Message content cannot be empty') if input[
-                                                                                                       'cmd'] == 'Stop' and not
-                                                                                                   input[
-                                                                                                       'msg'] else None)
+                actions(label='act',name='cmd', buttons=[self.start_button, self.stop_button, self.results_button])])
             # ],
             if req['cmd'] == 'Start test':
                 print('start clicked')
                 self.start_button.update({"disabled": True})
                 self.stop_button.update({"disabled": False})
+                self.results_button.update({"disabled": True })
                 self.start_test()
+
             elif req['cmd'] == 'Stop test':
                 print('stop clicked')
-                # self.start_button.update({"disabled": False})
-                # self.stop_button.update({"disabled": True})
-                # self.results_button.update({"disabled": False})
                 self.stop_test()
+                self.start_button.update({"disabled": False})
+                self.stop_button.update({"disabled": True})
+                self.results_button.update({"disabled": False})
+
             elif req['cmd'] == 'Test Results':
                 self.get_test_results(self.test_key)
                 break
@@ -115,7 +114,7 @@ class WebTest:
 
             if not progress.empty():
                 self.update_client_bar(progress.get())
-        while test_proc.is_alive():
+        while test_proc.is_alive() or end_flag.empty():
             test_proc.terminate()
             # test_proc.close()
             test_proc.join()
@@ -124,7 +123,7 @@ class WebTest:
             self.update_client_data(data.get())
         if not progress.empty():
             self.update_client_bar(progress.get())
-        self.end_test()
+        # self.end_test()
         print('leaving observer')
 
     def get_test_results(self, key):
@@ -146,7 +145,7 @@ class WebTest:
         self.results_button.update({"disabled": False})
 
     def stop_test(self):
-        self.end_test()
+        # self.end_test()
         self.data_share.get('data').put('test was canceled by the user')
         self.data_share.get('end_flag').put('canceled by user')
         while self.test_proc.is_alive():
@@ -156,8 +155,6 @@ class WebTest:
         # self.test_proc.close()
         # time.sleep(1)
 
-    def go_to_test_results(self, key):
-        pass
 
 
 def main():
