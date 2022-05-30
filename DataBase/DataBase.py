@@ -91,7 +91,6 @@ class DB:
     def load_he_subject_pages_dic(self):
         self.__cursor.execute("SELECT * FROM PAGES_DIC WHERE lang='HE' ")
         data = self.__cursor.fetchall()
-        # return data[0:6]
         return data
 
     def load_he_subject_pages_dic_temp(self):
@@ -194,12 +193,12 @@ class DataBase:
             f.close()
         return data['XPath'][0][key]
 
-    @classmethod
-    def get_webdriver_path(cls):
-        with open(ROOT_PATH + '\\Configuration\\webdriver_path.json', 'rb') as file:
-            data = json.load(file)
-            file.close()
-        return data['driver_path']
+    # @classmethod
+    # def get_webdriver_path(cls):
+    #     with open(ROOT_PATH + '\\Configuration\\webdriver_path.json', 'rb') as file:
+    #         data = json.load(file)
+    #         file.close()
+    #     return data['driver_path']
 
     @classmethod
     def get_pdf_test_results(cls, test_ID):
@@ -275,7 +274,7 @@ class Links(Enum):
     CBS_MAP_SITE_EN = 'https://www.cbs.gov.il/en/Pages/sitemap.aspx'
     ROOT_XPATH = DataBase.load_xpath('ROOT_XPATH')
     ROOT_DIR = sys.path[1]
-    CHROME_DRIVER = ROOT_DIR + "/" + DataBase.get_webdriver_path()
+    CHROME_DRIVER = ROOT_DIR + "\\" + 'Resources\\WebDrivers'
     HEBREW_STATS_XPATH = DataBase.load_xpath('HEBREW_STATS_XPATH')
     RIGHT_EXTRA_PARTS_XPATH = DataBase.load_xpath('RIGHT_EXTRA_PARTS_XPATH')
     LEFT_EXTRA_PARTS_XPATH = DataBase.load_xpath('LEFT_EXTRA_PARTS_XPATH')

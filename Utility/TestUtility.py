@@ -1,10 +1,11 @@
-import datetime
+
 import os
 import sys
 import threading
-import time
+
 from multiprocessing import Queue
 
+import chromedriver_autoinstaller
 from win32com.client import Dispatch
 
 from selenium import webdriver
@@ -61,24 +62,20 @@ class TestUtility:
     @classmethod
     def create_web_driver(cls, withUI=True):
         try:
-            ver = cls._check_chrome_version()
-            if ver is None:
-                raise Exception
-            # if ver >
-
-            driver_service = Service(Links.CHROME_DRIVER.value)
+            path = chromedriver_autoinstaller.install(path=Links.CHROME_DRIVER.value)
+            # print(f'path: {path}')
+            driver_service = Service(path)
             options = webdriver.ChromeOptions()
-            driver = webdriver
+            # driver = webdriver
             if not withUI:
                 options.headless(True)
                 # # options.add_argument('--disable-gpu')
                 # driver = webdriver.Chrome(executable_path=Links.CHROME_DRIVER.value, chrome_options=options)
-            else:
-                try:
-                    driver = webdriver.Chrome(service=driver_service, chrome_options=options)
-                except WebDriverException as e:
-                    print('session not created')
-                    raise e
+            try:
+                driver = webdriver.Chrome(service=driver_service, chrome_options=options)
+            except WebDriverException as e:
+                print('session not created')
+                raise e
 
             path = sys.path[1] + '\\DataBase\\LoadTest\\LoadTest.html'
             driver.get(path)

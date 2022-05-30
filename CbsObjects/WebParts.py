@@ -1,8 +1,8 @@
 from enum import Enum
 
 from CbsObjects.Error import Error
-from CbsObjects.dev import Component
-from CbsObjects.WebPartLine import WebPartLine
+# from CbsObjects.dev import Component
+# from CbsObjects.WebPartLine import WebPartLine
 
 class Type(Enum):
     SUMMARY =0
@@ -25,11 +25,11 @@ class Type(Enum):
 class WebPart():
     def __init__(self):
         self.title = None
-        self.components = [Component]
+        # self.components = [Component]
         self.errors = []
         self.images = []
         self.links = []
-        self.lines = [WebPartLine]
+        # self.lines = [WebPartLine]
 
     def get_errors(self):
         return self.errors

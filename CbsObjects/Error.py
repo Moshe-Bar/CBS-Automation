@@ -9,8 +9,7 @@ class Error:
         self.page_id = None
         self.test_id = None
 
-    # def __repr__(self):
-    #     return [self.test_id, self.page_id, self.wp_type, self.type, self.index]
+
     def to_list(self):
         return (self.test_id, self.page_id, self.wp_type, self.type, self.index)
 
@@ -39,8 +38,4 @@ class Type(Enum):
     NO_IMAGE = 14
 
 
-# x = Error(1, 1)
-# y = Error(1, 1)
-# z = Error(1, 1)
-# print(x,y,z)
 

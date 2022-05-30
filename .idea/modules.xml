@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/cbs_auto.iml" filepath="$PROJECT_DIR$/.idea/cbs_auto.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CBS-Automation.iml" filepath="$PROJECT_DIR$/.idea/CBS-Automation.iml" />
     </modules>
   </component>
 </project>

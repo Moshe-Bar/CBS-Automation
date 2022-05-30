@@ -23,7 +23,7 @@ from CbsObjects.WebParts import Type as WpType
 from CbsObjects.Error import Error
 from CbsObjects.Error import Type as ErrorType
 from CbsObjects.Pages.SubjectPage import SubjectPage
-from CbsObjects.WebPartLine import WebPartLine
+# from CbsObjects.WebPartLine import WebPartLine
 from DataBase.DataBase import Links
 
 import urllib.request
